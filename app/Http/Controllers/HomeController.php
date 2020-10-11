@@ -2,27 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Parents\FrontEndController;
 
-class HomeController extends Controller
+/**
+ * Class HomeController
+ *
+ * @package App\Http\Controllers
+ */
+final class HomeController extends FrontEndController
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     /**
      * Show the application dashboard.
      *
      * @return \Illuminate\Contracts\Support\Renderable
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index()
+    public function index(): \Illuminate\Contracts\Support\Renderable
     {
-        return view('home');
+        $this->setTitle('pages.dashboard');
+        return $this->view('app.home');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function initMiddleware(): void
+    {
+        $this->middleware('auth');
     }
 }
