@@ -60,6 +60,7 @@ final class User extends Model implements
         self::ATTR_EMAIL_VERIFIED_AT,
         self::ATTR_NICKNAME,
         self::ATTR_ROLE,
+        self::ATTR_PASSWORD,
     ];
 
     /**

@@ -43,17 +43,23 @@
                         aria-label="Toggle sidebar">
                     <ion-icon name="menu"></ion-icon>
                 </button>
+                @auth
+                    <span class="ml-5">{{ $auth->nickname }} - {{ __('roles.' . $auth->role) }}</span>
+                @endauth
             </div>
             <div class="pt-5">
-                <div class="main-content py-5">
-                    @yield('content')
+                <div class="main-content py-5 px-4">
+                    <h2 class="h2 page-title">{{ $title ?? __('pages.dashboard') }}</h2>
+                    <div class="pt-5">
+                        @yield('content')
+                    </div>
                 </div>
             </div>
         </main>
     </div>
-
-    @include('notify::messages')
 </div>
+@include('notify::messages')
+
 @stack('scripts')
 @notifyJs
 <!-- Icons -->

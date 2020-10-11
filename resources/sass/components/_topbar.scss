@@ -3,7 +3,8 @@
     width: 100%;
     box-shadow: 0 0.5rem 1rem #bababa;
     background-color: $white;
-    z-index: 98;
+    display: flex;
+    align-items: center;
 
     .sidebar-collapse-button {
         background-color: $midBlue;

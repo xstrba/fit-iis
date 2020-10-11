@@ -1,5 +1,6 @@
 body {
     background: $white;
+    font-family: $font-family-archivo;
 }
 
 main {
@@ -7,6 +8,5 @@ main {
 }
 
 .page-title {
-    background: $red;
-    margin: 0;
+    border-bottom: 2px solid $red;
 }

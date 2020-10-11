@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Nunito);@import url(https://fonts.googleapis.com/css2?family=Archivo&display=swap);@charset "UTF-8";
 
 /*!
  * Bootstrap v4.5.2 (https://getbootstrap.com/)
@@ -10941,6 +10941,7 @@ a.text-dark:focus {
 
 body {
   background: #fff;
+  font-family: "Archivo", sans-serif;
 }
 
 main {
@@ -10948,8 +10949,7 @@ main {
 }
 
 .page-title {
-  background: #E63946;
-  margin: 0;
+  border-bottom: 2px solid #E63946;
 }
 
 #topbar {
@@ -10957,7 +10957,8 @@ main {
   width: 100%;
   box-shadow: 0 0.5rem 1rem #bababa;
   background-color: #fff;
-  z-index: 98;
+  display: flex;
+  align-items: center;
 }
 
 #topbar .sidebar-collapse-button {
@@ -10974,5 +10975,13 @@ main {
 #topbar .sidebar-collapse-button ion-icon {
   font-size: 1.5rem;
   color: white;
+}
+
+.error {
+  color: #E63946;
+}
+
+.required {
+  color: #E63946;
 }
 

@@ -6,8 +6,10 @@ use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\RolesEnum;
 use App\Models\User;
 use App\Parents\RequestFilter;
+use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -30,16 +32,24 @@ final class UserRequestFilter extends RequestFilter
     private UsersRepositoryInterface $usersRepository;
 
     /**
+     * @var \Illuminate\Contracts\Hashing\Hasher $hasher
+     */
+    private Hasher $hasher;
+
+    /**
      * UserRequestFilter constructor.
      *
      * @param \Illuminate\Contracts\Validation\Factory $validatorFactory
      * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param \Illuminate\Contracts\Hashing\Hasher $hasher
      */
     public function __construct(
         Factory $validatorFactory,
-        \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+        \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository,
+        Hasher $hasher
     ) {
         $this->usersRepository = $usersRepository;
+        $this->hasher = $hasher;
         parent::__construct($validatorFactory);
     }
 
@@ -59,6 +69,14 @@ final class UserRequestFilter extends RequestFilter
 
         if ($validator->fails()) {
             throw new ValidationException($validator);
+        }
+
+        if (Arr::exists($data, self::FIELD_PASSWORD)) {
+            if (!$data[self::FIELD_PASSWORD]) {
+                unset($data[self::FIELD_PASSWORD]);
+            } else {
+                $data[self::FIELD_PASSWORD] = $this->hasher->make($data[self::FIELD_PASSWORD]);
+            }
         }
 
         return $this->getFilteredData($data, $rules);
@@ -106,7 +124,7 @@ final class UserRequestFilter extends RequestFilter
                 'in:' . RolesEnum::instance()->getStringValues(),
             ],
             self::FIELD_PASSWORD => [
-                $required,
+                'nullable',
                 'string',
                 'confirmed',
             ],

@@ -11,6 +11,9 @@ use Illuminate\Support\Str;
  * Class Model
  *
  * @package App\Parents
+ * @property int|string id
+ * @property Carbon created_at
+ * @property Carbon updated_at
  */
 abstract class Model extends FWModel
 {

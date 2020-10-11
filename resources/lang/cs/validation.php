@@ -146,6 +146,12 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'first_name' => 'jméno',
+        'last_name' => 'příjmení',
+        'email' => 'e-mail',
+        'nickname' => 'přihlašovací jméno',
+        'password' => 'heslo',
+    ],
 
 ];
