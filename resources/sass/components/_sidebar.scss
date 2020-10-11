@@ -31,3 +31,8 @@
         vertical-align: text-top;
     }
 }
+
+#sidebar-wrapper.collapsing {
+    min-height: 100vh;
+    height: unset !important;
+}

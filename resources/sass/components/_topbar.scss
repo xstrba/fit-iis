@@ -1,0 +1,23 @@
+#topbar {
+    position: fixed;
+    width: 100%;
+    box-shadow: 0 0.5rem 1rem #bababa;
+    background-color: $white;
+    z-index: 98;
+
+    .sidebar-collapse-button {
+        background-color: $midBlue;
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+        padding: 0.4rem;
+
+        &:focus {
+            outline: none;
+        }
+
+        ion-icon {
+            font-size: 1.5rem;
+            color: white;
+        }
+    }
+}

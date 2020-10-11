@@ -10934,11 +10934,45 @@ a.text-dark:focus {
   vertical-align: text-top;
 }
 
+#sidebar-wrapper.collapsing {
+  min-height: 100vh;
+  height: unset !important;
+}
+
 body {
   background: #fff;
 }
 
 main {
   width: 100%;
+}
+
+.page-title {
+  background: #E63946;
+  margin: 0;
+}
+
+#topbar {
+  position: fixed;
+  width: 100%;
+  box-shadow: 0 0.5rem 1rem #bababa;
+  background-color: #fff;
+  z-index: 98;
+}
+
+#topbar .sidebar-collapse-button {
+  background-color: #457B9D;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  padding: 0.4rem;
+}
+
+#topbar .sidebar-collapse-button:focus {
+  outline: none;
+}
+
+#topbar .sidebar-collapse-button ion-icon {
+  font-size: 1.5rem;
+  color: white;
 }
 

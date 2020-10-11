@@ -26,22 +26,20 @@ final class UserPolicy extends Policy
      * @param \App\Models\User $user
      * @param \App\Models\User $user2
      * @return bool
-     * @noinspection PhpUnusedParameterInspection
      */
     public function show(User $user, User $user2): bool
     {
-        return $user->role === RolesEnum::ROLE_ADMINISTRATOR;
+        return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $user->is($user2);
     }
 
     /**
      * @param \App\Models\User $user
      * @param \App\Models\User $user2
      * @return bool
-     * @noinspection PhpUnusedParameterInspection
      */
     public function edit(User $user, User $user2): bool
     {
-        return $user->role === RolesEnum::ROLE_ADMINISTRATOR;
+        return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $user->is($user2);
     }
 
     /**

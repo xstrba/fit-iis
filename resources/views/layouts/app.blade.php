@@ -29,11 +29,26 @@
 <div id="app">
     <div class="d-flex" id="wrapper">
         @auth
-            @include('partials._sidebar');
+            @include('partials._sidebar')
         @endauth
 
-        <main class="py-4">
-            @yield('content')
+        <main>
+            <div id="topbar">
+                <button class="navbar-toggler sidebar-collapse-button"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#sidebar-wrapper"
+                        aria-controls="sidebar-wrapper"
+                        aria-expanded="true"
+                        aria-label="Toggle sidebar">
+                    <ion-icon name="menu"></ion-icon>
+                </button>
+            </div>
+            <div class="pt-5">
+                <div class="main-content py-5">
+                    @yield('content')
+                </div>
+            </div>
         </main>
     </div>
 

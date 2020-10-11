@@ -1,4 +1,4 @@
-<div class="border-right" id="sidebar-wrapper">
+<div class="collapse show" id="sidebar-wrapper">
     <a href="{{ url('/') }}">
         <h1 class="sidebar-heading h4">
             {{ config('app.name', 'Laravel') }}
