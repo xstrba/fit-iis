@@ -15,7 +15,8 @@
         "laravel/framework": "^7.24",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.4",
-        "mckenziearts/laravel-notify": "^2.1"
+        "mckenziearts/laravel-notify": "^2.1",
+        "ext-json": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

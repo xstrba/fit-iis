@@ -63,6 +63,6 @@
 @stack('scripts')
 @notifyJs
 <!-- Icons -->
-<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.esm.js"></script>
 </body>
 </html>

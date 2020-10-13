@@ -12,4 +12,5 @@ return [
     'password_confirmation' => 'Potvrdit heslo',
     'role' => 'Role',
     'update' => 'Uložit',
+    'created_at' => 'Vytvořeno',
 ];

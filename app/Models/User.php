@@ -94,6 +94,8 @@ final class User extends Model implements
         self::ATTR_EMAIL_VERIFIED_AT => 'datetime',
         self::ATTR_NICKNAME => 'string',
         self::ATTR_ROLE => 'int',
+        self::ATTR_CREATED_AT => 'datetime:Y-m-d H:i:s',
+        self::ATTR_UPDATED_AT => 'datetime:Y-m-d H:i:s',
     ];
 
     /**

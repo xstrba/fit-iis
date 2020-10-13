@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\PermissionsEnum;
 use App\Http\Requests\UserRequestFilter;
+use App\Models\User;
 use App\Parents\FrontEndController;
+use App\Queries\UsersQueryBuilder;
+use App\Tables\UsersTable;
 use Illuminate\Http\Request;
 
 /**
@@ -18,11 +21,27 @@ final class UserController extends FrontEndController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param \App\Tables\UsersTable $table
+     * @return \Illuminate\Contracts\View\View
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index()
+    public function index(UsersTable $table): \Illuminate\Contracts\View\View
     {
-        //
+        $this->authorize(PermissionsEnum::CREATE, User::class);
+        $this->setTitle('pages.users.index');
+        return $this->view('app.users.index', compact('table'));
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Tables\UsersTable $table
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function indexJson(Request $request, UsersTable $table): \Illuminate\Http\JsonResponse
+    {
+        $this->authorize(PermissionsEnum::CREATE, User::class);
+        return $this->responseFactory->json($table->getData($request));
     }
 
     /**
