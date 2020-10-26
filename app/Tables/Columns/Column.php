@@ -14,6 +14,7 @@ final class Column
     public const PROPERTY_SORT_FIELD = 'sortField';
     public const PROPERTY_DATA_CLASS = 'dataClass';
     public const PROPERTY_TITLE_CLASS = 'titleClass';
+    public const PROPERTY_SEARCH_FIELD = 'searchField';
 
     /**
      * @var string $name
@@ -31,6 +32,11 @@ final class Column
     private bool $sortable;
 
     /**
+     * @var bool $searchable
+     */
+    private bool $searchable;
+
+    /**
      * @var string|null $class
      */
     private ?string $class;
@@ -46,6 +52,7 @@ final class Column
         $this->name = $name;
         $this->title = $title;
         $this->sortable = false;
+        $this->searchable = false;
         $this->class = null;
     }
 
@@ -84,6 +91,17 @@ final class Column
     }
 
     /**
+     * Make column searchable
+     *
+     * @return $this
+     */
+    public function searchable(): self
+    {
+        $this->searchable = true;
+        return $this;
+    }
+
+    /**
      * Make column's data aligned right
      *
      * @return $this
@@ -108,6 +126,10 @@ final class Column
 
         if ($this->sortable) {
             $data[self::PROPERTY_SORT_FIELD] = $this->name;
+        }
+
+        if ($this->searchable) {
+            $data[self::PROPERTY_SEARCH_FIELD] = $this->name;
         }
 
         if ($this->class) {

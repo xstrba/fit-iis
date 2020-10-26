@@ -1,5 +1,8 @@
 <template>
     <nav>
+        <span v-if="tablePagination" class="ml-3">
+            {{ tablePagination.data.length }} z {{ tablePagination.total }}
+        </span>
         <ul class="pagination float-right">
             <li :class="['page-item', {'cursor-pointer': !isOnFirstPage}, {'disabled': isOnFirstPage}]">
                 <a class="page-link" @click.prevent="loadPage('prev')">

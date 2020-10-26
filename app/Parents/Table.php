@@ -15,9 +15,10 @@ use Illuminate\Http\Request;
  */
 abstract class Table
 {
-    private const QUERY_PARAM_SORT = 'sort';
-    private const QUERY_SORT_DELIMITER = ',';
-    private const QUERY_SORT_TYPE_DELIMITER = '|';
+    protected const QUERY_PARAM_SEARCH = 'search';
+    protected const QUERY_PARAM_SORT = 'sort';
+    protected const QUERY_SORT_DELIMITER = ',';
+    protected const QUERY_SORT_TYPE_DELIMITER = '|';
 
     /**
      * @var int $perPage
@@ -38,6 +39,16 @@ abstract class Table
      * @var \Illuminate\Contracts\Routing\UrlGenerator $urlGenerator
      */
     protected UrlGenerator $urlGenerator;
+
+    /**
+     * @var string|null $defaultSort
+     */
+    protected ?string $defaultSort = null;
+
+    /**
+     * @var string $defaultSortDirection
+     */
+    protected string $defaultSortDirection = 'asc';
 
     /**
      * Table constructor.
@@ -104,7 +115,12 @@ abstract class Table
     {
         $sortString = $request->get(self::QUERY_PARAM_SORT);
         if (!$sortString) {
-            return [];
+            return [
+                [
+                    $this->defaultSort,
+                    $this->defaultSortDirection,
+                ],
+            ];
         }
 
         $columns = \array_map(static function (array $column): string {
@@ -126,6 +142,21 @@ abstract class Table
         } catch (\Exception $e) {
             return [];
         }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getSearchColumns(): array
+    {
+        return \array_map(
+            static function (array $item): string {
+                return $item[Column::PROPERTY_SEARCH_FIELD];
+            },
+            \array_filter($this->getColumns(), static function (array $item): bool {
+                return (bool)($item[Column::PROPERTY_SEARCH_FIELD] ?? false);
+            })
+        );
     }
 
     /**

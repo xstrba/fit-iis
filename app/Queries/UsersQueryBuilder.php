@@ -78,14 +78,4 @@ final class UsersQueryBuilder extends QueryBuilder
     {
         return $this->where(User::ATTR_EMAIL, $email)->orWhere(User::ATTR_NICKNAME, $email);
     }
-
-    /**
-     * @param string $column
-     * @param string $direction
-     * @return \App\Queries\UsersQueryBuilder
-     */
-    public function sortByColumn(string $column, string $direction): UsersQueryBuilder
-    {
-        return $this->orderBy($column, $direction);
-    }
 }

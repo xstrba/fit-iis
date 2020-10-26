@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Parents\Model;
+use App\Queries\UsersQueryBuilder;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -97,6 +98,16 @@ final class User extends Model implements
         self::ATTR_CREATED_AT => 'datetime:Y-m-d H:i:s',
         self::ATTR_UPDATED_AT => 'datetime:Y-m-d H:i:s',
     ];
+
+    /**
+     * Get query builder for model
+     *
+     * @return \App\Models\User|\App\Queries\UsersQueryBuilder|\Illuminate\Database\Eloquent\Builder
+     */
+    public function newModelQuery()
+    {
+        return new UsersQueryBuilder($this);
+    }
 
     /**
      * @return string

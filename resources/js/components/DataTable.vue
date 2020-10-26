@@ -1,7 +1,24 @@
 <template>
     <div>
+        <div class="row">
+            <div class="offset-md-8 col-md-4">
+                <form @submit.prevent="search">
+                    <label class="sr-only" for="searchInput">Hledat</label>
+                    <div class="input-group mb-2 mr-sm-2">
+                        <input type="text"
+                               class="form-control"
+                               id="searchInput"
+                               placeholder="Hledej..."
+                               v-model="searchValue">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text cursor-pointer" @click="search"><i class="fas fa-search"></i></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         <vuetable ref="vuetable"
-                  :api-url="apiUrl"
+                  :api-url="dataApiUrl"
                   :fields="fields"
                   data-path="data"
                   pagination-path=""
@@ -62,7 +79,10 @@ export default {
                         last: 'fas fa-angle-double-right',
                     }
                 },
-            }
+            },
+
+            searchValue: null,
+            dataApiUrl: this.$props.apiUrl,
         };
     },
 
@@ -88,12 +108,27 @@ export default {
         onPaginationData (paginationData) {
             this.$refs.pagination.setPaginationData(paginationData)
         },
+
         // when the user click something that causes the page to change,
         // call "changePage" method in Vuetable, so that that page will be
         // requested from the API endpoint.
         onChangePage (page) {
             this.$refs.vuetable.changePage(page)
-        }
+        },
+
+        search() {
+            let searchString = '';
+            if (this.searchValue) {
+                searchString = '?search=' + this.searchValue;
+            }
+            this.dataApiUrl = this.apiUrl + searchString;
+            this.onChangePage(1);
+            this.reloadData();
+        },
+
+        reloadData() {
+            this.$refs.vuetable.reload();
+        },
     },
 }
 </script>
