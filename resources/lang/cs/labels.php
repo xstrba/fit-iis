@@ -23,7 +23,7 @@ return [
     'country' => 'Stát',
     'phone' => 'Telefonní čislo',
     'preferred_language' => 'Preferovaný jazyk',
-    'all_items' => 'Všechny',
+    'all_items' => 'Všechny zánamy',
     'deleted' => 'Smazané',
     'name' => 'Jméno',
     'address' => 'Adresa',
@@ -42,7 +42,8 @@ return [
 
     // actions
     'actions' => 'Akce',
-    'preview' => 'náhled',
+    'preview' => 'Náhled',
     'edit' => 'Upravit',
     'delete' => 'Smazat',
+    'restore' => 'Obnovit',
 ];

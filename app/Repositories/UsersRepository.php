@@ -77,6 +77,15 @@ final class UsersRepository implements UsersRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function restore(User $user): void
+    {
+        $user->restore();
+        $this->save($user);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findByEmail(string $email): ?User
     {
         /** @var User|null $user */

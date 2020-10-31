@@ -2,6 +2,8 @@
 
 namespace App\Parents;
 
+use App\Models\User;
+use App\Services\AuthService;
 use App\Tables\Columns\Column;
 use App\Tables\Filters\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -55,6 +57,11 @@ abstract class Table
     protected UrlGenerator $urlGenerator;
 
     /**
+     * @var \App\Services\AuthService $authService
+     */
+    protected AuthService $authService;
+
+    /**
      * @var string|null $defaultSort
      */
     protected ?string $defaultSort = null;
@@ -69,13 +76,16 @@ abstract class Table
      *
      * @param \Illuminate\Contracts\Translation\Translator $translator
      * @param \Illuminate\Contracts\Routing\UrlGenerator $urlGenerator
+     * @param \App\Services\AuthService $authService
      */
     public function __construct(
-        \Illuminate\Contracts\Translation\Translator $translator,
-        \Illuminate\Contracts\Routing\UrlGenerator $urlGenerator
+        Translator $translator,
+        UrlGenerator $urlGenerator,
+        AuthService $authService
     ) {
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
+        $this->authService = $authService;
         $this->initializeColumns();
         $this->initializeFilters();
     }
@@ -222,12 +232,16 @@ abstract class Table
      * @param string $icon
      * @param string $title
      * @param string $action
-     * @param bool $delete
+     * @param ?string $method
      * @return array
      */
-    public function getActionData(string $icon, string $title, string $action, bool $delete = false): array
+    public function getActionData(string $icon, string $title, string $action, ?string $method = null): array
     {
-        return compact('icon', 'title', 'action', 'delete');
+        if ($method) {
+            $method = \strtolower($method);
+        }
+
+        return compact('icon', 'title', 'action', 'method');
     }
 
     /**
@@ -246,7 +260,7 @@ abstract class Table
     abstract protected function initializeColumns(): void;
 
     /**
-     * Columns definitions
+     * Filters definitions
      *
      * @return void
      */

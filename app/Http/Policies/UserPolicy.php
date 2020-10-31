@@ -29,7 +29,7 @@ final class UserPolicy extends Policy
      */
     public function show(User $user, User $user2): bool
     {
-        return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $user->is($user2);
+        return true;
     }
 
     /**

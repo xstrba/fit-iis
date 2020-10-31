@@ -1,38 +1,43 @@
 <template>
     <div>
-        <div class="row">
-            <div v-for="(filter, index) in filters" class="col-12 col-md-3 col-lg-3" :key="`filter-${index}`">
-                <div class="form-group">
-                    <label :for="`filterSelect-${filter.key}`">{{ filter.label }}</label>
-                    <select class="form-control"
-                            :id="`filterSelect-${filter.key}`"
-                            :multiple="filter.multiple"
-                            v-model="selectedFilters[filter.key]"
-                            @change="filtersChanged">
-                        <option v-for="option in filter.options" :value="option.value">{{ option.label }}</option>
-                    </select>
+        <div class="row mb-2">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div v-for="(filter, index) in filters" class="col-12 col-md-4" :key="`filter-${index}`">
+                        <div class="form-group mb-0">
+                            <label :for="`filterSelect-${filter.key}`">{{ filter.label }}</label>
+                            <select class="form-control"
+                                    :id="`filterSelect-${filter.key}`"
+                                    :multiple="filter.multiple"
+                                    v-model="selectedFilters[filter.key]"
+                                    @change="filtersChanged">
+                                <option v-for="option in filter.options" :value="option.value">{{ option.label }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 d-flex justify-content-end flex-column align-items-end">
+                <div class="col-lg-10 p-0">
+                    <label></label>
+                    <form @submit.prevent="search">
+                        <label class="sr-only" for="searchInput">Hledat</label>
+                        <div class="input-group mr-sm-2">
+                            <input type="text"
+                                   class="form-control"
+                                   id="searchInput"
+                                   placeholder="Hledej..."
+                                   v-model="searchValue">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text cursor-pointer" @click="search"><i class="fas fa-search"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <div class="offset-md-8 col-md-4">
-                <form @submit.prevent="search">
-                    <label class="sr-only" for="searchInput">Hledat</label>
-                    <div class="input-group mb-2 mr-sm-2">
-                        <input type="text"
-                               class="form-control"
-                               id="searchInput"
-                               placeholder="Hledej..."
-                               v-model="searchValue">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text cursor-pointer" @click="search"><i class="fas fa-search"></i>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
         <vuetable ref="vuetable"
                   :api-url="dataApiUrl"
                   :fields="fields"
@@ -53,10 +58,18 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">
                         <template v-for="(action, index) in props.rowData.actions">
-                            <a v-if="!action.delete" :href="action.action" class="dropdown-item">
+                            <a v-if="!action.method" :href="action.action" class="dropdown-item">
                                 <i :class="`fas fa-${action.icon} mr-2`"></i>{{ action.title }}
                             </a>
-                            <a v-else href="" class="dropdown-item text-danger"
+                            <a v-else-if="action.method === 'post'"
+                               href=""
+                               class="dropdown-item"
+                               @click.prevent="postAction(action.action)">
+                                <i :class="`fas fa-${action.icon} mr-2`"></i>{{ action.title }}
+                            </a>
+                            <a v-else-if="action.method === 'delete'"
+                               href=""
+                               class="dropdown-item text-danger"
                                @click.prevent="deleteItem(action.action)">
                                 <i :class="`fas fa-${action.icon} mr-2`"></i>{{ action.title }}
                             </a>
@@ -181,6 +194,16 @@ export default {
 
         deleteItem(url) {
             axios.delete(url)
+                .then(() => {
+                    this.reloadData();
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        },
+
+        postAction(url) {
+            axios.post(url)
                 .then(() => {
                     this.reloadData();
                 })

@@ -3,15 +3,19 @@
 namespace App\Tables;
 
 use App\Contracts\Repositories\UsersRepositoryInterface;
+use App\Enums\PermissionsEnum;
 use App\Models\User;
 use App\Parents\Model;
 use App\Parents\QueryBuilder;
 use App\Parents\Table;
 use App\Queries\UsersQueryBuilder;
+use App\Services\AuthService;
 use App\Tables\Columns\Column;
 use App\Tables\Filters\Filter;
 use App\Tables\Filters\FilterOption;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Http\Request;
 
 /**
@@ -46,15 +50,17 @@ final class UsersTable extends Table
      *
      * @param \Illuminate\Contracts\Translation\Translator $translator
      * @param \Illuminate\Contracts\Routing\UrlGenerator $urlGenerator
+     * @param \App\Services\AuthService $authService
      * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
      */
     public function __construct(
-        \Illuminate\Contracts\Translation\Translator $translator,
-        \Illuminate\Contracts\Routing\UrlGenerator $urlGenerator,
+        Translator $translator,
+        UrlGenerator $urlGenerator,
+        AuthService $authService,
         UsersRepositoryInterface $usersRepository
     ) {
         $this->usersRepository = $usersRepository;
-        parent::__construct($translator, $urlGenerator);
+        parent::__construct($translator, $urlGenerator, $authService);
     }
 
     /**
@@ -116,8 +122,18 @@ final class UsersTable extends Table
         $this->addColumn(
             Column::init(User::ATTR_NICKNAME, $this->translator->get('labels.' . User::ATTR_NICKNAME))
                 ->sortable()
-                ->centered()
                 ->searchable()
+        );
+
+        $this->addColumn(
+            Column::init(User::ATTR_EMAIL, $this->translator->get('labels.' . User::ATTR_EMAIL))
+                ->sortable()
+                ->searchable()
+        );
+
+        $this->addColumn(
+            Column::init(User::ATTR_BIRTH, $this->translator->get('labels.' . 'birth_date'))
+                ->sortable()
         );
 
         $this->addColumn(
@@ -130,17 +146,16 @@ final class UsersTable extends Table
     }
 
     /**
-     * Initialize table filters
-     *
-     * @return void
+     *  @inheritDoc
      */
     protected function initializeFilters(): void
     {
         $itemsFilter = new Filter('filter_items', '');
-        $itemsFilter->addOptions([
-            FilterOption::init(null, $this->translator->get('labels.all_items')),
-            FilterOption::init('deleted', $this->translator->get('labels.deleted')),
-        ]);
+        $options = [FilterOption::init(null, $this->translator->get('labels.all_items'))];
+        if ($this->usersRepository->query()->whereNotNull(User::ATTR_DELETED_AT)->count()) {
+            $options[] = FilterOption::init('deleted', $this->translator->get('labels.deleted'));
+        }
+        $itemsFilter->addOptions($options);
         $this->addFilter($itemsFilter, static function (UsersQueryBuilder $query, $value): UsersQueryBuilder {
             if ($value === 'deleted') {
                 return $query->whereNotNull(User::ATTR_DELETED_AT);
@@ -158,6 +173,7 @@ final class UsersTable extends Table
     {
         return \array_merge($user->toArray(), [
             User::ATTR_CREATED_AT => $user->created_at->format('d. m. Y H:i:s'),
+            User::ATTR_BIRTH => $user->birth->format('d. m. Y'),
             self::FIELD_ACTIONS => $this->getActions($user),
         ]);
     }
@@ -168,23 +184,46 @@ final class UsersTable extends Table
      */
     private function getActions(User $user): array
     {
-        return [
-            $this->getActionData(
+        $auth = $this->authService->tryUser();
+        $actions = [];
+        if (!$auth) {
+            return $actions;
+        }
+
+        if ($auth->can(PermissionsEnum::SHOW, $user)) {
+            $actions[] = $this->getActionData(
                 'eye',
-                $this->translator->get('labels.preview'),
+                $this->translator->get('pages.profile'),
                 $this->urlGenerator->route('users.show', $user->getKey())
-            ),
-            $this->getActionData(
+            );
+        }
+
+        if ($auth->can(PermissionsEnum::EDIT, $user)) {
+            $actions[] = $this->getActionData(
                 'edit',
                 $this->translator->get('labels.edit'),
                 $this->urlGenerator->route('users.edit', $user->getKey())
-            ),
-            $this->getActionData(
+            );
+
+            if ($user->deleted_at) {
+                $actions[] = $this->getActionData(
+                    'trash-restore',
+                    $this->translator->get('labels.restore'),
+                    $this->urlGenerator->route('users.restore', $user->getKey()),
+                    'post',
+                );
+            }
+        }
+
+        if ($auth->can(PermissionsEnum::DELETE, $user)) {
+            $actions[] = $this->getActionData(
                 'trash-alt',
                 $this->translator->get('labels.delete'),
                 $this->urlGenerator->route('users.destroy', $user->getKey()),
-                true
-            ),
-        ];
+                'delete'
+            );
+        }
+
+        return $actions;
     }
 }
