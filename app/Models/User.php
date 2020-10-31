@@ -12,6 +12,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 /**
  * Class User
@@ -31,6 +32,8 @@ use Illuminate\Notifications\Notifiable;
  * @property string $phone
  * @property string $name
  * @property string $language
+ * @property string $address
+ * @property int $age
  * @property \Illuminate\Support\Carbon $email_verified_at
  */
 final class User extends Model implements
@@ -64,6 +67,8 @@ final class User extends Model implements
      * Appended attributes
      */
     public const ATTR_NAME = 'name';
+    public const ATTR_ADDRESS = 'address';
+    public const ATTR_AGE = 'age';
 
     /**
      * Attributes that are mass assignable
@@ -105,6 +110,8 @@ final class User extends Model implements
      */
     protected $appends = [
         self::ATTR_NAME,
+        self::ATTR_ADDRESS,
+        self::ATTR_AGE,
     ];
 
     /**
@@ -145,5 +152,36 @@ final class User extends Model implements
     public function getNameAttribute(): string
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddressAttribute(): string
+    {
+        $address = '';
+        if ($this->street) {
+            $address .= $this->street;
+        }
+
+        if ($this->house_number) {
+            $address .= ' ' . $this->house_number;
+
+            if ($this->city) {
+                $address .= ', ' . $this->city;
+            }
+        } else if ($this->city) {
+            $address .= ', ' . $this->city;
+        }
+
+        return $address;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAgeAttribute(): int
+    {
+        return $this->birth->diffInYears(Carbon::now());
     }
 }

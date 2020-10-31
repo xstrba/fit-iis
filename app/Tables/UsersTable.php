@@ -4,9 +4,13 @@ namespace App\Tables;
 
 use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Models\User;
+use App\Parents\Model;
+use App\Parents\QueryBuilder;
 use App\Parents\Table;
 use App\Queries\UsersQueryBuilder;
 use App\Tables\Columns\Column;
+use App\Tables\Filters\Filter;
+use App\Tables\Filters\FilterOption;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
@@ -68,6 +72,8 @@ final class UsersTable extends Table
     {
         $query = $this->usersRepository->query();
 
+        $this->applyFilters($request, $query);
+
         foreach ($this->getSortColumns($request) as $sortColumn) {
             $query->orderBy($sortColumn[0], $sortColumn[1] ?? 'asc');
         }
@@ -119,6 +125,29 @@ final class UsersTable extends Table
                 ->sortable()
                 ->right()
         );
+
+        $this->addActionsColumn();
+    }
+
+    /**
+     * Initialize table filters
+     *
+     * @return void
+     */
+    protected function initializeFilters(): void
+    {
+        $itemsFilter = new Filter('filter_items', '');
+        $itemsFilter->addOptions([
+            FilterOption::init(null, $this->translator->get('labels.all_items')),
+            FilterOption::init('deleted', $this->translator->get('labels.deleted')),
+        ]);
+        $this->addFilter($itemsFilter, static function (UsersQueryBuilder $query, $value): UsersQueryBuilder {
+            if ($value === 'deleted') {
+                return $query->whereNotNull(User::ATTR_DELETED_AT);
+            }
+
+            return $query->whereNull(User::ATTR_DELETED_AT);
+        });
     }
 
     /**
@@ -127,12 +156,35 @@ final class UsersTable extends Table
      */
     private function modelToArray(User $user): array
     {
-        return [
-            User::ATTR_ID => $user->getKey(),
-            User::ATTR_FIRST_NAME => $user->first_name,
-            User::ATTR_LAST_NAME => $user->last_name,
-            User::ATTR_NICKNAME => $user->nickname,
+        return \array_merge($user->toArray(), [
             User::ATTR_CREATED_AT => $user->created_at->format('d. m. Y H:i:s'),
+            self::FIELD_ACTIONS => $this->getActions($user),
+        ]);
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @return mixed[]
+     */
+    private function getActions(User $user): array
+    {
+        return [
+            $this->getActionData(
+                'eye',
+                $this->translator->get('labels.preview'),
+                $this->urlGenerator->route('users.show', $user->getKey())
+            ),
+            $this->getActionData(
+                'edit',
+                $this->translator->get('labels.edit'),
+                $this->urlGenerator->route('users.edit', $user->getKey())
+            ),
+            $this->getActionData(
+                'trash-alt',
+                $this->translator->get('labels.delete'),
+                $this->urlGenerator->route('users.destroy', $user->getKey()),
+                true
+            ),
         ];
     }
 }

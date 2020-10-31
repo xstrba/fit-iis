@@ -17,9 +17,14 @@ $yellow: #ffed4a;
 $green: #38c172;
 $teal: #4dc0b5;
 $cyan: #A8DADC;
+
 $darkBlue: #1D3557;
 $midBlue: #457B9D;
 $brightCyan: #F1FAEE;
 $red: #E63946;
+
+$primary: $darkBlue;
+$danger: $red;
+$info: $midBlue;
 
 @import 'components/fonts';

@@ -15,6 +15,7 @@ final class Column
     public const PROPERTY_DATA_CLASS = 'dataClass';
     public const PROPERTY_TITLE_CLASS = 'titleClass';
     public const PROPERTY_SEARCH_FIELD = 'searchField';
+    public const PROPERTY_WIDTH = 'width';
 
     /**
      * @var string $name
@@ -42,6 +43,11 @@ final class Column
     private ?string $class;
 
     /**
+     * @var string|null
+     */
+    private ?string $width;
+
+    /**
      * Column constructor.
      *
      * @param string $name
@@ -54,6 +60,7 @@ final class Column
         $this->sortable = false;
         $this->searchable = false;
         $this->class = null;
+        $this->width = null;
     }
 
     /**
@@ -112,6 +119,12 @@ final class Column
         return $this;
     }
 
+    public function width(string $width): self
+    {
+        $this->width = $width;
+        return $this;
+    }
+
     /**
      * Get column as array
      *
@@ -135,6 +148,10 @@ final class Column
         if ($this->class) {
             $data[self::PROPERTY_DATA_CLASS] = $this->class;
             $data[self::PROPERTY_TITLE_CLASS] = $this->class;
+        }
+
+        if ($this->width) {
+            $data[self::PROPERTY_WIDTH] = $this->width;
         }
 
         return $data;

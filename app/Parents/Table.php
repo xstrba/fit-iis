@@ -3,6 +3,7 @@
 namespace App\Parents;
 
 use App\Tables\Columns\Column;
+use App\Tables\Filters\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Contracts\Translation\Translator;
@@ -15,10 +16,13 @@ use Illuminate\Http\Request;
  */
 abstract class Table
 {
+    public const FIELD_ACTIONS = 'actions';
+
     protected const QUERY_PARAM_SEARCH = 'search';
     protected const QUERY_PARAM_SORT = 'sort';
     protected const QUERY_SORT_DELIMITER = ',';
     protected const QUERY_SORT_TYPE_DELIMITER = '|';
+    protected const QUERY_FILTER_VALUE_DELIMITER = '|';
 
     /**
      * @var int $perPage
@@ -29,6 +33,16 @@ abstract class Table
      * @var string[][] $columns
      */
     protected array $columns = [];
+
+    /**
+     * @var mixed[] $filters
+     */
+    protected array $filters = [];
+
+    /**
+     * @var callable[] $filterFunctions
+     */
+    protected array $filterFunctions = [];
 
     /**
      * @var \Illuminate\Contracts\Translation\Translator $translator
@@ -63,6 +77,7 @@ abstract class Table
         $this->translator = $translator;
         $this->urlGenerator = $urlGenerator;
         $this->initializeColumns();
+        $this->initializeFilters();
     }
 
     /**
@@ -73,6 +88,7 @@ abstract class Table
     public function initialize(): Table
     {
         $this->initializeColumns();
+        $this->initializeFilters();
         return $this;
     }
 
@@ -97,12 +113,33 @@ abstract class Table
     }
 
     /**
+     * @return mixed[]
+     */
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    /**
+     * Get columns in json
+     *
      * @return string
      * @throws \JsonException
      */
     public function getColumnsJson(): string
     {
         return \json_encode($this->getColumns(), JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * Get filters in json
+     *
+     * @return string
+     * @throws \JsonException
+     */
+    public function getFiltersJson(): string
+    {
+        return \json_encode($this->getFilters(), JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -167,6 +204,33 @@ abstract class Table
     abstract public function getBaseApiUrl(): string;
 
     /**
+     * Add column containing actions
+     *
+     * @return void
+     */
+    public function addActionsColumn(): void
+    {
+        $this->addColumn(
+            Column::init(self::FIELD_ACTIONS, $this->translator->get('labels.' . self::FIELD_ACTIONS))
+                ->right()
+        );
+    }
+
+    /**
+     * Get data for row in action
+     *
+     * @param string $icon
+     * @param string $title
+     * @param string $action
+     * @param bool $delete
+     * @return array
+     */
+    public function getActionData(string $icon, string $title, string $action, bool $delete = false): array
+    {
+        return compact('icon', 'title', 'action', 'delete');
+    }
+
+    /**
      * Get table data
      *
      * @param \Illuminate\Http\Request $request
@@ -174,12 +238,21 @@ abstract class Table
      */
     abstract public function getData(Request $request): LengthAwarePaginator;
 
-        /**
+    /**
      * Columns definitions
      *
      * @return void
      */
     abstract protected function initializeColumns(): void;
+
+    /**
+     * Columns definitions
+     *
+     * @return void
+     */
+    protected function initializeFilters(): void
+    {
+    }
 
     /**
      * Add column to columns
@@ -189,5 +262,36 @@ abstract class Table
     protected function addColumn(Column $column): void
     {
         $this->columns[] = $column->getData();
+    }
+
+    /**
+     * Add new filter to filters and save filter functions
+     *
+     * @param \App\Tables\Filters\Filter $filter
+     * @param callable $function
+     */
+    protected function addFilter(Filter $filter, callable $function): void
+    {
+        $this->filters[] = $filter->getData();
+        $this->filterFunctions[$filter->getKey()] = $function;
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Parents\QueryBuilder $query
+     */
+    protected function applyFilters(Request $request, QueryBuilder $query): void
+    {
+        foreach ($this->filterFunctions as $filterKey => $filterFunction) {
+            $requestValue = $request->input($filterKey, null);
+
+            if ($requestValue !== null ) {
+                if (\strpos(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue)) {
+                    $requestValue = \explode(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue);
+                }
+            }
+
+            $filterFunction($query, $requestValue);
+        }
     }
 }

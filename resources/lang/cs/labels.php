@@ -13,6 +13,7 @@ return [
     'password_confirmation' => 'Potvrdit heslo',
     'role' => 'Role',
     'update' => 'Uložit',
+    'create' => 'Vytvořit',
     'created_at' => 'Vytvořeno',
     'gender' => 'Pohlaví',
     'birth_date' => 'Datum narodení',
@@ -22,6 +23,11 @@ return [
     'country' => 'Stát',
     'phone' => 'Telefonní čislo',
     'preferred_language' => 'Preferovaný jazyk',
+    'all_items' => 'Všechny',
+    'deleted' => 'Smazané',
+    'name' => 'Jméno',
+    'address' => 'Adresa',
+    'username' => 'Uživatelské jméno',
 
     // genders enum
     'male' => 'Muž',
@@ -30,4 +36,13 @@ return [
     // Languages enum
     'en' => 'Anglicky',
     'cs' => 'Česky',
+
+    //Users
+    'new_user' => 'Nový uživatel',
+
+    // actions
+    'actions' => 'Akce',
+    'preview' => 'náhled',
+    'edit' => 'Upravit',
+    'delete' => 'Smazat',
 ];

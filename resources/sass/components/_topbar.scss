@@ -10,15 +10,11 @@
         background-color: $midBlue;
         border-bottom-left-radius: 0;
         border-top-left-radius: 0;
-        padding: 0.4rem;
+        padding: 0.6rem;
+        color: white;
 
         &:focus {
             outline: none;
-        }
-
-        ion-icon {
-            font-size: 1.5rem;
-            color: white;
         }
     }
 }

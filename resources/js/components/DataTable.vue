@@ -1,6 +1,21 @@
 <template>
     <div>
         <div class="row">
+            <div v-for="(filter, index) in filters" class="col-12 col-md-3 col-lg-3" :key="`filter-${index}`">
+                <div class="form-group">
+                    <label :for="`filterSelect-${filter.key}`">{{ filter.label }}</label>
+                    <select class="form-control"
+                            :id="`filterSelect-${filter.key}`"
+                            :multiple="filter.multiple"
+                            v-model="selectedFilters[filter.key]"
+                            @change="filtersChanged">
+                        <option v-for="option in filter.options" :value="option.value">{{ option.label }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="offset-md-8 col-md-4">
                 <form @submit.prevent="search">
                     <label class="sr-only" for="searchInput">Hledat</label>
@@ -11,7 +26,8 @@
                                placeholder="Hledej..."
                                v-model="searchValue">
                         <div class="input-group-prepend">
-                            <div class="input-group-text cursor-pointer" @click="search"><i class="fas fa-search"></i></div>
+                            <div class="input-group-text cursor-pointer" @click="search"><i class="fas fa-search"></i>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -26,7 +42,31 @@
                   :multi-sort="true"
                   multi-sort-key="ctrl"
                   @vuetable:pagination-data="onPaginationData">
+            <div slot="actions" slot-scope="props">
+                <div class="btn-group">
+                    <button type="button"
+                            class="btn btn-outline-info"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <template v-for="(action, index) in props.rowData.actions">
+                            <a v-if="!action.delete" :href="action.action" class="dropdown-item">
+                                <i :class="`fas fa-${action.icon} mr-2`"></i>{{ action.title }}
+                            </a>
+                            <a v-else href="" class="dropdown-item text-danger"
+                               @click.prevent="deleteItem(action.action)">
+                                <i :class="`fas fa-${action.icon} mr-2`"></i>{{ action.title }}
+                            </a>
+                            <div v-if="index < props.rowData.actions - 1" class="dropdown-divider"></div>
+                        </template>
+                    </div>
+                </div>
+            </div>
         </vuetable>
+
         <div class="mt-3">
             <vuetable-bootstrap-pagination ref="pagination"
                                            :css="css.pagination"
@@ -83,6 +123,7 @@ export default {
 
             searchValue: null,
             dataApiUrl: this.$props.apiUrl,
+            selectedFilters: {},
         };
     },
 
@@ -96,6 +137,12 @@ export default {
             type: Array,
             required: true,
         },
+
+        filters: {
+            type: Array,
+            required: false,
+            default: true,
+        },
     },
 
     components: {
@@ -103,31 +150,80 @@ export default {
         VuetableBootstrapPagination,
     },
 
+    created() {
+        this.$props.filters.forEach((filter) => {
+            console.log(filter);
+            this.selectedFilters[filter.key] = filter.multiple ? [] : filter.options[0].value;
+        });
+    },
+
     methods: {
         // when the pagination data is available, set it to pagination component
-        onPaginationData (paginationData) {
+        onPaginationData(paginationData) {
             this.$refs.pagination.setPaginationData(paginationData)
         },
 
         // when the user click something that causes the page to change,
         // call "changePage" method in Vuetable, so that that page will be
         // requested from the API endpoint.
-        onChangePage (page) {
+        onChangePage(page) {
             this.$refs.vuetable.changePage(page)
         },
 
         search() {
-            let searchString = '';
-            if (this.searchValue) {
-                searchString = '?search=' + this.searchValue;
-            }
-            this.dataApiUrl = this.apiUrl + searchString;
+            this.setApiUrl();
             this.onChangePage(1);
-            this.reloadData();
         },
 
         reloadData() {
             this.$refs.vuetable.reload();
+        },
+
+        deleteItem(url) {
+            axios.delete(url)
+                .then(() => {
+                    this.reloadData();
+                })
+                .catch((error) => {
+                    console.log(error.response);
+                });
+        },
+
+        setApiUrl() {
+            let searchString = '';
+            if (this.searchValue) {
+                searchString = 'search=' + this.searchValue;
+            }
+
+            let filters = [];
+            Object.keys(this.selectedFilters).forEach((filterKey) => {
+                let value = null;
+                if ((this.selectedFilters[filterKey] instanceof Array) && this.selectedFilters[filterKey].length) {
+                    value = this.selectedFilters[filterKey].join('|');
+                } else {
+                    value = this.selectedFilters[filterKey];
+                }
+
+                if (value !== null) {
+                    filters.push(`${filterKey}=${value}`);
+                }
+            });
+
+            if (searchString) {
+                filters.push(searchString);
+            }
+
+            let queryString = '';
+            if (filters.length) {
+                queryString = filters.join('&');
+            }
+
+            this.dataApiUrl = queryString ? this.apiUrl + '?' + queryString : this.apiUrl;
+        },
+
+        filtersChanged() {
+            this.setApiUrl();
+            this.onChangePage(1);
         },
     },
 }

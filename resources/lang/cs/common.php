@@ -2,4 +2,5 @@
 
 return [
     'eg' => 'Napr.',
+    'years' => 'let',
 ];

@@ -18,7 +18,7 @@ final class LanguagesEnum extends Enum
      * @var array|string[] $values
      */
     protected array $values = [
-        self::EN,
         self::CZ,
+        self::EN,
     ];
 }

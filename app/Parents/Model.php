@@ -3,6 +3,7 @@
 namespace App\Parents;
 
 use Illuminate\Database\Eloquent\Model as FWModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -18,6 +19,8 @@ use Illuminate\Support\Str;
  */
 abstract class Model extends FWModel
 {
+    use SoftDeletes;
+
     public const ATTR_ID = 'id';
     public const ATTR_CREATED_AT = 'created_at';
     public const ATTR_UPDATED_AT = 'updated_at';

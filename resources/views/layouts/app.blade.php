@@ -41,7 +41,7 @@
                         aria-controls="sidebar-wrapper"
                         aria-expanded="true"
                         aria-label="Toggle sidebar">
-                    <ion-icon name="menu"></ion-icon>
+                    <i class="fas fa-bars"></i>
                 </button>
                 @auth
                     <span class="ml-5">{{ $auth->nickname }} - {{ __('roles.' . $auth->role) }}</span>
