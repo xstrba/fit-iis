@@ -7,6 +7,7 @@
  * @var string|null $placeholder
  * @var string $label
  * @var string|null $value
+ * @var string $pattern
  */
 @endphp
 
@@ -22,7 +23,8 @@
            aria-describedby="{{ ($id ?? $name) . 'Help' }}"
            @isset($placeholder) placeholder="{{ $placeholder }}" @endisset
            @isset($value) value="{{ $value }}" @endisset
-           @isset($required) required @endisset>
+           @isset($required) required @endisset
+           @isset($pattern) pattern="{{ $pattern }}" @endisset>
     @isset($description)
         <small id="{{ ($id ?? $name) . 'Help' }}" class="form-text text-muted">{{ $description }}</small>
     @endisset

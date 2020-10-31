@@ -17,13 +17,21 @@ use Illuminate\Notifications\Notifiable;
  * Class User
  *
  * @package App\Models
- * @property string first_name
- * @property string|null last_name
- * @property string email
- * @property string nickname
- * @property int role
- * @propert string name
- * @property \Illuminate\Support\Carbon email_verified_at
+ * @property string $first_name
+ * @property string|null $last_name
+ * @property string $email
+ * @property string $nickname
+ * @property int $role
+ * @property \Illuminate\Support\Carbon birth
+ * @property string $street
+ * @property string $house_number
+ * @property string $city
+ * @property string $country
+ * @property string $gender
+ * @property string $phone
+ * @property string $name
+ * @property string $language
+ * @property \Illuminate\Support\Carbon $email_verified_at
  */
 final class User extends Model implements
     AuthenticatableContract,
@@ -43,6 +51,14 @@ final class User extends Model implements
     public const ATTR_EMAIL_VERIFIED_AT = 'email_verified_at';
     public const ATTR_PASSWORD = 'password';
     public const ATTR_REMEMBER_TOKEN = 'remember_token';
+    public const ATTR_BIRTH = 'birth';
+    public const ATTR_STREET = 'street';
+    public const ATTR_HOUSE_NUMBER = 'house_number';
+    public const ATTR_CITY = 'city';
+    public const ATTR_COUNTRY = 'country';
+    public const ATTR_GENDER = 'gender';
+    public const ATTR_PHONE = 'phone';
+    public const ATTR_LANGUAGE = 'language';
 
     /**
      * Appended attributes
@@ -62,6 +78,14 @@ final class User extends Model implements
         self::ATTR_NICKNAME,
         self::ATTR_ROLE,
         self::ATTR_PASSWORD,
+        self::ATTR_BIRTH,
+        self::ATTR_STREET,
+        self::ATTR_HOUSE_NUMBER,
+        self::ATTR_CITY,
+        self::ATTR_COUNTRY,
+        self::ATTR_GENDER,
+        self::ATTR_PHONE,
+        self::ATTR_LANGUAGE,
     ];
 
     /**
@@ -95,8 +119,14 @@ final class User extends Model implements
         self::ATTR_EMAIL_VERIFIED_AT => 'datetime',
         self::ATTR_NICKNAME => 'string',
         self::ATTR_ROLE => 'int',
-        self::ATTR_CREATED_AT => 'datetime:Y-m-d H:i:s',
-        self::ATTR_UPDATED_AT => 'datetime:Y-m-d H:i:s',
+        self::ATTR_BIRTH => 'datetime:Y-m-d',
+        self::ATTR_STREET => 'string',
+        self::ATTR_HOUSE_NUMBER => 'string',
+        self::ATTR_CITY => 'string',
+        self::ATTR_COUNTRY => 'string',
+        self::ATTR_GENDER => 'string',
+        self::ATTR_PHONE => 'string',
+        self::ATTR_LANGUAGE => 'string',
     ];
 
     /**

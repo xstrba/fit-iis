@@ -45,10 +45,85 @@
         </div>
 
         <div class="row">
+            @include('partials.input-select', [
+                    'classes' => 'col-md-6',
+                    'name' => 'gender',
+                    'label' => __('labels.gender'),
+                    'value' => old('gender', $auth->gender),
+                    'required' => true,
+                    'options' => \App\Enums\GendersEnum::instance()->getList(),
+                ])
+            @include('partials.input-date', [
+                    'classes' => 'col-md-6',
+                    'name' => 'birth',
+                    'label' => __('labels.birth_date'),
+                    'value' => old('birth', $auth->birth->format('Y-m-d')),
+                    'required' => true,
+                ])
+        </div>
+
+        <div class="row">
+            @include('partials.input-text', [
+                'classes' => 'col-md-6',
+                'name' => 'street',
+                'label' => __('labels.street'),
+                'value' => old('street', $auth->street),
+                'required' => true,
+                'placeholder' => trans('common.eg') . ': Masarykova',
+            ])
+            @include('partials.input-text', [
+                'classes' => 'col-md-6',
+                'name' => 'house_number',
+                'label' => __('labels.house_number'),
+                'value' => old('house_number', $auth->house_number),
+                'required' => true,
+                'placeholder' => trans('common.eg') . ': 123/45',
+            ])
+        </div>
+
+        <div class="row">
+            @include('partials.input-text', [
+                'classes' => 'col-md-6',
+                'name' => 'city',
+                'label' => __('labels.city'),
+                'value' => old('city', $auth->city),
+                'required' => true,
+                'placeholder' => trans('common.eg') . ': Brno',
+            ])
+            @include('partials.input-select', [
+                    'classes' => 'col-md-6',
+                    'name' => 'country',
+                    'label' => __('labels.country'),
+                    'value' => old('country', $auth->country),
+                    'required' => true,
+                    'options' => \App\Enums\CountriesEnum::instance()->getList(app()->getLocale()),
+                ])
+        </div>
+
+        <div class="row">
+            @include('partials.input-text', [
+                'classes' => 'col-md-6',
+                'name' => 'phone',
+                'label' => __('labels.phone'),
+                'value' => old('phone', $auth->phone),
+                'required' => true,
+                'placeholder' => trans('common.eg') . ': +420 123 456 789',
+            ])
+            @include('partials.input-select', [
+                    'classes' => 'col-md-6',
+                    'name' => 'language',
+                    'label' => __('labels.preferred_language'),
+                    'value' => old('language', $auth->language),
+                    'required' => true,
+                    'options' => \App\Enums\LanguagesEnum::instance()->getList(),
+                ])
+        </div>
+
+        <div class="row">
             @include('partials.input-password', [
                 'classes' => 'col-md-6',
                 'name' => 'password',
-                'label' => __('labels.password'),
+                'label' => __('labels.new_password'),
             ])
             @include('partials.input-password', [
                 'classes' => 'col-md-6',

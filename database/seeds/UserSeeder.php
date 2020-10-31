@@ -47,6 +47,7 @@ final class UserSeeder extends \Illuminate\Database\Seeder
                 User::ATTR_NICKNAME => 'root',
                 User::ATTR_ROLE => \App\Enums\RolesEnum::ROLE_ADMINISTRATOR,
                 User::ATTR_PASSWORD => $this->hasher->make('123456'),
+                User::ATTR_BIRTH => \Carbon\Carbon::now()->subYears(40),
             ]);
         }
     }

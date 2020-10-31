@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Contracts\Repositories\UsersRepositoryInterface;
+use App\Enums\CountriesEnum;
+use App\Enums\GendersEnum;
+use App\Enums\LanguagesEnum;
 use App\Enums\RolesEnum;
 use App\Models\User;
 use App\Parents\RequestFilter;
@@ -25,6 +28,14 @@ final class UserRequestFilter extends RequestFilter
     public const FIELD_NICKNAME = User::ATTR_NICKNAME;
     public const FIELD_ROLE = User::ATTR_ROLE;
     public const FIELD_PASSWORD = User::ATTR_PASSWORD;
+    public const FIELD_BIRTH = User::ATTR_BIRTH;
+    public const FIELD_STREET = User::ATTR_STREET;
+    public const FIELD_HOUSE_NUMBER = User::ATTR_HOUSE_NUMBER;
+    public const FIELD_CITY = User::ATTR_CITY;
+    public const FIELD_COUNTRY = User::ATTR_COUNTRY;
+    public const FIELD_GENDER = User::ATTR_GENDER;
+    public const FIELD_PHONE = User::ATTR_PHONE;
+    public const FIELD_LANGUAGE = User::ATTR_LANGUAGE;
 
     /**
      * @var \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
@@ -121,13 +132,25 @@ final class UserRequestFilter extends RequestFilter
             self::FIELD_ROLE => [
                 $required,
                 'int',
-                'in:' . RolesEnum::instance()->getStringValues(),
+                RolesEnum::instance()->getValidationRule(),
             ],
             self::FIELD_PASSWORD => [
                 'nullable',
                 'string',
                 'confirmed',
             ],
+            self::FIELD_BIRTH => [
+                $required,
+                'string',
+                'date_format:Y-m-d',
+            ],
+            self::FIELD_STREET => [$required, 'string'],
+            self::FIELD_HOUSE_NUMBER => [$required, 'string'],
+            self::FIELD_CITY => [$required, 'string'],
+            self::FIELD_COUNTRY => [$required, 'string', CountriesEnum::instance()->getValidationRule()],
+            self::FIELD_GENDER => [$required, 'string', GendersEnum::instance()->getValidationRule()],
+            self::FIELD_PHONE => [$required, 'string', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10'],
+            self::FIELD_LANGUAGE => ['sometimes', 'string', LanguagesEnum::instance()->getValidationRule()],
         ];
     }
 

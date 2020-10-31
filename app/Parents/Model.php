@@ -11,15 +11,17 @@ use Illuminate\Support\Str;
  * Class Model
  *
  * @package App\Parents
- * @property int|string id
- * @property Carbon created_at
- * @property Carbon updated_at
+ * @property int|string $id
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
  */
 abstract class Model extends FWModel
 {
     public const ATTR_ID = 'id';
     public const ATTR_CREATED_AT = 'created_at';
     public const ATTR_UPDATED_AT = 'updated_at';
+    public const ATTR_DELETED_AT = 'deleted_at';
 
     /**
      * @param mixed[] $data
@@ -65,5 +67,13 @@ abstract class Model extends FWModel
     public function getUpdatedAt(): Carbon
     {
         return $this->getAttributeValue(self::ATTR_UPDATED_AT) ?: Carbon::now();
+    }
+
+    /**
+     * @return \Illuminate\Support\Carbon|null
+     */
+    public function getDeletedAt(): ?Carbon
+    {
+        return $this->getAttributeValue(self::ATTR_DELETED_AT);
     }
 }

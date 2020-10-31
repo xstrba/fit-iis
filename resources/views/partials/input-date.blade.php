@@ -4,13 +4,10 @@
  * @var string $name
  * @var string $id
  * @var string|null $description
+ * @var string|null $placeholder
  * @var string $label
- * @var mixed $value
- * @var string[] $options
+ * @var string|null $value
  */
-if (!isset($value)) {
-    $value = null;
-}
 @endphp
 
 <div class="form-group @isset($classes) {{ $classes }} @endisset">
@@ -18,14 +15,14 @@ if (!isset($value)) {
         {{ $label }}
         @isset($required) <span class="required">*</span> @endisset
     </label>
-    <select class="form-control" id="{{ $id ?? $name }}" name="{{ $name }}"
-            @isset($required) required @endisset>
-        @foreach($options as $key => $label)
-            <option value="{{ $key }}" @if($value === $key) selected @endif>
-                {{ \Illuminate\Support\Facades\Lang::has('labels.' . $label) ? trans('labels.' . $label) : $label }}
-            </option>
-        @endforeach
-    </select>
+    <input type="date"
+           class="form-control"
+           id="{{ $id ?? $name }}"
+           name="{{ $name }}"
+           aria-describedby="{{ ($id ?? $name) . 'Help' }}"
+           @isset($placeholder) placeholder="{{ $placeholder }}" @endisset
+           @isset($value) value="{{ $value }}" @endisset
+           @isset($required) required @endisset>
     @isset($description)
         <small id="{{ ($id ?? $name) . 'Help' }}" class="form-text text-muted">{{ $description }}</small>
     @endisset
