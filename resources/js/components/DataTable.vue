@@ -56,7 +56,7 @@
                  :slot="field.name"
                  slot-scope="props">
                 <slot :name="field.name" v-bind:rowData="props.rowData">
-                    {{ props.rowData[field.name] }}
+                    <span class="text-primary">{{ props.rowData[field.name] }}</span>
                 </slot>
             </template>
             <div slot="actions" slot-scope="props">
