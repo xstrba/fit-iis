@@ -8,6 +8,7 @@ use App\Http\Requests\UserRequestFilter;
 use App\Models\User;
 use App\Parents\FrontEndController;
 use App\Tables\UsersTable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
@@ -31,6 +32,8 @@ final class UserController extends FrontEndController
     }
 
     /**
+     * Get data in json response and apply filters set in request
+     *
      * @param \Illuminate\Http\Request $request
      * @param \App\Tables\UsersTable $table
      * @return \Illuminate\Http\JsonResponse
@@ -40,6 +43,15 @@ final class UserController extends FrontEndController
     {
         $this->authService->user();
         return $this->responseFactory->json($table->getData($request));
+    }
+
+    /**
+     * @param \App\Tables\UsersTable $table
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function jsonFilters(UsersTable $table): JsonResponse
+    {
+        return $this->responseFactory->json($table->getFilters());
     }
 
     /**

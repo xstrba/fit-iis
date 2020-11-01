@@ -136,6 +136,7 @@ export default {
 
             searchValue: null,
             dataApiUrl: this.$props.apiUrl,
+            filters: [],
             selectedFilters: {},
         };
     },
@@ -146,15 +147,15 @@ export default {
             required: true,
         },
 
+        filtersUrl: {
+            type: [String, null],
+            required: false,
+            default: null,
+        },
+
         fields: {
             type: Array,
             required: true,
-        },
-
-        filters: {
-            type: Array,
-            required: false,
-            default: true,
         },
     },
 
@@ -164,10 +165,14 @@ export default {
     },
 
     created() {
-        this.$props.filters.forEach((filter) => {
-            console.log(filter);
-            this.selectedFilters[filter.key] = filter.multiple ? [] : filter.options[0].value;
-        });
+        if (this.$props.filtersUrl) {
+            axios.post(this.$props.filtersUrl).then((response) => {
+                this.filters = response.data;
+                this.filters.forEach((filter) => {
+                    this.selectedFilters[filter.key] = filter.multiple ? [] : filter.options[0].value;
+                });
+            });
+        }
     },
 
     methods: {
@@ -180,7 +185,8 @@ export default {
         // call "changePage" method in Vuetable, so that that page will be
         // requested from the API endpoint.
         onChangePage(page) {
-            this.$refs.vuetable.changePage(page)
+            this.$refs.vuetable.changePage(page);
+            this.getFilters();
         },
 
         search() {
@@ -190,6 +196,7 @@ export default {
 
         reloadData() {
             this.$refs.vuetable.reload();
+            this.getFilters();
         },
 
         deleteItem(url) {
@@ -247,6 +254,25 @@ export default {
         filtersChanged() {
             this.setApiUrl();
             this.onChangePage(1);
+        },
+
+        getFilters() {
+            if (this.$props.filtersUrl) {
+                axios.post(this.$props.filtersUrl).then((response) => {
+                    this.filters = response.data;
+                    this.filters.forEach((filter) => {
+                        if (this.selectedFilters[filter.key] === undefined) {
+                            this.selectedFilters[filter.key] = filter.multiple ? [] : filter.options[0].value;
+                        } else if (!(this.selectedFilters[filter.key] instanceof Array)) {
+                            const optionIndex = filter.options.findIndex(x => x.value === this.selectedFilters[filter.key]);
+                            if (optionIndex < 0) {
+                                this.selectedFilters[filter.key] = filter.multiple ? [] : filter.options[0].value;
+                                this.filtersChanged();
+                            }
+                        }
+                    });
+                });
+            }
         },
     },
 }
