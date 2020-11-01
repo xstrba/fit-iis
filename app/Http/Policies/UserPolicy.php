@@ -46,10 +46,9 @@ final class UserPolicy extends Policy
      * @param \App\Models\User $user
      * @param \App\Models\User $user2
      * @return bool
-     * @noinspection PhpUnusedParameterInspection
      */
     public function delete(User $user, User $user2): bool
     {
-        return $user->role === RolesEnum::ROLE_ADMINISTRATOR;
+        return $user->role === RolesEnum::ROLE_ADMINISTRATOR && $user2->isNot($user);
     }
 }

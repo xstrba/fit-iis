@@ -19,6 +19,9 @@
         <data-table :fields="{{ $table->getColumnsJson() }}"
                     api-url="{{ $table->getBaseApiUrl() }}"
                     filters-url="{{ route('users.json.filters') }}">
+            <template slot="email" slot-scope="{rowData}">
+                <a class="text-info" :href="`mailto:${rowData.email}`">@{{ rowData.email }}</a>
+            </template>
         </data-table>
     </div>
 @endsection

@@ -5,6 +5,7 @@
     background-color: $white;
     display: flex;
     align-items: center;
+    height: 50px;
 
     .sidebar-collapse-button {
         background-color: $midBlue;
@@ -12,9 +13,18 @@
         border-top-left-radius: 0;
         padding: 0.6rem;
         color: white;
+        width: 50px;
+        height: 50px;
+        -webkit-filter: brightness(1);
+        filter: brightness(1);
 
         &:focus {
             outline: none;
+        }
+
+        &:hover {
+            -webkit-filter: brightness(0.9);
+            filter: brightness(0.9);
         }
     }
 }

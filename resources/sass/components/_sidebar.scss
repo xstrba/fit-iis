@@ -1,10 +1,18 @@
 #sidebar-wrapper {
-    width: 180px;
-    padding: 2rem 0;
+    min-width: 180px;
+    padding: 50px 0;
     min-height: 100vh;
     position: sticky;
     z-index: 99;
     background: $darkBlue;
+
+    @media screen and (max-width: $bp-md) {
+        position: fixed;
+        top: 50px;
+        width: 100%;
+        text-align: center;
+        padding: 2rem 2rem;
+    }
 
     .sidebar-heading {
         padding: 0.75rem 1.25rem;

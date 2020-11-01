@@ -154,11 +154,9 @@ final class UserController extends FrontEndController
         UsersRepositoryInterface $usersRepository,
         int $id
     ): \Illuminate\Http\RedirectResponse {
-        /** @var \App\Models\User $user */
-        $user = $usersRepository->query()->getById($id);
+        $user = $usersRepository->get($id);
         $this->authorize(PermissionsEnum::EDIT, $user);
         $usersRepository->update($userRequestFilter->validated($request, $user), $user);
-
         $this->notify->success($this->translator->get('messages.users.updated'));
         return $this->back();
     }

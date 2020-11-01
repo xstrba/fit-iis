@@ -5,8 +5,6 @@ namespace App\Tables;
 use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\PermissionsEnum;
 use App\Models\User;
-use App\Parents\Model;
-use App\Parents\QueryBuilder;
 use App\Parents\Table;
 use App\Queries\UsersQueryBuilder;
 use App\Services\AuthService;
@@ -108,6 +106,12 @@ final class UsersTable extends Table
     protected function initializeColumns(): void
     {
         $this->addColumn(
+            Column::init(User::ATTR_NICKNAME, $this->translator->get('labels.' . User::ATTR_NICKNAME))
+                ->sortable()
+                ->searchable()
+        );
+
+        $this->addColumn(
             Column::init(User::ATTR_FIRST_NAME, $this->translator->get('labels.' . User::ATTR_FIRST_NAME))
                 ->sortable()
                 ->searchable()
@@ -115,12 +119,6 @@ final class UsersTable extends Table
 
         $this->addColumn(
             Column::init(User::ATTR_LAST_NAME, $this->translator->get('labels.' . User::ATTR_LAST_NAME))
-                ->sortable()
-                ->searchable()
-        );
-
-        $this->addColumn(
-            Column::init(User::ATTR_NICKNAME, $this->translator->get('labels.' . User::ATTR_NICKNAME))
                 ->sortable()
                 ->searchable()
         );
@@ -134,12 +132,14 @@ final class UsersTable extends Table
         $this->addColumn(
             Column::init(User::ATTR_BIRTH, $this->translator->get('labels.' . 'birth_date'))
                 ->sortable()
+                ->width("150px")
         );
 
         $this->addColumn(
             Column::init(User::ATTR_CREATED_AT, $this->translator->get('labels.' . User::ATTR_CREATED_AT))
                 ->sortable()
                 ->right()
+                ->width("200px")
         );
 
         $this->addActionsColumn();
@@ -151,6 +151,7 @@ final class UsersTable extends Table
     protected function initializeFilters(): void
     {
         $itemsFilter = new Filter('filter_items', '');
+
         $options = [FilterOption::init(null, $this->translator->get('labels.all_items'))];
         if ($this->usersRepository->query()->whereNotNull(User::ATTR_DELETED_AT)->count()) {
             $options[] = FilterOption::init('deleted', $this->translator->get('labels.deleted'));

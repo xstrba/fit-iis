@@ -11,7 +11,10 @@
                                     :multiple="filter.multiple"
                                     v-model="selectedFilters[filter.key]"
                                     @change="filtersChanged">
-                                <option v-for="option in filter.options" :value="option.value">{{ option.label }}</option>
+                                <option v-for="option in filter.options" :value="option.value">{{
+                                        option.label
+                                    }}
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -29,7 +32,8 @@
                                    placeholder="Hledej..."
                                    v-model="searchValue">
                             <div class="input-group-prepend">
-                                <div class="input-group-text cursor-pointer" @click="search"><i class="fas fa-search"></i>
+                                <div class="input-group-text cursor-pointer" @click="search"><i
+                                    class="fas fa-search"></i>
                                 </div>
                             </div>
                         </div>
@@ -47,6 +51,14 @@
                   :multi-sort="true"
                   multi-sort-key="ctrl"
                   @vuetable:pagination-data="onPaginationData">
+            <template v-for="field in fields"
+                 v-if="field.name !== 'actions'"
+                 :slot="field.name"
+                 slot-scope="props">
+                <slot :name="field.name" v-bind:rowData="props.rowData">
+                    {{ props.rowData[field.name] }}
+                </slot>
+            </template>
             <div slot="actions" slot-scope="props">
                 <div class="btn-group">
                     <button type="button"
@@ -99,7 +111,7 @@ export default {
         return {
             css: {
                 table: {
-                    tableWrapper: 'table-responsive-lg',
+                    tableWrapper: 'table-responsive',
                     tableHeaderClass: 'mb-0 thead-dark',
                     tableBodyClass: 'mb-0',
                     tableClass: 'table table-striped table-hover',
