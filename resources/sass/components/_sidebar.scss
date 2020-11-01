@@ -1,46 +1,68 @@
 #sidebar-wrapper {
     min-width: 180px;
-    padding: 50px 0;
-    min-height: 100vh;
-    position: sticky;
+    position: relative;
     z-index: 99;
-    background: $darkBlue;
 
     @media screen and (max-width: $bp-md) {
-        position: fixed;
+        position: absolute;
         top: 50px;
-        width: 100%;
-        text-align: center;
-        padding: 2rem 2rem;
+        min-width: 100%;
+        min-height: calc(100% - 50px);
+        background: $darkBlue;
     }
 
-    .sidebar-heading {
-        padding: 0.75rem 1.25rem;
-        color: $white;
-        text-decoration: none;
+    .sidebar-placeholder {
+        position: static;
+        min-height: 100%;
+
+        @media screen and (max-width: $bp-md) {
+            display: none;
+        }
     }
 
-    a {
-        text-decoration: none!important;
-    }
+    .sidebar {
+        position: fixed;
+        top: 0;
+        background: $darkBlue;
+        min-width: inherit;
+        height: 100vh;
+        padding: 50px 0;
 
-    .list-group-item {
-        background: none;
-        color: $white;
-        border-color: $brightCyan;
-    }
+        @media screen and (max-width: $bp-md) {
+            position: relative;
+            width: 100%;
+            text-align: center;
+            padding: 2rem 2rem;
+            height: unset;
+        }
 
-    .list-group-item:hover {
-        background: $midBlue;
-    }
+        .sidebar-heading {
+            padding: 0.75rem 1.25rem;
+            color: $white;
+            text-decoration: none;
+        }
 
-    ion-icon {
-        font-size: 20px;
-        vertical-align: text-top;
+        a {
+            text-decoration: none!important;
+        }
+
+        .list-group-item {
+            background: none;
+            color: $white;
+            border-color: $brightCyan;
+        }
+
+        .list-group-item:hover {
+            background: $midBlue;
+        }
+
+        ion-icon {
+            font-size: 20px;
+            vertical-align: text-top;
+        }
     }
 }
 
 #sidebar-wrapper.collapsing {
-    min-height: 100vh;
-    height: unset !important;
+    display: none;
 }

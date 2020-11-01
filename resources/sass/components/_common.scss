@@ -3,9 +3,24 @@ body {
     font-family: $font-family-archivo;
 }
 
+#wrapper {
+    display: flex;
+
+    @media screen and (max-width: $bp-md) {
+        display: block;
+        position: relative;
+    }
+}
+
 main {
     flex-grow: 1;
     width: 0;
+    //height: 100000px;
+
+    @media screen and (max-width: $bp-md) {
+        flex-grow: unset;
+        width: 100%;
+    }
 }
 
 .page-title {

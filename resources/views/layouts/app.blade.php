@@ -27,26 +27,13 @@
 </head>
 <body>
 <div id="app">
-    <div class="d-flex" id="wrapper">
+    <div id="wrapper">
         @auth
             @include('partials._sidebar')
         @endauth
 
         <main>
-            <div id="topbar">
-                <button class="navbar-toggler sidebar-collapse-button"
-                        type="button"
-                        data-toggle="collapse"
-                        data-target="#sidebar-wrapper"
-                        aria-controls="sidebar-wrapper"
-                        aria-expanded="true"
-                        aria-label="Toggle sidebar">
-                    <i class="fas fa-bars"></i>
-                </button>
-                @auth
-                    <span class="ml-5">{{ $auth->nickname }} - {{ __('roles.' . $auth->role) }}</span>
-                @endauth
-            </div>
+            @include('partials._topbar')
             <div class="pt-5">
                 <div class="main-content py-5 px-4">
                     <h2 class="h2 page-title">{{ $title ?? __('pages.dashboard') }}</h2>
@@ -61,6 +48,11 @@
 @include('notify::messages')
 
 @stack('scripts')
+<script>
+    if (window.innerWidth > 768) {
+        document.getElementById('sidebar-wrapper').classList.add('show');
+    }
+</script>
 @notifyJs
 <!-- Icons -->
 <script type="module" src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.esm.js"></script>

@@ -7,6 +7,10 @@
     align-items: center;
     height: 50px;
 
+    @media screen and (max-width: $bp-md) {
+        position: relative;
+    }
+
     .sidebar-collapse-button {
         background-color: $midBlue;
         border-bottom-left-radius: 0;
