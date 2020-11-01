@@ -41,7 +41,7 @@
                         aria-controls="sidebar-wrapper"
                         aria-expanded="true"
                         aria-label="Toggle sidebar">
-                    <ion-icon name="menu"></ion-icon>
+                    <i class="fas fa-bars"></i>
                 </button>
                 @auth
                     <span class="ml-5">{{ $auth->nickname }} - {{ __('roles.' . $auth->role) }}</span>
@@ -63,6 +63,6 @@
 @stack('scripts')
 @notifyJs
 <!-- Icons -->
-<script src="https://unpkg.com/ionicons@5.2.3/dist/ionicons.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@5.2.3/dist/ionicons/ionicons.esm.js"></script>
 </body>
 </html>

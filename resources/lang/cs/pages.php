@@ -5,6 +5,8 @@ return [
     'profile' => 'Profil',
     'users' => [
         'index' => 'Uživatelé',
-        'new' => 'Nový uživatel',
+        'create' => 'Nový uživatel',
+        'edit' => 'Editace uživatele :user',
+        'detail' => 'Profil uživatele :user',
     ],
 ];

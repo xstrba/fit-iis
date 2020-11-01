@@ -22,7 +22,7 @@ if (!isset($value)) {
             @isset($required) required @endisset>
         @foreach($options as $key => $label)
             <option value="{{ $key }}" @if($value === $key) selected @endif>
-                {{ $label }}
+                {{ \Illuminate\Support\Facades\Lang::has('labels.' . $label) ? trans('labels.' . $label) : $label }}
             </option>
         @endforeach
     </select>

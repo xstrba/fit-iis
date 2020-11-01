@@ -94,11 +94,12 @@ abstract class FrontEndController extends Controller
      * Set title of page
      *
      * @param string $title
+     * @param array|string[] $replace
      * @return void
      */
-    protected function setTitle(string $title): void
+    protected function setTitle(string $title, array $replace = []): void
     {
-        $this->title = $this->translator->get($title);
+        $this->title = $this->translator->get($title, $replace);
     }
 
     /**

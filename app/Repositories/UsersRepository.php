@@ -4,7 +4,9 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Models\User;
+use App\Parents\Model;
 use App\Queries\UsersQueryBuilder;
+use Highlight\Mode;
 use Illuminate\Support\Collection;
 
 /**
@@ -65,7 +67,20 @@ final class UsersRepository implements UsersRepositoryInterface
      */
     public function delete(User $user): void
     {
-        $user->delete();
+        if ($user->deleted_at) {
+            $user->forceDelete();
+        } else {
+            $user->delete();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function restore(User $user): void
+    {
+        $user->restore();
+        $this->save($user);
     }
 
     /**
@@ -93,6 +108,6 @@ final class UsersRepository implements UsersRepositoryInterface
      */
     public function query(): UsersQueryBuilder
     {
-        return new UsersQueryBuilder(new User());
+        return (new UsersQueryBuilder(new User()));
     }
 }

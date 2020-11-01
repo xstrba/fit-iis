@@ -10,3 +10,10 @@ main {
 .page-title {
     border-bottom: 2px solid $red;
 }
+
+.table-search-container {
+    bottom: 0;
+    right: 0;
+    padding: inherit;
+    width: 65%;
+}

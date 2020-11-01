@@ -66,6 +66,11 @@ interface UsersRepositoryInterface
     public function delete(User $user): void;
 
     /**
+     * @param \App\Models\User $user
+     */
+    public function restore(User $user): void;
+
+    /**
      * Find item by email
      *
      * @param string $email

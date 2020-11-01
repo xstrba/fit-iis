@@ -25,7 +25,16 @@ final class CreateUsersTable extends Migration
             $table->integer('role')->default(\App\Enums\RolesEnum::ROLE_STUDENT);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->date('birth');
+            $table->string('street')->nullable();
+            $table->string('house_number')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country', 2)->default('CZ');
+            $table->string('gender', 6)->default(\App\Enums\GendersEnum::MALE);
+            $table->string('phone')->nullable();
+            $table->string('language', 2)->default(\App\Enums\LanguagesEnum::CZ);
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

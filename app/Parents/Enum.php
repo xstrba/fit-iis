@@ -34,13 +34,30 @@ class Enum
     }
 
     /**
+     * @return mixed[]
+     */
+    public function getList(): array
+    {
+        $values = $this->getValues();
+        return \array_combine($values, $values);
+    }
+
+    /**
      * Get valid values of model in string for validation
      *
      * @return string
      */
     public function getStringValues(): string
     {
-        return \implode(',', $this->values);
+        return \implode(',', $this->getValues());
+    }
+
+    /**
+     * @return string
+     */
+    public function getValidationRule(): string
+    {
+        return 'in:' . $this->getStringValues();
     }
 
     /**
@@ -50,6 +67,6 @@ class Enum
      */
     public static function instance(): Enum
     {
-        return new self();
+        return new static();
     }
 }

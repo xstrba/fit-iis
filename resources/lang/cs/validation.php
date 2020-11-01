@@ -152,6 +152,16 @@ return [
         'email' => 'e-mail',
         'nickname' => 'přihlašovací jméno',
         'password' => 'heslo',
+        'new_password' => 'nové heslo',
+        'role' => 'role',
+        'gender' => 'pohlaví',
+        'birth_date' => 'datum narodení',
+        'street' => 'ulice',
+        'house_number' => 'čislo domu',
+        'city' => 'město',
+        'country' => 'stát',
+        'phone' => 'telefonní čislo',
+        'preferred_language' => 'preferovaný jazyk',
     ],
 
 ];

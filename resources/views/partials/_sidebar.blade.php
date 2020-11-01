@@ -5,7 +5,7 @@
         </h1>
     </a>
     <div class="list-group list-group-flush">
-        <a href="#" class="list-group-item list-group-item-action">
+        <a href="{{ route('users.index') }}" class="list-group-item list-group-item-action">
             <ion-icon name="people-outline"></ion-icon>
             Users
         </a>
