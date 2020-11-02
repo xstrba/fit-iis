@@ -52,13 +52,22 @@
             border-color: $brightCyan;
         }
 
+        .list-group-item.active {
+            background: darken($midBlue, 10%);
+        }
+
         .list-group-item:hover {
             background: $midBlue;
         }
 
-        ion-icon {
-            font-size: 20px;
-            vertical-align: text-top;
+        .sidebar-icon {
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .sidebar-text {
+            vertical-align: middle;
         }
     }
 }

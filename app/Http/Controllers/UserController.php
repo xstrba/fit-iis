@@ -7,6 +7,7 @@ use App\Enums\PermissionsEnum;
 use App\Http\Requests\UserRequestFilter;
 use App\Models\User;
 use App\Parents\FrontEndController;
+use App\Services\SidebarService;
 use App\Tables\UsersTable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,6 +19,11 @@ use Illuminate\Http\Request;
  */
 final class UserController extends FrontEndController
 {
+    /**
+     * @var string|null $activeItem
+     */
+    protected ?string $activeItem = SidebarService::ITEM_USERS;
+
     /**
      * Display a listing of the resource.
      *
@@ -61,6 +67,7 @@ final class UserController extends FrontEndController
     public function profile(): \Illuminate\Contracts\View\View
     {
         $this->setTitle('pages.profile');
+        $this->setActiveItem(SidebarService::ITEM_PROFILE);
         return $this->view('app.users.profile');
     }
 

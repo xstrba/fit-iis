@@ -3,7 +3,7 @@
         <div class="row mb-2">
             <div class="col-lg-8">
                 <div class="row">
-                    <div v-for="(filter, index) in filters" class="col-12 col-md-4" :key="`filter-${index}`">
+                    <div v-for="(filter, index) in filters" class="col-12 col-md-6 col-xl-4" :key="`filter-${index}`">
                         <div class="form-group mb-0">
                             <label :for="`filterSelect-${filter.key}`">{{ filter.label }}</label>
                             <select class="form-control"
@@ -18,26 +18,27 @@
                             </select>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-4 d-flex justify-content-end flex-column align-items-end">
-                <div class="col-lg-10 p-0">
-                    <label></label>
-                    <form @submit.prevent="search">
-                        <label class="sr-only" for="searchInput">Hledat</label>
-                        <div class="input-group mr-sm-2">
-                            <input type="text"
-                                   class="form-control"
-                                   id="searchInput"
-                                   placeholder="Hledej..."
-                                   v-model="searchValue">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text cursor-pointer" @click="search"><i
-                                    class="fas fa-search"></i>
+
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <label></label>
+                        <form @submit.prevent="search">
+                            <label class="sr-only" for="searchInput">Hledat</label>
+                            <div class="input-group mr-sm-2">
+                                <input type="text"
+                                       class="form-control"
+                                       id="searchInput"
+                                       placeholder="Hledej..."
+                                       v-model="searchValue"
+                                       autocomplete="off"
+                                       autocapitalize="off">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text cursor-pointer" @click="search"><i
+                                        class="fas fa-search"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
