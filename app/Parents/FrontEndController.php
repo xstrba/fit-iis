@@ -3,6 +3,7 @@
 namespace App\Parents;
 
 use App\Services\AuthService;
+use App\Services\SidebarService;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Routing\UrlGenerator;
@@ -23,6 +24,11 @@ abstract class FrontEndController extends Controller
      * @var string|null $title
      */
     protected ?string $title = null;
+
+    /**
+     * @var string|null $activeItem
+     */
+    protected ?string $activeItem = null;
 
     /**
      * @var \Illuminate\Contracts\View\Factory $viewFactory
@@ -60,6 +66,11 @@ abstract class FrontEndController extends Controller
     protected AuthService $authService;
 
     /**
+     * @var \App\Services\SidebarService $sidebarService
+     */
+    protected SidebarService $sidebarService;
+
+    /**
      * FrontEndController constructor.
      *
      * @param \Illuminate\Contracts\View\Factory $viewFactory
@@ -69,15 +80,17 @@ abstract class FrontEndController extends Controller
      * @param \Mckenziearts\Notify\LaravelNotify $notify
      * @param \Illuminate\Contracts\Config\Repository $config
      * @param \App\Services\AuthService $authService
+     * @param \App\Services\SidebarService $sidebarService
      */
     public function __construct(
-        \Illuminate\Contracts\View\Factory $viewFactory,
-        \Illuminate\Contracts\Routing\ResponseFactory $responseFactory,
-        \Illuminate\Contracts\Routing\UrlGenerator $urlGenerator,
-        \Illuminate\Contracts\Translation\Translator $translator,
-        \Mckenziearts\Notify\LaravelNotify $notify,
-        \Illuminate\Contracts\Config\Repository $config,
-        \App\Services\AuthService $authService
+        Factory $viewFactory,
+        ResponseFactory $responseFactory,
+        UrlGenerator $urlGenerator,
+        Translator $translator,
+        LaravelNotify $notify,
+        Repository $config,
+        AuthService $authService,
+        SidebarService $sidebarService
     ) {
         $this->viewFactory = $viewFactory;
         $this->responseFactory = $responseFactory;
@@ -86,6 +99,7 @@ abstract class FrontEndController extends Controller
         $this->notify = $notify;
         $this->config = $config;
         $this->authService = $authService;
+        $this->sidebarService = $sidebarService;
 
         $this->initMiddleware();
     }
@@ -100,6 +114,14 @@ abstract class FrontEndController extends Controller
     protected function setTitle(string $title, array $replace = []): void
     {
         $this->title = $this->translator->get($title, $replace);
+    }
+
+    /**
+     * @param string|null $activeItem
+     */
+    public function setActiveItem(?string $activeItem): void
+    {
+        $this->activeItem = $activeItem;
     }
 
     /**
@@ -145,6 +167,7 @@ abstract class FrontEndController extends Controller
         return [
             'title' => $this->title,
             'auth' => $this->authService->user(),
+            'sidebar' => $this->sidebarService->getSidebar($this->activeItem),
         ];
     }
 }

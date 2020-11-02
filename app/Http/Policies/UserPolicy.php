@@ -24,31 +24,39 @@ final class UserPolicy extends Policy
 
     /**
      * @param \App\Models\User $user
-     * @param \App\Models\User $user2
+     * @param \App\Models\User|null $user2
      * @return bool
      */
-    public function show(User $user, User $user2): bool
+    public function show(User $user, ?User $user2 = null): bool
     {
         return true;
     }
 
     /**
      * @param \App\Models\User $user
-     * @param \App\Models\User $user2
+     * @param \App\Models\User|null $user2
      * @return bool
      */
-    public function edit(User $user, User $user2): bool
+    public function edit(User $user, ?User $user2 = null): bool
     {
+        if (!$user2) {
+            return $user->role === RolesEnum::ROLE_ADMINISTRATOR;
+        }
+
         return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $user->is($user2);
     }
 
     /**
      * @param \App\Models\User $user
-     * @param \App\Models\User $user2
+     * @param \App\Models\User|null $user2
      * @return bool
      */
-    public function delete(User $user, User $user2): bool
+    public function delete(User $user, ?User $user2 = null): bool
     {
+        if (!$user2) {
+            return $user->role === RolesEnum::ROLE_ADMINISTRATOR;
+        }
+
         return $user->role === RolesEnum::ROLE_ADMINISTRATOR && $user2->isNot($user);
     }
 }
