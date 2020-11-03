@@ -27,6 +27,8 @@ abstract class Model extends FWModel
     public const ATTR_DELETED_AT = 'deleted_at';
 
     /**
+     * Fill model with given values
+     *
      * @param mixed[] $data
      * @return void
      */
