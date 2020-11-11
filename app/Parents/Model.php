@@ -51,6 +51,14 @@ abstract class Model extends FWModel
     }
 
     /**
+     * @return string
+     */
+    public static function table(): string
+    {
+        return (new static())->getTable();
+    }
+
+    /**
      * @return string|int|null
      */
     public function getId()

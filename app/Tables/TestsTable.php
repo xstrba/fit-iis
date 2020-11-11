@@ -5,6 +5,7 @@ namespace App\Tables;
 use App\Contracts\Repositories\TestsRepositoryInterface;
 use App\Enums\PermissionsEnum;
 use App\Models\Test;
+use App\Models\User;
 use App\Parents\Table;
 use App\Queries\TestsQueryBuilder;
 use App\Services\AuthService;
@@ -118,16 +119,25 @@ final class TestsTable extends Table
         );
 
         $this->addColumn(
-            Column::init(Test::ATTR_START_DATE, $this->translator->get('labels.' . Test::ATTR_START_DATE))
+            Column::init(Test::RELATION_PROFESSOR, $this->translator->get('labels.' . Test::RELATION_PROFESSOR))
+        );
+
+        $this->addColumn(
+            Column::init(Test::RELATION_ASSISTANT, $this->translator->get('labels.' . Test::RELATION_ASSISTANT))
+        );
+
+        $this->addColumn(
+            Column::init(Test::ATTR_START_DATE, $this->translator->get('labels.' . 'start'))
                 ->sortable()
-                ->searchable()
+                ->right()
+                ->width("180px")
         );
 
         $this->addColumn(
             Column::init(Test::ATTR_CREATED_AT, $this->translator->get('labels.' . Test::ATTR_CREATED_AT))
                 ->sortable()
                 ->right()
-                ->width("200px")
+                ->width("180px")
         );
 
         $this->addActionsColumn();
@@ -152,6 +162,29 @@ final class TestsTable extends Table
 
             return $query->whereNull(Test::ATTR_DELETED_AT);
         });
+
+        // subjects filter
+        $subjectsFilter = new Filter('filter_subjects', 'filter_subjects');
+        $subjectsFilter->setMultiple();
+
+        $subjectOptions = [];
+        $subjects = $this->testsRepository->query()
+            ->select(Test::ATTR_SUBJECT)
+            ->distinct()
+            ->get()
+            ->pluck(Test::ATTR_SUBJECT)
+            ->toArray();
+        foreach ($subjects as $subject) {
+            $subjectOptions[] = FilterOption::init($subject, $subject);
+        }
+        $subjectsFilter->addOptions($subjectOptions);
+        $this->addFilter($subjectsFilter, static function (TestsQueryBuilder $query, ?string $value = null): TestsQueryBuilder {
+            if ($value) {
+                return $query->whereIn(Test::ATTR_SUBJECT, \explode(self::QUERY_FILTER_VALUE_DELIMITER, $value));
+            }
+
+            return $query;
+        });
     }
 
     /**
@@ -163,6 +196,9 @@ final class TestsTable extends Table
         return \array_merge($test->toArray(), [
             Test::ATTR_CREATED_AT => $test->created_at->format('d. m. Y H:i:s'),
             self::FIELD_ACTIONS => $this->getActions($test),
+            Test::ATTR_START_DATE => $test->start_date->format('d. m. Y H:i:s'),
+            Test::RELATION_PROFESSOR => $test->professor->name,
+            Test::RELATION_ASSISTANT => optional($test->assistant)->name,
         ]);
     }
 

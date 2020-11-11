@@ -6,7 +6,20 @@
                     <div v-for="(filter, index) in filters" class="col-12 col-md-6 col-xl-4" :key="`filter-${index}`">
                         <div class="form-group mb-0">
                             <label :for="`filterSelect-${filter.key}`">{{ filter.label }}</label>
-                            <select class="form-control"
+                            <multiselect v-if="filter.multiple"
+                                         v-model="selectedFilters[filter.key]"
+                                         :options="filter.options"
+                                         label="label"
+                                         track-by="value"
+                                         :multiple="true"
+                                         :close-on-select="false"
+                                         :taggable="true"
+                                         @input="filtersChanged"
+                                         tag-placeholder="">
+                            </multiselect>
+
+                            <select v-else
+                                    class="form-control"
                                     :id="`filterSelect-${filter.key}`"
                                     :multiple="filter.multiple"
                                     v-model="selectedFilters[filter.key]"
@@ -106,6 +119,7 @@
 <script>
 import Vuetable from 'vuetable-2';
 import VuetableBootstrapPagination from "./VuetableBootstrapPagination";
+import Multiselect from 'vue-multiselect';
 
 export default {
     data() {
@@ -151,6 +165,11 @@ export default {
             dataApiUrl: this.$props.apiUrl,
             filters: [],
             selectedFilters: {},
+            options: [
+                {key: 2, value: 'Asd'},
+                {key: 3, value: 'Fdf'},
+            ],
+            value: null,
         };
     },
 
@@ -175,6 +194,7 @@ export default {
     components: {
         Vuetable,
         VuetableBootstrapPagination,
+        Multiselect,
     },
 
     created() {
@@ -242,7 +262,8 @@ export default {
             Object.keys(this.selectedFilters).forEach((filterKey) => {
                 let value = null;
                 if ((this.selectedFilters[filterKey] instanceof Array) && this.selectedFilters[filterKey].length) {
-                    value = this.selectedFilters[filterKey].join('|');
+                    console.log(this.selectedFilters[filterKey].map(x => x.value));
+                    value = this.selectedFilters[filterKey].map(x => x.value).join('|');
                 } else {
                     value = this.selectedFilters[filterKey];
                 }
@@ -290,6 +311,8 @@ export default {
     },
 }
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style scoped>
 

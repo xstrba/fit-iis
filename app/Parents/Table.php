@@ -299,10 +299,8 @@ abstract class Table
         foreach ($this->filterFunctions as $filterKey => $filterFunction) {
             $requestValue = $request->input($filterKey, null);
 
-            if ($requestValue !== null ) {
-                if (\strpos(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue)) {
-                    $requestValue = \explode(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue);
-                }
+            if (($requestValue !== null) && \strpos(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue)) {
+                $requestValue = \explode(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue);
             }
 
             $filterFunction($query, $requestValue);

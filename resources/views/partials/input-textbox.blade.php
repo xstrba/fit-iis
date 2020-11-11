@@ -8,7 +8,6 @@
  * @var string $label
  * @var string|null $value
  * @var string $pattern
- * @var string $autocomplete
  */
 @endphp
 
@@ -17,16 +16,15 @@
         {{ $label }}
         @isset($required) <span class="required">*</span> @endisset
     </label>
-    <input type="text"
-           class="form-control"
+    <textarea class="form-control"
            id="{{ $id ?? $name }}"
            name="{{ $name }}"
            aria-describedby="{{ ($id ?? $name) . 'Help' }}"
            @isset($placeholder) placeholder="{{ $placeholder }}" @endisset
            @isset($value) value="{{ $value }}" @endisset
            @isset($required) required @endisset
-           @isset($pattern) pattern="{{ $pattern }}" @endisset
-           @isset($autocomplete) autocomplete="{{ $autocomplete }}" @endisset>
+           @isset($pattern) pattern="{{ $pattern }}" @endisset>
+    </textarea>
     @isset($description)
         <small id="{{ ($id ?? $name) . 'Help' }}" class="form-text text-muted">{{ $description }}</small>
     @endisset

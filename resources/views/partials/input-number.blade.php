@@ -7,8 +7,8 @@
  * @var string|null $placeholder
  * @var string $label
  * @var string|null $value
- * @var string $pattern
- * @var string $autocomplete
+ * @var int $min
+ * @var int $max
  */
 @endphp
 
@@ -17,7 +17,7 @@
         {{ $label }}
         @isset($required) <span class="required">*</span> @endisset
     </label>
-    <input type="text"
+    <input type="number"
            class="form-control"
            id="{{ $id ?? $name }}"
            name="{{ $name }}"
@@ -25,8 +25,8 @@
            @isset($placeholder) placeholder="{{ $placeholder }}" @endisset
            @isset($value) value="{{ $value }}" @endisset
            @isset($required) required @endisset
-           @isset($pattern) pattern="{{ $pattern }}" @endisset
-           @isset($autocomplete) autocomplete="{{ $autocomplete }}" @endisset>
+           @isset($min) min="{{ $min }}" @endisset
+           @isset($max) max="{{ $max }}" @endisset>
     @isset($description)
         <small id="{{ ($id ?? $name) . 'Help' }}" class="form-text text-muted">{{ $description }}</small>
     @endisset

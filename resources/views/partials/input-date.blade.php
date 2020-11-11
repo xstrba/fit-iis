@@ -7,7 +7,9 @@
  * @var string|null $placeholder
  * @var string $label
  * @var string|null $value
+ * @var bool $time
  */
+$time = $time ?? false;
 @endphp
 
 <div class="form-group @isset($classes) {{ $classes }} @endisset">
@@ -15,7 +17,7 @@
         {{ $label }}
         @isset($required) <span class="required">*</span> @endisset
     </label>
-    <input type="date"
+    <input @if($time) type="datetime-local" @else type="date" @endif
            class="form-control"
            id="{{ $id ?? $name }}"
            name="{{ $name }}"

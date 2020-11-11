@@ -28,6 +28,16 @@ return [
     'name' => 'Jméno',
     'address' => 'Adresa',
     'username' => 'Uživatelské jméno',
+    'subject' => 'Předmět',
+    'title' => 'Název',
+    'description' => 'Popisek',
+    'configuration' => 'Konfigurace',
+    'start' => 'Začátek',
+    'time_limit' => 'Časový limit',
+    'minutes' => 'Minuty',
+    'questions_number' => 'Počet otázek',
+    'professor' => 'Profesor',
+    'assistant' => 'Asistent',
 
     // genders enum
     'male' => 'Muž',
