@@ -9,7 +9,6 @@ use App\Queries\TestsQueryBuilder;
  * Class Test
  *
  * @property int $professor_id
- * @property int|null $assistant_id
  * @property string $subject
  * @property string $name
  * @property string|null $description
@@ -17,13 +16,12 @@ use App\Queries\TestsQueryBuilder;
  * @property int $time_limit
  * @property int $questions_number
  * @property \App\Models\User $professor
- * @property \App\Models\User|null $assistant
+ * @property \Illuminate\Support\Collection|\App\Models\User[] $assistants
  * @package App\Models
  */
 final class Test extends Model
 {
     public const ATTR_PROFESSOR_ID = 'professor_id';
-    public const ATTR_ASSISTANT_ID = 'assistant_id';
     public const ATTR_SUBJECT = 'subject';
     public const ATTR_NAME = 'name';
     public const ATTR_DESCRIPTION = 'description';
@@ -32,14 +30,13 @@ final class Test extends Model
     public const ATTR_QUESTIONS_NUMBER = 'questions_number';
 
     public const RELATION_PROFESSOR = 'professor';
-    public const RELATION_ASSISTANT = 'assistant';
+    public const RELATION_ASSISTANTS = 'assistants';
 
     /**
      * @var string[] $fillable
      */
     protected $fillable = [
         self::ATTR_PROFESSOR_ID,
-        self::ATTR_ASSISTANT_ID,
         self::ATTR_SUBJECT,
         self::ATTR_NAME,
         self::ATTR_DESCRIPTION,
@@ -53,7 +50,6 @@ final class Test extends Model
      */
     protected $casts = [
         self::ATTR_PROFESSOR_ID => 'int',
-        self::ATTR_ASSISTANT_ID => 'int',
         self::ATTR_SUBJECT => 'string',
         self::ATTR_NAME => 'string',
         self::ATTR_DESCRIPTION => 'string',
@@ -83,10 +79,16 @@ final class Test extends Model
     /**
      * Test has one assistant
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function assistant(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function assistants(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(User::class, self::ATTR_ASSISTANT_ID);
+        return $this->belongsToMany(
+            User::class,
+            TestAssistant::class,
+            TestAssistant::ATTR_TEST_ID,
+            TestAssistant::ATTR_ASSISTANT_ID
+        )->withPivot(TestAssistant::ATTR_ACCEPTED)
+            ->orderBy(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, 'desc');
     }
 }

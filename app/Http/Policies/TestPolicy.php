@@ -60,4 +60,36 @@ final class TestPolicy extends Policy
 
         return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $user->is($test->professor);
     }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function requestAssistant(User $user, Test $test): bool
+    {
+        return $user->role >= RolesEnum::ROLE_ASSISTANT &&
+            $test->professor->isNot($user) &&
+            !$test->assistants->contains($user->getKey());
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function removeAssistant(User $user, Test $test): bool
+    {
+        return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $test->professor->is($user);
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function acceptAssistant(User $user, Test $test): bool
+    {
+        return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $test->professor->is($user);
+    }
 }

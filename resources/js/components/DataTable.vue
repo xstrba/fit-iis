@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="row mb-2">
-            <div class="col-lg-8">
+            <div class="col-md-8">
                 <div class="row">
-                    <div v-for="(filter, index) in filters" class="col-12 col-md-6 col-xl-4" :key="`filter-${index}`">
+                    <div v-for="(filter, index) in filters" class="col-lg-8 my-2" :key="`filter-${index}`">
                         <div class="form-group mb-0">
                             <label :for="`filterSelect-${filter.key}`">{{ filter.label }}</label>
                             <multiselect v-if="filter.multiple"
@@ -31,28 +31,28 @@
                             </select>
                         </div>
                     </div>
-
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <label></label>
-                        <form @submit.prevent="search">
-                            <label class="sr-only" for="searchInput">Hledat</label>
-                            <div class="input-group mr-sm-2">
-                                <input type="text"
-                                       class="form-control"
-                                       id="searchInput"
-                                       placeholder="Hledej..."
-                                       v-model="searchValue"
-                                       autocomplete="off"
-                                       autocapitalize="off">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text cursor-pointer" @click="search"><i
-                                        class="fas fa-search"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
                 </div>
+            </div>
+
+            <div class="col-md-4 py-2 d-flex align-items-sm-end">
+                <label></label>
+                <form @submit.prevent="search" class="w-100">
+                    <label class="sr-only" for="searchInput">Hledat</label>
+                    <div class="input-group mr-sm-2">
+                        <input type="text"
+                               class="form-control"
+                               id="searchInput"
+                               placeholder="Hledej..."
+                               v-model="searchValue"
+                               autocomplete="off"
+                               autocapitalize="off">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text cursor-pointer" @click="search"><i
+                                class="fas fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -66,9 +66,9 @@
                   multi-sort-key="ctrl"
                   @vuetable:pagination-data="onPaginationData">
             <template v-for="field in fields"
-                 v-if="field.name !== 'actions'"
-                 :slot="field.name"
-                 slot-scope="props">
+                      v-if="field.name !== 'actions'"
+                      :slot="field.name"
+                      slot-scope="props">
                 <slot :name="field.name" v-bind:rowData="props.rowData">
                     <span class="text-primary">{{ props.rowData[field.name] }}</span>
                 </slot>
@@ -82,7 +82,7 @@
                             aria-expanded="false">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-menu dropdown-menu-right" style="z-index: 50">
                         <template v-for="(action, index) in props.rowData.actions">
                             <a v-if="!action.method" :href="action.action" class="dropdown-item">
                                 <i :class="`fas fa-${action.icon} mr-2`"></i>{{ action.title }}
@@ -94,7 +94,6 @@
                                 <i :class="`fas fa-${action.icon} mr-2`"></i>{{ action.title }}
                             </a>
                             <a v-else-if="action.method === 'delete'"
-                               href=""
                                class="dropdown-item text-danger"
                                @click.prevent="deleteItem(action.action)">
                                 <i :class="`fas fa-${action.icon} mr-2`"></i>{{ action.title }}

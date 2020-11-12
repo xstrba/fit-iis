@@ -38,6 +38,8 @@ return [
     'questions_number' => 'Počet otázek',
     'professor' => 'Profesor',
     'assistant' => 'Asistent',
+    'show' => 'Zobrazit',
+    'assistant_request' => 'Požádat o to být asistent',
 
     // genders enum
     'male' => 'Muž',
@@ -49,6 +51,14 @@ return [
 
     //Users
     'new_user' => 'Nový uživatel',
+
+    //tests
+    'new_test' => 'Nový test',
+    'filter_subjects' => 'Podle předmětů',
+    'filter_test_role' => 'Podle mé role v testu',
+    'i_am_professor' => 'Jsme profesor',
+    'i_am_assistant' => 'Jsem asistent',
+    'i_have_assistant_request' => 'Mám žádost o to být asistent',
 
     // actions
     'actions' => 'Akce',

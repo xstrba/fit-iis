@@ -7,13 +7,12 @@ use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\PermissionsEnum;
 use App\Enums\RolesEnum;
 use App\Http\Requests\TestRequestFilter;
-use App\Http\Requests\UserRequestFilter;
 use App\Models\Test;
+use App\Models\TestAssistant;
 use App\Models\User;
 use App\Parents\FrontEndController;
 use App\Services\SidebarService;
 use App\Tables\TestsTable;
-use App\Tables\UsersTable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -77,7 +76,7 @@ final class TestController extends FrontEndController
     {
         $this->authorize(PermissionsEnum::CREATE, Test::class);
         $professors = $usersRepository->query()
-            ->where(User::ATTR_ROLE ,'>=', RolesEnum::ROLE_PROFESSOR)
+            ->where(User::ATTR_ROLE, '>=', RolesEnum::ROLE_PROFESSOR)
             ->get();
 
         $this->setTitle('pages.tests.create');
@@ -114,47 +113,49 @@ final class TestController extends FrontEndController
     /**
      * Display the specified resource.
      *
-     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
      * @param int $id
      * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show(UsersRepositoryInterface $usersRepository, int $id)
+    public function show(TestsRepositoryInterface $testsRepository, int $id)
     {
-        $user = $usersRepository->get($id);
-        $this->authorize(PermissionsEnum::SHOW, $user);
-        $this->setTitle('pages.users.detail', ['user' => $user->nickname]);
-
-        return $this->view('app.users.detail', compact('user'));
+        $test = $testsRepository->get($id);
+        $this->authorize(PermissionsEnum::SHOW, $test);
+        $this->setTitle('pages.tests.detail', ['test' => $test->name]);
+        return $this->view('app.users.detail', compact('test'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
      * @param int $id
      * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(UsersRepositoryInterface $usersRepository, int $id)
+    public function edit(UsersRepositoryInterface $usersRepository, TestsRepositoryInterface $testsRepository, int $id)
     {
-        $user = $usersRepository->get($id);
-        $auth = $this->authService->user();
-        if ($user->is($auth)) {
-            return $this->responseFactory->redirectToRoute('profile');
-        }
-        $this->authorize(PermissionsEnum::EDIT, $user);
-        $this->setTitle('pages.users.edit', ['user' => $user->nickname]);
+        $test = $testsRepository->query()
+            ->with(Test::RELATION_PROFESSOR)
+            ->with(Test::RELATION_ASSISTANTS)
+            ->getById($id);
+        $this->authorize(PermissionsEnum::EDIT, $test);
 
-        return $this->view('app.users.form', compact('user'));
+        $professors = $usersRepository->query()
+            ->where(User::ATTR_ROLE, '>=', RolesEnum::ROLE_PROFESSOR)
+            ->get();
+        $this->setTitle('pages.tests.edit', ['test' => $test->name]);
+        return $this->view('app.tests.form', compact('test', 'professors'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Http\Requests\UserRequestFilter $userRequestFilter
-     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param \App\Http\Requests\TestRequestFilter $testRequestFilter
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -162,14 +163,14 @@ final class TestController extends FrontEndController
      */
     public function update(
         Request $request,
-        UserRequestFilter $userRequestFilter,
-        UsersRepositoryInterface $usersRepository,
+        TestRequestFilter $testRequestFilter,
+        TestsRepositoryInterface $testsRepository,
         int $id
     ): \Illuminate\Http\RedirectResponse {
-        $user = $usersRepository->get($id);
-        $this->authorize(PermissionsEnum::EDIT, $user);
-        $usersRepository->update($userRequestFilter->validated($request, $user), $user);
-        $this->notify->success($this->translator->get('messages.users.updated'));
+        $test = $testsRepository->get($id);
+        $this->authorize(PermissionsEnum::EDIT, $test);
+        $testsRepository->update($testRequestFilter->validated($request, $test), $test);
+        $this->notify->success($this->translator->get('messages.tests.updated'));
         return $this->back();
     }
 
@@ -177,42 +178,122 @@ final class TestController extends FrontEndController
      * Remove the specified resource from storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
      * @param int $id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Exception
      */
-    public function destroy(Request $request, UsersRepositoryInterface $usersRepository, int $id)
+    public function destroy(Request $request, TestsRepositoryInterface $testsRepository, int $id)
     {
-        $user = $usersRepository->get($id);
-        $this->authorize(PermissionsEnum::DELETE, $user);
-        $usersRepository->delete($user);
+        $test = $testsRepository->get($id);
+        $this->authorize(PermissionsEnum::DELETE, $test);
+        $testsRepository->delete($test);
 
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'deleted']);
         }
-        $this->notify->success($this->translator->get('messages.users.deleted'));
+        $this->notify->success($this->translator->get('messages.tests.deleted'));
         return $this->back();
     }
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
      * @param int $id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function restore(Request $request, UsersRepositoryInterface $usersRepository, int $id)
+    public function restore(Request $request, TestsRepositoryInterface $testsRepository, int $id)
     {
-        $user = $usersRepository->get($id);
-        $this->authorize(PermissionsEnum::EDIT, $user);
-        $usersRepository->restore($user);
+        $test = $testsRepository->get($id);
+        $this->authorize(PermissionsEnum::EDIT, $test);
+        $testsRepository->restore($test);
 
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'restored']);
         }
-        $this->notify->success($this->translator->get('messages.users.restored'));
+        $this->notify->success($this->translator->get('messages.tests.restored'));
+        return $this->back();
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function requestAssistant(Request $request, TestsRepositoryInterface $testsRepository, int $id)
+    {
+        $test = $testsRepository->get($id);
+        $this->authorize(PermissionsEnum::REQUEST_ASSISTANT, $test);
+        $test->assistants()->attach($this->authService->getId());
+
+        if ($request->wantsJson()) {
+            return $this->responseFactory->json(['message' => 'assistant requested']);
+        }
+        $this->notify->success($this->translator->get('messages.assistant.requested'));
+        return $this->back();
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
+     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param int $id
+     * @param int $userId
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function acceptAssistant(
+        Request $request,
+        TestsRepositoryInterface $testsRepository,
+        UsersRepositoryInterface $usersRepository,
+        int $id,
+        int $userId
+    ) {
+        $test = $testsRepository->get($id);
+        $this->authorize(PermissionsEnum::ACCEPT_ASSISTANT, $test);
+        $user = $usersRepository->get($userId);
+        $test->assistants()
+            ->wherePivot(TestAssistant::ATTR_ACCEPTED, false)
+            ->updateExistingPivot($user, [
+                TestAssistant::ATTR_ACCEPTED => true,
+            ], true);
+
+        if ($request->wantsJson()) {
+            return $this->responseFactory->json(['message' => 'assistant accepted']);
+        }
+        $this->notify->success($this->translator->get('messages.assistant.accepted'));
+        return $this->back();
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
+     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param int $id
+     * @param int $userId
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function removeAssistant(
+        Request $request,
+        TestsRepositoryInterface $testsRepository,
+        UsersRepositoryInterface $usersRepository,
+        int $id,
+        int $userId
+    ) {
+        $test = $testsRepository->get($id);
+        $this->authorize(PermissionsEnum::REMOVE_ASSISTANT, $test);
+        $user = $usersRepository->get($userId);
+        $test->assistants()->detach($user->getKey());
+
+        if ($request->wantsJson()) {
+            return $this->responseFactory->json(['message' => 'assistant accepted']);
+        }
+        $this->notify->success($this->translator->get('messages.assistant.accepted'));
         return $this->back();
     }
 

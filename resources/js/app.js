@@ -12,6 +12,8 @@ window.Vue = require('vue');
  * Components
  */
 import DataTable from "./components/DataTable";
+import AssistantsList from "./components/AssistantsList";
+import VueSimpleAlert from "vue-simple-alert";
 
 /**
  * The following block of code may be used to automatically register your
@@ -24,8 +26,6 @@ import DataTable from "./components/DataTable";
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-
 // ignore ion-icons
 Vue.config.ignoredElements = [/^ion-/];
 
@@ -35,10 +35,37 @@ Vue.config.ignoredElements = [/^ion-/];
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.use(VueSimpleAlert);
+
 const app = new Vue({
     el: '#app',
 
     components: {
         DataTable,
+        AssistantsList,
     },
+});
+
+[...document.getElementsByClassName('form-panel-label')].forEach(node => {
+   node.addEventListener('click', (event) => {
+       let targetPanel = document.getElementById(node.dataset.target);
+
+       [...document.getElementById(targetPanel.dataset.parent).getElementsByClassName('form-panel')].forEach(panel => {
+           if (panel.id !== node.dataset.target) {
+               panel.classList.add('d-none');
+           }
+       });
+
+       targetPanel.classList.remove('d-none');
+
+       [...document.getElementsByClassName('form-panel-label')].forEach(label => {
+          if (!label.isEqualNode(node)) {
+            label.classList.remove('btn-info');
+            label.classList.add('btn-outline-info');
+          }
+       });
+
+       node.classList.remove('btn-outline-info');
+       node.classList.add('btn-info');
+   });
 });

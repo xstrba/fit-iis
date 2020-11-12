@@ -6,6 +6,7 @@
     display: flex;
     align-items: center;
     height: 50px;
+    z-index: 90;
 
     @media screen and (max-width: $bp-md) {
         position: relative;

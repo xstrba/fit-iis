@@ -5,9 +5,11 @@ namespace App\Tables;
 use App\Contracts\Repositories\TestsRepositoryInterface;
 use App\Enums\PermissionsEnum;
 use App\Models\Test;
+use App\Models\TestAssistant;
 use App\Models\User;
 use App\Parents\Table;
 use App\Queries\TestsQueryBuilder;
+use App\Queries\UsersQueryBuilder;
 use App\Services\AuthService;
 use App\Tables\Columns\Column;
 use App\Tables\Filters\Filter;
@@ -15,6 +17,7 @@ use App\Tables\Filters\FilterOption;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 
 /**
@@ -113,17 +116,13 @@ final class TestsTable extends Table
         );
 
         $this->addColumn(
-            Column::init(Test::ATTR_NAME, $this->translator->get('labels.' . Test::ATTR_NAME))
+            Column::init(Test::ATTR_NAME, $this->translator->get('labels.title'))
                 ->sortable()
                 ->searchable()
         );
 
         $this->addColumn(
             Column::init(Test::RELATION_PROFESSOR, $this->translator->get('labels.' . Test::RELATION_PROFESSOR))
-        );
-
-        $this->addColumn(
-            Column::init(Test::RELATION_ASSISTANT, $this->translator->get('labels.' . Test::RELATION_ASSISTANT))
         );
 
         $this->addColumn(
@@ -164,7 +163,7 @@ final class TestsTable extends Table
         });
 
         // subjects filter
-        $subjectsFilter = new Filter('filter_subjects', 'filter_subjects');
+        $subjectsFilter = new Filter('filter_subjects', $this->translator->get('labels.filter_subjects'));
         $subjectsFilter->setMultiple();
 
         $subjectOptions = [];
@@ -185,6 +184,36 @@ final class TestsTable extends Table
 
             return $query;
         });
+
+        // my all assistant
+        $rolesFilter = new Filter('filter_test_role', $this->translator->get('labels.filter_test_role'));
+
+        $rolesFilter->addOptions([
+            FilterOption::init(null, $this->translator->get('labels.all_items')),
+            FilterOption::init('prof', $this->translator->get('labels.i_am_professor')),
+            FilterOption::init('assis', $this->translator->get('labels.i_am_assistant')),
+            FilterOption::init('assis_req', $this->translator->get('labels.i_have_assistant_request')),
+        ]);
+        $this->addFilter($rolesFilter, function (TestsQueryBuilder $query, ?string $value = null): TestsQueryBuilder {
+            if ($value === 'prof') {
+                return $query->where(Test::ATTR_PROFESSOR_ID, $this->authService->getId());
+            }
+
+            if ($value === 'assis') {
+                return $query->whereHas(Test::RELATION_ASSISTANTS, function (UsersQueryBuilder $subQuery): void {
+                    $subQuery->where(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, true)
+                        ->where(TestAssistant::ATTR_ASSISTANT_ID, $this->authService->getId());
+                });
+            }
+
+            if ($value === 'assis_req') {
+                return $query->whereHas(Test::RELATION_ASSISTANTS, function (UsersQueryBuilder $subQuery): void {
+                    $subQuery->where(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, false)
+                        ->where(TestAssistant::ATTR_ASSISTANT_ID, $this->authService->getId());
+                });
+            }
+            return $query;
+        });
     }
 
     /**
@@ -197,8 +226,7 @@ final class TestsTable extends Table
             Test::ATTR_CREATED_AT => $test->created_at->format('d. m. Y H:i:s'),
             self::FIELD_ACTIONS => $this->getActions($test),
             Test::ATTR_START_DATE => $test->start_date->format('d. m. Y H:i:s'),
-            Test::RELATION_PROFESSOR => $test->professor->name,
-            Test::RELATION_ASSISTANT => optional($test->assistant)->name,
+            Test::RELATION_PROFESSOR => $test->professor->name
         ]);
     }
 
@@ -214,10 +242,19 @@ final class TestsTable extends Table
             return $actions;
         }
 
+        if ($auth->can(PermissionsEnum::REQUEST_ASSISTANT, $test)) {
+            $actions[] = $this->getActionData(
+                'eye',
+                $this->translator->get('labels.assistant_request'),
+                $this->urlGenerator->route('tests.request-assistant', $test->getKey()),
+                'post'
+            );
+        }
+
         if ($auth->can(PermissionsEnum::SHOW, $test)) {
             $actions[] = $this->getActionData(
                 'eye',
-                $this->translator->get('pages.profile'),
+                $this->translator->get('labels.show'),
                 $this->urlGenerator->route('tests.show', $test->getKey())
             );
         }

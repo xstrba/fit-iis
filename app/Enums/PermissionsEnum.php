@@ -16,6 +16,11 @@ final class PermissionsEnum extends Enum
     public const SHOW = 'show';
     public const DELETE = 'delete';
 
+    // tests
+    public const REQUEST_ASSISTANT = 'requestAssistant';
+    public const REMOVE_ASSISTANT = 'removeAssistant';
+    public const ACCEPT_ASSISTANT = 'acceptAssistant';
+
     /**
      * @var array|int[]
      */

@@ -21,7 +21,6 @@ use Illuminate\Validation\ValidationException;
 final class TestRequestFilter extends RequestFilter
 {
     public const FIELD_PROFESSOR_ID = Test::ATTR_PROFESSOR_ID;
-    public const FIELD_ASSISTANT_ID = Test::ATTR_ASSISTANT_ID;
     public const FIELD_SUBJECT = Test::ATTR_SUBJECT;
     public const FIELD_NAME = Test::ATTR_NAME;
     public const FIELD_DESCRIPTION = Test::ATTR_DESCRIPTION;
@@ -92,13 +91,6 @@ final class TestRequestFilter extends RequestFilter
                     $this->validateProfessorId($value, $fail);
                 },
             ],
-            self::FIELD_ASSISTANT_ID => [
-                'nullable',
-                'numeric',
-                function (string $attribute, int $value, callable $fail): void {
-                    $this->validateAssistantId($value, $fail);
-                },
-            ],
             self::FIELD_SUBJECT => [$required, 'string', 'max:4', 'in:' . SubjectsEnum::instance()->getStringValues()],
             self::FIELD_NAME => [
                 $required,
@@ -145,23 +137,6 @@ final class TestRequestFilter extends RequestFilter
 
         if (!$professor) {
             $fail('professor_not_valid');
-        }
-    }
-
-    /**
-     * @param int $value
-     * @param callable $fail
-     */
-    private function validateAssistantId(int $value, callable $fail): void
-    {
-        /** @var User|null $assistant */
-        $assistant = $this->usersRepository->query()
-            ->whereRole(RolesEnum::ROLE_ASSISTANT, '>=')
-            ->whereNull(User::ATTR_DELETED_AT)
-            ->findById($value);
-
-        if (!$assistant) {
-            $fail('assistant_not_valid');
         }
     }
 
