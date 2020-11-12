@@ -4,6 +4,7 @@ namespace App\Tables;
 
 use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\PermissionsEnum;
+use App\Enums\RolesEnum;
 use App\Models\User;
 use App\Parents\Table;
 use App\Queries\UsersQueryBuilder;
@@ -163,6 +164,23 @@ final class UsersTable extends Table
             }
 
             return $query->whereNull(User::ATTR_DELETED_AT);
+        });
+
+        // roles filter
+        $rolesFilter = new Filter('roles_filter', $this->translator->get('labels.filter_roles'));
+        $rolesFilter->setMultiple();
+
+        $rolesOptions = [];
+        foreach (RolesEnum::instance()->getValues() as $value) {
+            $rolesOptions[] = FilterOption::init($value, $this->translator->get('roles.' . $value));
+        }
+        $rolesFilter->addOptions($rolesOptions);
+        $this->addFilter($rolesFilter, static function (UsersQueryBuilder $query, ?string $value = null): UsersQueryBuilder {
+            if (!$value) {
+                return $query;
+            }
+
+            return $query->whereIn(User::ATTR_ROLE, \explode(self::QUERY_FILTER_VALUE_DELIMITER, $value));
         });
     }
 

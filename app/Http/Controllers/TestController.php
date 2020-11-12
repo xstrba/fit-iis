@@ -11,8 +11,10 @@ use App\Models\Test;
 use App\Models\TestAssistant;
 use App\Models\User;
 use App\Parents\FrontEndController;
+use App\Queries\UsersQueryBuilder;
 use App\Services\SidebarService;
 use App\Tables\TestsTable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -120,10 +122,19 @@ final class TestController extends FrontEndController
      */
     public function show(TestsRepositoryInterface $testsRepository, int $id)
     {
-        $test = $testsRepository->get($id);
+        /** @var Test $test */
+        $test = $testsRepository
+            ->query()
+            ->with([
+                Test::RELATION_ASSISTANTS => static function (BelongsToMany $query): void {
+                    $query->where(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, true);
+                },
+                Test::RELATION_PROFESSOR,
+            ])
+            ->getById($id);
         $this->authorize(PermissionsEnum::SHOW, $test);
         $this->setTitle('pages.tests.detail', ['test' => $test->name]);
-        return $this->view('app.users.detail', compact('test'));
+        return $this->view('app.tests.detail', compact('test'));
     }
 
     /**
@@ -137,6 +148,7 @@ final class TestController extends FrontEndController
      */
     public function edit(UsersRepositoryInterface $usersRepository, TestsRepositoryInterface $testsRepository, int $id)
     {
+        /** @var Test $test */
         $test = $testsRepository->query()
             ->with(Test::RELATION_PROFESSOR)
             ->with(Test::RELATION_ASSISTANTS)

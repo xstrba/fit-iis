@@ -69,3 +69,15 @@ const app = new Vue({
        node.classList.add('btn-info');
    });
 });
+
+let timeEl = document.getElementById('globalTime');
+if (timeEl) {
+    const setGlobalTime  = () => {
+        const date = new Date();
+        timeEl.innerText = date.toLocaleTimeString('cs-CZ', {timeZone: 'Europe/Prague'});
+    };
+
+    // set global time
+    setGlobalTime();
+    setInterval(setGlobalTime, 1000);
+}

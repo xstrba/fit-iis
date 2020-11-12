@@ -18,109 +18,107 @@
         @endif
 
         <div>
-            <div>
-                @component('app.components.panel-label', ['active' => true, 'target' => 'panelInfo'])
+            @component('app.components.panel-label', ['active' => true, 'target' => 'panelInfo'])
+                @slot('label')
+                    Základní informace
+                @endslot
+            @endcomponent
+
+            @component('app.components.panel-label', ['target' => 'panelConfig'])
+                @slot('label')
+                    Konfigurace
+                @endslot
+            @endcomponent
+
+            @if ($test->exists)
+                @component('app.components.panel-label', ['target' => 'panelAssistant'])
                     @slot('label')
-                        Základní informace
+                        Asistenti
                     @endslot
                 @endcomponent
+            @endif
 
-                @component('app.components.panel-label', ['target' => 'panelConfig'])
-                    @slot('label')
-                        Konfigurace
-                    @endslot
+            <div id="testFormPanels">
+                @component('app.components.form-panel', ['id' => 'panelInfo', 'active' => true, 'parent' => 'testFormPanels'])
+                    <div class="row">
+                        @include('partials.input-select', [
+                                'classes' => 'col-md-6',
+                                'name' => 'subject',
+                                'label' => __('labels.subject'),
+                                'value' => old('subject', $test->subject),
+                                'required' => true,
+                                'options' => \App\Enums\SubjectsEnum::instance()->getList(),
+                            ])
+                        @include('partials.input-text', [
+                            'classes' => 'col-md-6',
+                            'name' => 'name',
+                            'label' => __('labels.title'),
+                            'autocomplete' => 'off',
+                            'value' => old('name', $test->name),
+                            'required' => true,
+                        ])
+                    </div>
+
+                    <div class="row">
+                        @include('partials.input-textbox', [
+                                'classes' => 'col-sm-12',
+                                'name' => 'description',
+                                'label' => __('labels.description'),
+                                'value' => old('description', $test->description),
+                                'required' => false,
+                            ])
+                    </div>
+
+                    <div class="row">
+                        @include('partials.input-select', [
+                                'classes' => 'col-md-6',
+                                'name' => 'professor_id',
+                                'label' => __('labels.professor'),
+                                'value' => old('professor_id', $test->professor_id),
+                                'required' => true,
+                                'options' => $professors->mapWithKeys(static function (\App\Models\User $professor): array {
+                                    return [$professor->id => $professor->name];
+                                }),
+                            ])
+                    </div>
                 @endcomponent
 
-                @if ($test->exists)
-                    @component('app.components.panel-label', ['target' => 'panelAssistant'])
-                        @slot('label')
-                            Asistenti
-                        @endslot
-                    @endcomponent
-                @endif
+                @component('app.components.form-panel', ['id' => 'panelConfig', 'parent' => 'testFormPanels'])
+                    <div class="row">
+                        @include('partials.input-date', [
+                            'classes' => 'col-md-6',
+                            'name' => 'start_date',
+                            'label' => __('labels.start'),
+                            'value' => old('start_date', optional($test->start_date)->format('Y-m-d\TH:i')),
+                            'required' => true,
+                            'time' => true,
+                        ])
+                        @include('partials.input-number', [
+                            'classes' => 'col-md-6',
+                            'name' => 'time_limit',
+                            'label' => __('labels.time_limit') . ' (' . __('labels.minutes') . ')',
+                            'value' => old('time_limit', $test->time_limit),
+                            'required' => true,
+                            'min' => 0,
+                        ])
+                    </div>
 
-                <div id="testFormPanels">
-                    @component('app.components.form-panel', ['id' => 'panelInfo', 'active' => true, 'parent' => 'testFormPanels'])
-                        <div class="row">
-                            @include('partials.input-select', [
-                                    'classes' => 'col-md-6',
-                                    'name' => 'subject',
-                                    'label' => __('labels.subject'),
-                                    'value' => old('subject', $test->subject),
-                                    'required' => true,
-                                    'options' => \App\Enums\SubjectsEnum::instance()->getList(),
-                                ])
-                            @include('partials.input-text', [
-                                'classes' => 'col-md-6',
-                                'name' => 'name',
-                                'label' => __('labels.title'),
-                                'autocomplete' => 'off',
-                                'value' => old('name', $test->name),
-                                'required' => true,
-                            ])
-                        </div>
+                    <div class="row">
+                        @include('partials.input-number', [
+                            'classes' => 'col-md-6',
+                            'name' => 'questions_number',
+                            'label' => __('labels.questions_number'),
+                            'value' => old('questions_number', $test->questions_number),
+                            'required' => true,
+                            'min' => 1,
+                        ])
+                    </div>
+                @endcomponent
 
-                        <div class="row">
-                            @include('partials.input-textbox', [
-                                    'classes' => 'col-sm-12',
-                                    'name' => 'description',
-                                    'label' => __('labels.description'),
-                                    'value' => old('description', $test->description),
-                                    'required' => false,
-                                ])
-                        </div>
-
-                        <div class="row">
-                            @include('partials.input-select', [
-                                    'classes' => 'col-md-6',
-                                    'name' => 'professor_id',
-                                    'label' => __('labels.professor'),
-                                    'value' => old('professor_id', $test->professor_id),
-                                    'required' => true,
-                                    'options' => $professors->mapWithKeys(static function (\App\Models\User $professor): array {
-                                        return [$professor->id => $professor->name];
-                                    }),
-                                ])
-                        </div>
-                    @endcomponent
-
-                    @component('app.components.form-panel', ['id' => 'panelConfig', 'parent' => 'testFormPanels'])
-                        <div class="row">
-                            @include('partials.input-date', [
-                                'classes' => 'col-md-6',
-                                'name' => 'start_date',
-                                'label' => __('labels.start'),
-                                'value' => old('start_date', optional($test->start_date)->format('Y-m-d\TH:i')),
-                                'required' => true,
-                                'time' => true,
-                            ])
-                            @include('partials.input-number', [
-                                'classes' => 'col-md-6',
-                                'name' => 'time_limit',
-                                'label' => __('labels.time_limit') . ' (' . __('labels.minutes') . ')',
-                                'value' => old('time_limit', $test->time_limit),
-                                'required' => true,
-                                'min' => 0,
-                            ])
-                        </div>
-
-                        <div class="row">
-                            @include('partials.input-number', [
-                                'classes' => 'col-md-6',
-                                'name' => 'questions_number',
-                                'label' => __('labels.questions_number'),
-                                'value' => old('questions_number', $test->questions_number),
-                                'required' => true,
-                                'min' => 1,
-                            ])
-                        </div>
-                    @endcomponent
-
-                    @component('app.components.form-panel', ['id' => 'panelAssistant', 'parent' => 'testFormPanels'])
-                        <assistants-list :assistants="{{ $test->assistants->toJson() }}"
-                                         :test="{{ $test->toJson() }}"></assistants-list>
-                    @endcomponent
-                </div>
+                @component('app.components.form-panel', ['id' => 'panelAssistant', 'parent' => 'testFormPanels'])
+                    <assistants-list :assistants="{{ $test->assistants->toJson() }}"
+                                     :test="{{ $test->toJson() }}"></assistants-list>
+                @endcomponent
             </div>
         </div>
 

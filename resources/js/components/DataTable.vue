@@ -237,7 +237,6 @@ export default {
                     this.reloadData();
                 })
                 .catch((error) => {
-                    console.log(error.response);
                 });
         },
 
@@ -247,7 +246,6 @@ export default {
                     this.reloadData();
                 })
                 .catch((error) => {
-                    console.log(error.response);
                 });
         },
 
@@ -261,7 +259,6 @@ export default {
             Object.keys(this.selectedFilters).forEach((filterKey) => {
                 let value = null;
                 if ((this.selectedFilters[filterKey] instanceof Array) && this.selectedFilters[filterKey].length) {
-                    console.log(this.selectedFilters[filterKey].map(x => x.value));
                     value = this.selectedFilters[filterKey].map(x => x.value).join('|');
                 } else {
                     value = this.selectedFilters[filterKey];
