@@ -3,7 +3,9 @@
 namespace App\Tables;
 
 use App\Contracts\Repositories\TestsRepositoryInterface;
+use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\PermissionsEnum;
+use App\Enums\RolesEnum;
 use App\Models\Test;
 use App\Models\TestAssistant;
 use App\Models\User;
@@ -17,7 +19,6 @@ use App\Tables\Filters\FilterOption;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Contracts\Translation\Translator;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 
 /**
@@ -48,20 +49,28 @@ final class TestsTable extends Table
     private TestsRepositoryInterface $testsRepository;
 
     /**
+     * @var \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     */
+    private UsersRepositoryInterface $usersRepository;
+
+    /**
      * Table constructor.
      *
      * @param \Illuminate\Contracts\Translation\Translator $translator
      * @param \Illuminate\Contracts\Routing\UrlGenerator $urlGenerator
      * @param \App\Services\AuthService $authService
      * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
+     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
      */
     public function __construct(
         Translator $translator,
         UrlGenerator $urlGenerator,
         AuthService $authService,
-        TestsRepositoryInterface $testsRepository
+        TestsRepositoryInterface $testsRepository,
+        UsersRepositoryInterface $usersRepository
     ) {
         $this->testsRepository = $testsRepository;
+        $this->usersRepository = $usersRepository;
         parent::__construct($translator, $urlGenerator, $authService);
     }
 
@@ -180,6 +189,37 @@ final class TestsTable extends Table
         $this->addFilter($subjectsFilter, static function (TestsQueryBuilder $query, ?string $value = null): TestsQueryBuilder {
             if ($value) {
                 return $query->whereIn(Test::ATTR_SUBJECT, \explode(self::QUERY_FILTER_VALUE_DELIMITER, $value));
+            }
+
+            return $query;
+        });
+
+        // professors filter
+        $professorsFilter = new Filter('filter_professors', $this->translator->get('labels.filter_professors'));
+        $professorsFilter->setMultiple();
+
+        $professorIds = $this->testsRepository
+            ->query()
+            ->select(Test::ATTR_PROFESSOR_ID)
+            ->distinct()
+            ->get()
+            ->pluck(Test::ATTR_PROFESSOR_ID)
+            ->toArray();
+
+        $profOptions = [];
+        $profs = $this->usersRepository
+            ->query()
+            ->whereIn(User::ATTR_ID, $professorIds)
+            ->whereRole(RolesEnum::ROLE_PROFESSOR, '>=')
+            ->get();
+
+        foreach ($profs as $prof) {
+            $profOptions[] = FilterOption::init($prof->id, $prof->name);
+        }
+        $professorsFilter->addOptions($profOptions);
+        $this->addFilter($professorsFilter, static function (TestsQueryBuilder $query, ?string $value = null): TestsQueryBuilder {
+            if ($value) {
+                return $query->whereIn(Test::ATTR_PROFESSOR_ID, \explode(self::QUERY_FILTER_VALUE_DELIMITER, $value));
             }
 
             return $query;

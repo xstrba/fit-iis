@@ -23,7 +23,7 @@ return [
     'country' => 'Stát',
     'phone' => 'Telefonní čislo',
     'preferred_language' => 'Preferovaný jazyk',
-    'all_items' => 'Všechny zánamy',
+    'all_items' => 'Všechny záznamy',
     'deleted' => 'Smazané',
     'name' => 'Jméno',
     'address' => 'Adresa',
@@ -59,6 +59,7 @@ return [
     'i_am_professor' => 'Jsme profesor',
     'i_am_assistant' => 'Jsem asistent',
     'i_have_assistant_request' => 'Mám žádost o to být asistent',
+    'filter_professors' => 'Podle profesorů',
 
     // actions
     'actions' => 'Akce',
