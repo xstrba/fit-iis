@@ -8,8 +8,10 @@
  * @var string $label
  * @var string|null $value
  * @var bool $time
+ * @var true|null $enableEvent
  */
 $time = $time ?? false;
+$enableEvent = $enableEvent ?? false;
 @endphp
 
 <div class="form-group @isset($classes) {{ $classes }} @endisset">
@@ -24,7 +26,8 @@ $time = $time ?? false;
            aria-describedby="{{ ($id ?? $name) . 'Help' }}"
            @isset($placeholder) placeholder="{{ $placeholder }}" @endisset
            @isset($value) value="{{ $value }}" @endisset
-           @isset($required) required @endisset>
+           @isset($required) required @endisset
+           @if (!$enableEvent) onkeydown="return event.key != 'Enter';" @endif>
     @isset($description)
         <small id="{{ ($id ?? $name) . 'Help' }}" class="form-text text-muted">{{ $description }}</small>
     @endisset

@@ -17,6 +17,7 @@ use App\Queries\TestsQueryBuilder;
  * @property int $questions_number
  * @property \App\Models\User $professor
  * @property \Illuminate\Support\Collection|\App\Models\User[] $assistants
+ * @property \Illuminate\Support\Collection|\App\Models\Group[] $groups
  * @package App\Models
  */
 final class Test extends Model
@@ -31,6 +32,7 @@ final class Test extends Model
 
     public const RELATION_PROFESSOR = 'professor';
     public const RELATION_ASSISTANTS = 'assistants';
+    public const RELATION_GROUPS = 'groups';
 
     /**
      * @var string[] $fillable
@@ -90,5 +92,13 @@ final class Test extends Model
             TestAssistant::ATTR_ASSISTANT_ID
         )->withPivot(TestAssistant::ATTR_ACCEPTED)
             ->orderBy(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, 'desc');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function groups(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Group::class, Group::ATTR_TEST_ID);
     }
 }

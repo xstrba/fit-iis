@@ -10,7 +10,7 @@
 
 @section('content')
     <form action="{{ $test->exists ? route('tests.update', $test->id) : route('tests.store') }}"
-          method="POST">
+          method="POST" onsubmit="event.preventDefault()" id="testForm">
         @csrf
 
         @if ($test->exists)
@@ -34,6 +34,14 @@
                 @component('app.components.panel-label', ['target' => 'panelAssistant'])
                     @slot('label')
                         Asistenti
+                    @endslot
+                @endcomponent
+            @endif
+
+            @if ($test->exists)
+                @component('app.components.panel-label', ['target' => 'panelGroups'])
+                    @slot('label')
+                        Skupiny otázek
                     @endslot
                 @endcomponent
             @endif
@@ -81,6 +89,12 @@
                                 }),
                             ])
                     </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary mb-2" onclick="document.getElementById('testForm').submit()">
+                            {{ $test->exists ? trans('labels.update') : trans('labels.create') }}
+                        </button>
+                    </div>
                 @endcomponent
 
                 @component('app.components.form-panel', ['id' => 'panelConfig', 'parent' => 'testFormPanels'])
@@ -113,18 +127,24 @@
                             'min' => 1,
                         ])
                     </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-primary mb-2" onclick="document.getElementById('testForm').submit()">
+                            {{ $test->exists ? trans('labels.update') : trans('labels.create') }}
+                        </button>
+                    </div>
                 @endcomponent
 
                 @component('app.components.form-panel', ['id' => 'panelAssistant', 'parent' => 'testFormPanels'])
                     <assistants-list :assistants="{{ $test->assistants->toJson() }}"
                                      :test="{{ $test->toJson() }}"></assistants-list>
                 @endcomponent
-            </div>
-        </div>
 
-        <div class="px-2">
-            <button type="submit"
-                    class="btn btn-primary mb-2">{{ $test->exists ? trans('labels.update') : trans('labels.create') }}</button>
+                @component('app.components.form-panel', ['id' => 'panelGroups', 'parent' => 'testFormPanels'])
+                    <groups-form :groups="{{ $test->groups->toJson() }}"
+                                     :test="{{ $test->toJson() }}"></groups-form>
+                @endcomponent
+            </div>
         </div>
     </form>
 @endsection

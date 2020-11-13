@@ -9,7 +9,9 @@
  * @var string|null $value
  * @var string $pattern
  * @var string $autocomplete
+ * @var true|null $enableEvent
  */
+$enableEvent = $enableEvent ?? false;
 @endphp
 
 <div class="form-group @isset($classes) {{ $classes }} @endisset">
@@ -26,7 +28,8 @@
            @isset($value) value="{{ $value }}" @endisset
            @isset($required) required @endisset
            @isset($pattern) pattern="{{ $pattern }}" @endisset
-           @isset($autocomplete) autocomplete="{{ $autocomplete }}" @endisset>
+           @isset($autocomplete) autocomplete="{{ $autocomplete }}" @endisset
+           @if (!$enableEvent) onkeydown="return event.key != 'Enter';" @endif>
     @isset($description)
         <small id="{{ ($id ?? $name) . 'Help' }}" class="form-text text-muted">{{ $description }}</small>
     @endisset

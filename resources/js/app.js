@@ -14,6 +14,7 @@ window.Vue = require('vue');
 import DataTable from "./components/DataTable";
 import AssistantsList from "./components/AssistantsList";
 import VueSimpleAlert from "vue-simple-alert";
+import GroupsForm from "./components/GroupsForm";
 
 /**
  * The following block of code may be used to automatically register your
@@ -43,6 +44,7 @@ const app = new Vue({
     components: {
         DataTable,
         AssistantsList,
+        GroupsForm,
     },
 });
 
