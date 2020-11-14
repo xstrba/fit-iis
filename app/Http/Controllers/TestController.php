@@ -7,6 +7,7 @@ use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\PermissionsEnum;
 use App\Enums\RolesEnum;
 use App\Http\Requests\TestRequestFilter;
+use App\Models\Group;
 use App\Models\Test;
 use App\Models\TestAssistant;
 use App\Models\User;
@@ -130,6 +131,7 @@ final class TestController extends FrontEndController
                     $query->where(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, true);
                 },
                 Test::RELATION_PROFESSOR,
+                Test::RELATION_GROUPS . '.' . Group::RELATION_QUESTIONS,
             ])
             ->getById($id);
         $this->authorize(PermissionsEnum::SHOW, $test);
@@ -152,6 +154,7 @@ final class TestController extends FrontEndController
         $test = $testsRepository->query()
             ->with(Test::RELATION_PROFESSOR)
             ->with(Test::RELATION_ASSISTANTS)
+            ->with(Test::RELATION_GROUPS . '.' . Group::RELATION_QUESTIONS)
             ->getById($id);
         $this->authorize(PermissionsEnum::EDIT, $test);
 

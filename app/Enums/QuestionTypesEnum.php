@@ -12,15 +12,19 @@ use App\Parents\Enum;
 final class QuestionTypesEnum extends Enum
 {
     public const OPTIONS = 0;
-    public const LINE = 1;
-    public const TEXT = 2;
+    public const OPTIONS_CHECKBOX = 1;
+    public const LINE = 2;
+    public const TEXT = 3;
+    public const FILES = 4;
 
     /**
      * @var int[] $values
      */
     protected array $values = [
         self::OPTIONS,
+        self::OPTIONS_CHECKBOX,
         self::LINE,
         self::TEXT,
+        self::FILES,
     ];
 }

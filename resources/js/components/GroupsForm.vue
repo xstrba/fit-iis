@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-12 form-group">
+            <div class="col-12 form-group mb-2">
                 <label for="new-group-name">Název nové skupiny</label>
                 <input type="text" class="form-control" id="new-group-name" v-model="newGroupName" onkeydown="return event.key !== 'Enter';">
             </div>
@@ -12,7 +12,7 @@
 
         <div class="row">
             <div class="col-12">
-                <a v-for="(group, index) in groups" :class="`mr-1 btn ${index === activeGroupId ? 'btn-success' : 'btn-outline-success'}`"
+                <a v-for="(group, index) in dataGroups" :class="`mr-1 btn ${index === activeGroupId ? 'btn-success' : 'btn-outline-success'}`"
                         @click="activeGroupId = index">
                     {{ group.name }}
                 </a>
@@ -35,10 +35,12 @@
 
                         <div class="col-12 my-2">
                             <h3 class="h3">Otázky</h3>
+                            <questions-form :questions="activeGroup.questions" :key="`questions-${activeGroup.id}`">
+                            </questions-form>
                         </div>
 
                         <div class="col-12 form-group">
-                            <button class="btn btn-primary" @click="saveActiveGroup()">Uložit</button>
+                            <button class="btn btn-primary" @click="saveActiveGroup()">Uložit skupinu</button>
                         </div>
                     </div>
                 </div>
@@ -48,11 +50,11 @@
 </template>
 
 <script>
-import QuestionForm from "./QuestionForm";
+import QuestionsForm from "./QuestionsForm";
 
 export default {
     components: {
-        QuestionForm,
+        QuestionsForm,
     },
 
     props: {

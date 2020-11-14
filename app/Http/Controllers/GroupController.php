@@ -28,7 +28,7 @@ final class GroupController extends FrontEndController
     {
         $this->authorize(PermissionsEnum::CREATE, Group::class);
         $group = $groupsRepository->create($filter->validated($request));
-
+        $group->load(Group::RELATION_QUESTIONS);
         if ($request->wantsJson()) {
             return $this->responseFactory->json($group->toArray(), 201);
         }
@@ -51,6 +51,7 @@ final class GroupController extends FrontEndController
         $this->authorize(PermissionsEnum::EDIT, $group);
         $group->compactFill($filter->validated($request));
         $groupsRepository->save($group);
+        $group->load(Group::RELATION_QUESTIONS);
 
         if ($request->wantsJson()) {
             return $this->responseFactory->json($group->toArray(), 200);
