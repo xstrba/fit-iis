@@ -18,7 +18,8 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.4",
         "mckenziearts/laravel-notify": "^2.1",
-        "monarobase/country-list": "^3.2"
+        "monarobase/country-list": "^3.2",
+        "ext-fileinfo": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

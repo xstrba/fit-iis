@@ -34,3 +34,5 @@ foreach ($files as $file) {
     /** @noinspection PhpIncludeInspection */
     require $file;
 }
+
+Route::get('media/{path}', 'MediaController@show')->name('media.show');

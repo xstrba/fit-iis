@@ -35,7 +35,9 @@
 
                         <div class="col-12 my-2">
                             <h3 class="h3">Otázky</h3>
-                            <questions-form :questions="activeGroup.questions" :key="`questions-${activeGroup.id}`">
+                            <questions-form :questions="activeGroup.questions"
+                                            :errors="errors[activeGroup.id]"
+                                            :key="`questions-${activeGroup.id}`">
                             </questions-form>
                         </div>
 
@@ -74,6 +76,7 @@ export default {
             dataGroups: this.$props.groups,
             newGroupName: '',
             activeGroupId: 0,
+            errors: {},
         };
     },
 
@@ -104,14 +107,18 @@ export default {
         },
 
         saveActiveGroup() {
+            this.errors[this.activeGroup.id] = {};
             if (this.activeGroup) {
                 axios.put(`/groups/${this.activeGroup.id}`, this.activeGroup)
                     .then((response) => {
                         this.$alert('Skupina uložena');
                         this.dataGroups[this.activeGroupId] = response.data;
+                        this.$forceUpdate();
                     })
                     .catch((error) => {
+                        this.errors[this.activeGroup.id] = error.response.data.errors;
                         this.$alert('Nepovedlo se uložit skupinu. Zkuste znovu.');
+                        this.$forceUpdate();
                     });
             }
         },

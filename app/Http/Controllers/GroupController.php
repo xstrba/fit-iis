@@ -7,6 +7,7 @@ use App\Enums\PermissionsEnum;
 use App\Http\Requests\GroupRequestFilter;
 use App\Models\Group;
 use App\Parents\FrontEndController;
+use App\Services\GroupService;
 use Illuminate\Http\Request;
 
 /**
@@ -20,19 +21,28 @@ final class GroupController extends FrontEndController
      * @param \Illuminate\Http\Request $request
      * @param \App\Http\Requests\GroupRequestFilter $filter
      * @param \App\Contracts\Repositories\GroupsRepositoryInterface $groupsRepository
+     * @param \App\Services\GroupService $groupService
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request, GroupRequestFilter $filter, GroupsRepositoryInterface $groupsRepository)
-    {
+    public function store(
+        Request $request,
+        GroupRequestFilter $filter,
+        GroupsRepositoryInterface $groupsRepository,
+        GroupService $groupService
+    ) {
         $this->authorize(PermissionsEnum::CREATE, Group::class);
         $group = $groupsRepository->create($filter->validated($request));
+        if ($filter->getQuestions() !== null) {
+            $groupService->saveQuestions($group, $filter->getQuestions());
+        }
+
         $group->load(Group::RELATION_QUESTIONS);
+
         if ($request->wantsJson()) {
             return $this->responseFactory->json($group->toArray(), 201);
         }
-
         return $this->back();
     }
 
@@ -40,23 +50,33 @@ final class GroupController extends FrontEndController
      * @param \Illuminate\Http\Request $request
      * @param \App\Http\Requests\GroupRequestFilter $filter
      * @param \App\Contracts\Repositories\GroupsRepositoryInterface $groupsRepository
+     * @param \App\Services\GroupService $groupService
      * @param int $id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, GroupRequestFilter $filter, GroupsRepositoryInterface $groupsRepository, int $id)
-    {
+    public function update(
+        Request $request,
+        GroupRequestFilter $filter,
+        GroupsRepositoryInterface $groupsRepository,
+        GroupService $groupService,
+        int $id
+    ) {
         $group = $groupsRepository->get($id);
         $this->authorize(PermissionsEnum::EDIT, $group);
         $group->compactFill($filter->validated($request));
         $groupsRepository->save($group);
+
+        if ($filter->getQuestions() !== null) {
+            $groupService->saveQuestions($group, $filter->getQuestions());
+        }
+
         $group->load(Group::RELATION_QUESTIONS);
 
         if ($request->wantsJson()) {
             return $this->responseFactory->json($group->toArray(), 200);
         }
-
         return $this->back();
     }
 

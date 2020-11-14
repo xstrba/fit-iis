@@ -6,8 +6,12 @@ use App\Contracts\Repositories\GroupsRepositoryInterface;
 use App\Enums\CountriesEnum;
 use App\Enums\GendersEnum;
 use App\Enums\LanguagesEnum;
+use App\Enums\QuestionTypesEnum;
 use App\Enums\RolesEnum;
+use App\Models\File;
 use App\Models\Group;
+use App\Models\Option;
+use App\Models\Question;
 use App\Models\Test;
 use App\Parents\RequestFilter;
 use Illuminate\Contracts\Hashing\Hasher;
@@ -25,6 +29,8 @@ final class GroupRequestFilter extends RequestFilter
 {
     public const FIELD_NAME = Group::ATTR_NAME;
     public const FIELD_TEST_ID = Group::ATTR_TEST_ID;
+    public const FIELD_QUESTIONS = Group::RELATION_QUESTIONS;
+    public const FIELD_FILE_BASE64 = 'base64';
 
     /**
      * @var \App\Contracts\Repositories\GroupsRepositoryInterface $groupsRepository
@@ -32,19 +38,21 @@ final class GroupRequestFilter extends RequestFilter
     private GroupsRepositoryInterface $groupsRepository;
 
     /**
+     * @var \Illuminate\Http\Request|null $request
+     */
+    private ?Request $request = null;
+
+    /**
      * GroupRequestFilter constructor.
      *
      * @param \Illuminate\Contracts\Validation\Factory $validatorFactory
      * @param \App\Contracts\Repositories\GroupsRepositoryInterface $groupsRepository
-     * @param \Illuminate\Contracts\Hashing\Hasher $hasher
      */
     public function __construct(
         Factory $validatorFactory,
-        \App\Contracts\Repositories\GroupsRepositoryInterface $groupsRepository,
-        Hasher $hasher
+        \App\Contracts\Repositories\GroupsRepositoryInterface $groupsRepository
     ) {
-        $this->usersRepository = $groupsRepository;
-        $this->hasher = $hasher;
+        $this->groupsRepository = $groupsRepository;
         parent::__construct($validatorFactory);
     }
 
@@ -58,6 +66,7 @@ final class GroupRequestFilter extends RequestFilter
      */
     public function validated(Request $request, ?Group $group = null): array
     {
+        $this->request = $request;
         $data = $request->all();
         $rules = $this->getRules($group);
         $validator = $this->validatorFactory->make($data, $rules);
@@ -70,6 +79,18 @@ final class GroupRequestFilter extends RequestFilter
     }
 
     /**
+     * @return mixed[]|null
+     */
+    public function getQuestions(): ?array
+    {
+        if (!$this->request) {
+            return null;
+        }
+
+        return $this->request->input(self::FIELD_QUESTIONS);
+    }
+
+    /**
      * Get validation rules for user request
      *
      * @param \App\Models\Group|null $group
@@ -78,9 +99,79 @@ final class GroupRequestFilter extends RequestFilter
     private function getRules(?Group $group): array
     {
         $required = $this->getSometimesRequiredRule($group);
-        return [
+        return \array_merge([
             self::FIELD_NAME => [$required, 'string', 'max:255'],
             self::FIELD_TEST_ID => [$required, 'numeric', 'exists:' . Test::table() . ',id'],
+        ], $this->getQuestionsRules($required));
+    }
+
+    /**
+     * Rules for questions field
+     *
+     * @param string $required
+     * @return mixed[]
+     */
+    private function getQuestionsRules(string $required): array
+    {
+        return [
+            self::FIELD_QUESTIONS => [
+                'sometimes',
+                'array',
+            ],
+            self::FIELD_QUESTIONS . '.*' => [
+                'array',
+            ],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_ID => ['sometimes', 'numeric', 'exists:' . Question::table() . ',id'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_NAME => [$required, 'string', 'max:255'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_TEXT => ['nullable', 'string'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_TYPE => [$required, 'numeric', 'in:' . QuestionTypesEnum::instance()->getStringValues()],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_MIN_POINTS => ['sometimes', 'numeric'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_MAX_POINTS => ['sometimes', 'numeric'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_FILES_NUMBER => ['sometimes', 'numeric'],
+
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES => ['sometimes', 'array'],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*' => ['array'],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . File::ATTR_NAME => ['required', 'string'],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . File::ATTR_ID =>[
+                'required_without:' . self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . self::FIELD_FILE_BASE64,
+                'numeric',
+                'exists:' . File::table() . ',id'
+            ],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . self::FIELD_FILE_BASE64 => [
+                'required_without:' . self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . File::ATTR_ID,
+                'string',
+                function (string $attribute, string $value, callable $fail) {
+                    $this->validateBase64($value, $fail);
+                },
+            ],
+
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_OPTIONS => ['sometimes', 'array'],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_OPTIONS . '.*' => ['array'],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_OPTIONS . '.*.' . Option::ATTR_ID => [
+                'sometimes',
+                'numeric',
+                'exists:' . Option::table() . ',id',
+            ],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_OPTIONS . '.*.' . Option::ATTR_TEXT => [
+                'required',
+                'string',
+            ],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_OPTIONS . '.*.' . Option::ATTR_POINTS => [
+                'sometimes',
+                'numeric',
+            ],
         ];
+    }
+
+    /**
+     * @param string $value
+     * @param callable $fail
+     */
+    private function validateBase64(string $value, callable $fail): void
+    {
+        $data = \explode(',', $value)[1] ?? '';
+        if (\base64_encode(\base64_decode($data, true)) !== $data) {
+            $fail('invalid_base64');
+        }
     }
 }
