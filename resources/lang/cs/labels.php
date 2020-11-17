@@ -44,6 +44,8 @@ return [
     'assistants' => 'Asistenti',
     'time' => 'Čas',
     'filter_roles' => 'Podle rolí',
+    'pick_group' => 'Vyberte skupinu',
+    'startverb' => 'Začít',
 
     // genders enum
     'male' => 'Muž',

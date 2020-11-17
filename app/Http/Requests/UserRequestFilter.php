@@ -131,12 +131,13 @@ final class UserRequestFilter extends RequestFilter
             ],
             self::FIELD_ROLE => [
                 $required,
-                'int',
+                'numeric',
                 RolesEnum::instance()->getValidationRule(),
             ],
             self::FIELD_PASSWORD => [
                 'nullable',
                 'string',
+                'max:255',
                 'confirmed',
             ],
             self::FIELD_BIRTH => [
@@ -144,12 +145,12 @@ final class UserRequestFilter extends RequestFilter
                 'string',
                 'date_format:Y-m-d',
             ],
-            self::FIELD_STREET => [$required, 'string'],
-            self::FIELD_HOUSE_NUMBER => [$required, 'string'],
-            self::FIELD_CITY => [$required, 'string'],
+            self::FIELD_STREET => [$required, 'string', 'max:255'],
+            self::FIELD_HOUSE_NUMBER => [$required, 'string', 'max:255'],
+            self::FIELD_CITY => [$required, 'string', 'max:255'],
             self::FIELD_COUNTRY => [$required, 'string', CountriesEnum::instance()->getValidationRule()],
             self::FIELD_GENDER => [$required, 'string', GendersEnum::instance()->getValidationRule()],
-            self::FIELD_PHONE => [$required, 'string', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10'],
+            self::FIELD_PHONE => [$required, 'string', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:10', 'max:255'],
             self::FIELD_LANGUAGE => ['sometimes', 'string', LanguagesEnum::instance()->getValidationRule()],
         ];
     }

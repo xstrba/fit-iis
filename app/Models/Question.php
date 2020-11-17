@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\Traits\HasFileTraitInterface;
+use App\Enums\QuestionTypesEnum;
 use App\Models\Traits\HasFilesTrait;
 use App\Parents\Model;
 
@@ -88,5 +89,59 @@ final class Question extends Model implements HasFileTraitInterface
     public function options(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Option::class, Option::ATTR_QUESTION_ID);
+    }
+
+    /**
+     * Get real value of min points, considering points for options
+     *
+     * @param int $value
+     * @return int
+     */
+    public function getMinPointsAttribute(int $value): int
+    {
+        if ($this->type === QuestionTypesEnum::OPTIONS_CHECKBOX) {
+            return (int)\array_sum(\array_merge([0], $this->options->filter(static function (Option $option): bool {
+                return $option->points < 0;
+            })->map(static function (Option $option): int {
+                return $option->points;
+            })->toArray()));
+        }
+
+        if ($this->type === QuestionTypesEnum::OPTIONS) {
+            return (int)\min(\array_merge([0], $this->options->filter(static function (Option $option): bool {
+                return $option->points < 0;
+            })->map(static function (Option $option): int {
+                return $option->points;
+            })->toArray()));
+        }
+
+        return $value;
+    }
+
+    /**
+     * Get real value of max points, considering points for options
+     *
+     * @param int $value
+     * @return int
+     */
+    public function getMaxPointsAttribute(int $value): int
+    {
+        if ($this->type === QuestionTypesEnum::OPTIONS_CHECKBOX) {
+            return (int)\array_sum(\array_merge([0], $this->options->filter(static function (Option $option): bool {
+                return $option->points > 0;
+            })->map(static function (Option $option): int {
+                return $option->points;
+            })->toArray()));
+        }
+
+        if ($this->type === QuestionTypesEnum::OPTIONS) {
+            return (int)\max(\array_merge([0], $this->options->filter(static function (Option $option): bool {
+                return $option->points > 0;
+            })->map(static function (Option $option): int {
+                return $option->points;
+            })->toArray()));
+        }
+
+        return $value;
     }
 }

@@ -9,3 +9,7 @@ Route::post('tests/{id}/accept-assistant/{userId}', 'TestController@acceptAssist
 Route::post('tests/{id}/restore', 'TestController@restore')->name('tests.restore');
 Route::post('json/filters/tests', 'TestController@jsonFilters')->name('tests.json.filters');
 Route::get('json/tests', 'TestController@indexJson')->name('tests.json.index');
+
+// users playing tests
+Route::post('tests/{id}/start', 'TestSolutionController@start')->name('tests.start');
+Route::get('tests/{id}/solution', 'TestSolutionController@solution')->name('tests.solution');

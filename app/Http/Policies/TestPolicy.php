@@ -3,9 +3,13 @@
 namespace App\Http\Policies;
 
 use App\Enums\RolesEnum;
+use App\Models\Group;
+use App\Models\GroupStudent;
 use App\Models\Test;
+use App\Models\TestAssistant;
 use App\Models\User;
 use App\Parents\Policy;
+use Illuminate\Support\Carbon;
 
 /**
  * Class TestPolicy
@@ -91,5 +95,45 @@ final class TestPolicy extends Policy
     public function acceptAssistant(User $user, Test $test): bool
     {
         return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $test->professor->is($user);
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function startTest(User $user, Test $test): bool
+    {
+        if (!$test->isValid()) {
+            return false;
+        }
+
+        return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $test->professor_id === $user->id ||
+            $test->assistants()->wherePivot(TestAssistant::ATTR_ACCEPTED, true)->get()->contains($user->getKey()) ||
+            (
+                !$user->testSolutions()->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())->first() &&
+                $test->start_date->lt(Carbon::now())
+            );
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function solveTest(User $user, Test $test): bool
+    {
+        if (!$test->isValid()) {
+            return false;
+        }
+
+        if ($user->role < RolesEnum::ROLE_ASSISTANT && $test->start_date->addMinutes($test->time_limit)->gte(Carbon::now())) {
+            return false;
+        }
+
+        return (bool)$user->testSolutions()
+            ->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())
+            ->where(GroupStudent::ATTR_FINISHED, false)
+            ->first();
     }
 }

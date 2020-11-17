@@ -101,4 +101,25 @@ final class Test extends Model
     {
         return $this->hasMany(Group::class, Group::ATTR_TEST_ID);
     }
+
+    /**
+     * Test is valid if has at least one group and each group has
+     * at least the amount of questions specified in questions number
+     *
+     * @return bool
+     */
+    public function isValid(): bool
+    {
+        if ($this->groups->count() < 1) {
+            return false;
+        }
+
+        foreach ($this->groups as $group) {
+            if ($group->questions->count() < $this->questions_number) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

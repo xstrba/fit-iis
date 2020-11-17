@@ -123,15 +123,15 @@ final class GroupRequestFilter extends RequestFilter
             ],
             self::FIELD_QUESTIONS . '.*.' . Question::ATTR_ID => ['sometimes', 'numeric', 'exists:' . Question::table() . ',id'],
             self::FIELD_QUESTIONS . '.*.' . Question::ATTR_NAME => [$required, 'string', 'max:255'],
-            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_TEXT => ['nullable', 'string'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_TEXT => ['nullable', 'string', 'max:10000'],
             self::FIELD_QUESTIONS . '.*.' . Question::ATTR_TYPE => [$required, 'numeric', 'in:' . QuestionTypesEnum::instance()->getStringValues()],
-            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_MIN_POINTS => ['sometimes', 'numeric'],
-            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_MAX_POINTS => ['sometimes', 'numeric'],
-            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_FILES_NUMBER => ['sometimes', 'numeric'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_MIN_POINTS => ['sometimes', 'numeric', 'max:1000'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_MAX_POINTS => ['sometimes', 'numeric', 'max:1000'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_FILES_NUMBER => ['sometimes', 'numeric', 'max:20'],
 
             self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES => ['sometimes', 'array'],
             self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*' => ['array'],
-            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . File::ATTR_NAME => ['required', 'string'],
+            self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . File::ATTR_NAME => ['required', 'string', 'max:255'],
             self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . File::ATTR_ID =>[
                 'required_without:' . self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . self::FIELD_FILE_BASE64,
                 'numeric',
@@ -140,6 +140,7 @@ final class GroupRequestFilter extends RequestFilter
             self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . self::FIELD_FILE_BASE64 => [
                 'required_without:' . self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*.' . File::ATTR_ID,
                 'string',
+                'max:4000000',
                 function (string $attribute, string $value, callable $fail) {
                     $this->validateBase64($value, $fail);
                 },
@@ -155,10 +156,13 @@ final class GroupRequestFilter extends RequestFilter
             self::FIELD_QUESTIONS . '.*.' . Question::RELATION_OPTIONS . '.*.' . Option::ATTR_TEXT => [
                 'required',
                 'string',
+                'max:10000'
             ],
             self::FIELD_QUESTIONS . '.*.' . Question::RELATION_OPTIONS . '.*.' . Option::ATTR_POINTS => [
                 'sometimes',
                 'numeric',
+                'min:-1000',
+                'max:1000',
             ],
         ];
     }

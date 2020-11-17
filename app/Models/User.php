@@ -35,6 +35,7 @@ use Illuminate\Support\Carbon;
  * @property string $address
  * @property int $age
  * @property \Illuminate\Support\Carbon $email_verified_at
+ * @property \Illuminate\Support\Collection|\App\Models\GroupStudent[] $testSolutions
  */
 final class User extends Model implements
     AuthenticatableContract,
@@ -69,6 +70,8 @@ final class User extends Model implements
     public const ATTR_NAME = 'name';
     public const ATTR_ADDRESS = 'address';
     public const ATTR_AGE = 'age';
+
+    public const RELATION_TEST_SOLUTIONS = 'testSolutions';
 
     /**
      * Attributes that are mass assignable
@@ -183,5 +186,15 @@ final class User extends Model implements
     public function getAgeAttribute(): int
     {
         return $this->birth->diffInYears(Carbon::now());
+    }
+
+    /**
+     * User has many test solutions
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function testSolutions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(GroupStudent::class, GroupStudent::ATTR_STUDENT_ID);
     }
 }

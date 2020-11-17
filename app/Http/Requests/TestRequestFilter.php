@@ -100,10 +100,10 @@ final class TestRequestFilter extends RequestFilter
                     $this->validateName($value, $fail, $test);
                 },
             ],
-            self::FIELD_DESCRIPTION => ['nullable', 'string'],
+            self::FIELD_DESCRIPTION => ['nullable', 'string', 'max:10000'],
             self::FIELD_START_DATE => [$required, 'date_format:Y-m-d\TH:i'],
-            self::FIELD_TIME_LIMIT => [$required, 'numeric', 'min:1'],
-            self::FIELD_QUESTIONS_NUMBER => [$required, 'numeric', 'min:1'],
+            self::FIELD_TIME_LIMIT => [$required, 'numeric', 'min:1', 'max:1000'],
+            self::FIELD_QUESTIONS_NUMBER => [$required, 'numeric', 'min:1', 'max:1000'],
         ];
     }
 

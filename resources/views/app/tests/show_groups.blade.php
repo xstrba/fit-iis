@@ -52,7 +52,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row mb-2">
+                                    <div class="row mb-4">
                                         @foreach($question->files as $file)
                                             <div class="col-12">
                                                 <a href="{{ $file->file_url }}" class="text-primary" target="_blank">
@@ -65,6 +65,29 @@
                                             </div>
                                         @endforeach
                                     </div>
+
+                                    @if ($question->type === \App\Enums\QuestionTypesEnum::OPTIONS || $question->type === \App\Enums\QuestionTypesEnum::OPTIONS_CHECKBOX)
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <label>
+                                            @if ($question->type === \App\Enums\QuestionTypesEnum::OPTIONS)
+                                                Vyberte jednu z možností
+                                            @else
+                                                Vyberte možnosti
+                                            @endif
+                                            </label>
+
+                                            <ul class="list-group">
+                                                @foreach($question->options as $option)
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span>{{ $option->text }}</span>
+                                                        <span>Body: {{ $option->points }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
