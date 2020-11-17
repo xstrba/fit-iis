@@ -10,7 +10,6 @@ use App\Queries\GroupsQueryBuilder;
  *
  * @property int $test_id
  * @property string $name
- * @property int $min_points
  * @property \App\Models\Test $test
  * @property \Illuminate\Support\Collection|\App\Models\Question[] $questions
  * @package App\Models
