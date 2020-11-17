@@ -127,16 +127,20 @@ final class TestController extends FrontEndController
         $test = $testsRepository
             ->query()
             ->with([
-                Test::RELATION_ASSISTANTS => static function (BelongsToMany $query): void {
-                    $query->where(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, true);
-                },
+                Test::RELATION_ASSISTANTS,
                 Test::RELATION_PROFESSOR,
                 Test::RELATION_GROUPS . '.' . Group::RELATION_QUESTIONS,
             ])
             ->getById($id);
         $this->authorize(PermissionsEnum::SHOW, $test);
         $this->setTitle('pages.tests.detail', ['test' => $test->name]);
-        return $this->view('app.tests.detail', compact('test'));
+        $assistants = $test->assistants->filter(static function (User $user): bool {
+            return (bool)optional($user->pivot)->getAttributeValue(TestAssistant::ATTR_ACCEPTED);
+        });
+        $askedAssistants = $test->assistants->filter(static function (User $user): bool {
+            return !(bool)optional($user->pivot)->getAttributeValue(TestAssistant::ATTR_ACCEPTED);
+        });
+        return $this->view('app.tests.detail', compact('test', 'assistants', 'askedAssistants'));
     }
 
     /**

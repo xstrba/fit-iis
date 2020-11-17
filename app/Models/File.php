@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Parents\Model;
+use App\Queries\FileQueryBuilder;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -68,6 +69,16 @@ final class File extends Model
                 Storage::disk('local')->delete($file->path);
             }
         });
+    }
+
+    /**
+     * Get query builder for model
+     *
+     * @return \App\Queries\FileQueryBuilder
+     */
+    public function newModelQuery(): FileQueryBuilder
+    {
+        return new FileQueryBuilder($this);
     }
 
     /**

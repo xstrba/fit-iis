@@ -8,6 +8,7 @@ use App\Models\Group;
 use App\Models\Option;
 use App\Models\Question;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 /**
  * Class GroupService
@@ -92,7 +93,7 @@ final class GroupService
                 $base64 = $fileData[GroupRequestFilter::FIELD_FILE_BASE64];
                 $f = \finfo_open();
                 $path = 'questions/' . $question->getKey() . '/' . ($fileData[File::ATTR_NAME] ?? (string)\time());
-                $url = $this->fileService->saveBase64($path, $base64);
+                $url = $this->fileService->saveBase64($path, Str::after($base64, ','));
                 if ($url) {
                     $file = new File([
                         File::ATTR_FILABLE_TYPE => Question::class,
@@ -100,7 +101,7 @@ final class GroupService
                     ]);
                     $file->compactFill([
                         File::ATTR_NAME => ($fileData[File::ATTR_NAME] ?? (string)\time()),
-                        File::ATTR_MIME_TYPE => \finfo_buffer($f, $base64, FILEINFO_MIME_TYPE),
+                        File::ATTR_MIME_TYPE => \finfo_buffer($f, base64_decode(Str::after($base64, ',')), FILEINFO_MIME_TYPE),
                         File::ATTR_FILE_URL => $url,
                         File::ATTR_SIZE => $fileData[File::ATTR_SIZE] ?? 0,
                         File::ATTR_PATH => $path,

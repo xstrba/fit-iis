@@ -51,24 +51,27 @@ const app = new Vue({
 [...document.getElementsByClassName('form-panel-label')].forEach(node => {
    node.addEventListener('click', (event) => {
        let targetPanel = document.getElementById(node.dataset.target);
+       const color = node.dataset.color;
+       let labelsParent = document.getElementById(node.dataset.parent);
 
        [...document.getElementById(targetPanel.dataset.parent).getElementsByClassName('form-panel')].forEach(panel => {
-           if (panel.id !== node.dataset.target) {
+           if (panel.id !== node.dataset.target && panel.dataset.parent === targetPanel.dataset.parent) {
                panel.classList.add('d-none');
            }
        });
 
        targetPanel.classList.remove('d-none');
 
-       [...document.getElementsByClassName('form-panel-label')].forEach(label => {
+       [...labelsParent.getElementsByClassName('form-panel-label')].forEach(label => {
           if (!label.isEqualNode(node)) {
-            label.classList.remove('btn-info');
-            label.classList.add('btn-outline-info');
+            let nodeColor = label.dataset.color;
+            label.classList.remove('btn-' + nodeColor);
+            label.classList.add('btn-outline-' + nodeColor);
           }
        });
 
-       node.classList.remove('btn-outline-info');
-       node.classList.add('btn-info');
+       node.classList.remove('btn-outline-' + color);
+       node.classList.add('btn-' + color);
    });
 });
 

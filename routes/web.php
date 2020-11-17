@@ -35,4 +35,4 @@ foreach ($files as $file) {
     require $file;
 }
 
-Route::get('media/{path}', 'MediaController@show')->name('media.show');
+Route::get('media/{path}', 'MediaController@show')->name('media.show')->where('path', '(.*)?');

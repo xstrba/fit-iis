@@ -17,21 +17,21 @@
             @method('PUT')
         @endif
 
-        <div>
-            @component('app.components.panel-label', ['active' => true, 'target' => 'panelInfo'])
+        <div id="mainLabels">
+            @component('app.components.panel-label', ['active' => true, 'target' => 'panelInfo', 'parent' => 'mainLabels'])
                 @slot('label')
                     Základní informace
                 @endslot
             @endcomponent
 
-            @component('app.components.panel-label', ['target' => 'panelConfig'])
+            @component('app.components.panel-label', ['target' => 'panelConfig', 'parent' => 'mainLabels'])
                 @slot('label')
                     Konfigurace
                 @endslot
             @endcomponent
 
             @if ($test->exists)
-                @component('app.components.panel-label', ['target' => 'panelAssistant'])
+                @component('app.components.panel-label', ['target' => 'panelAssistant', 'parent' => 'mainLabels'])
                     @slot('label')
                         Asistenti
                     @endslot
@@ -39,7 +39,7 @@
             @endif
 
             @if ($test->exists)
-                @component('app.components.panel-label', ['target' => 'panelGroups'])
+                @component('app.components.panel-label', ['target' => 'panelGroups', 'parent' => 'mainLabels'])
                     @slot('label')
                         Skupiny otázek
                     @endslot

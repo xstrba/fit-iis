@@ -39,7 +39,7 @@ return [
     'professor' => 'Profesor',
     'assistant' => 'Asistent',
     'show' => 'Zobrazit',
-    'assistant_request' => 'Požádat o to být asistent',
+    'assistant_request' => 'Přihlásit se jako asistent',
     'minutes_value' => '{0} :val minut|{1} :val minuta|{2,4} :val minuty|{5,*} :val minut',
     'assistants' => 'Asistenti',
     'time' => 'Čas',
