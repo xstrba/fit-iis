@@ -22,6 +22,7 @@ final class PermissionsEnum extends Enum
     public const ACCEPT_ASSISTANT = 'acceptAssistant';
     public const START_TEST = 'startTest';
     public const SOLVE_TEST = 'solveTest';
+    public const FINISH_TEST = 'finishTest';
 
     /**
      * @var array|int[]

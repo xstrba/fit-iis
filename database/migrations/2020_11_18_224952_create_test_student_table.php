@@ -5,9 +5,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Class CreateQuestionStudentTable
+ * Class CreateTestStudentTable
  */
-final class CreateQuestionStudentTable extends Migration
+final class CreateTestStudentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,13 +16,11 @@ final class CreateQuestionStudentTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('question_student', function (Blueprint $table) {
+        Schema::create('test_student', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('question_id')->constrained('question')->onDelete('cascade');
+            $table->foreignId('test_id')->constrained('test')->onDelete('cascade');
             $table->foreignId('student_id')->constrained('user')->onDelete('cascade');
-            $table->longText('text')->nullable();
-            $table->longText('notes')->nullable();
-            $table->integer('points')->default(0);
+            $table->boolean('accepted')->default(false);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -33,8 +31,8 @@ final class CreateQuestionStudentTable extends Migration
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('question_student');
+        Schema::dropIfExists('test_student');
     }
 }

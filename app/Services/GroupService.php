@@ -84,12 +84,27 @@ final class GroupService
      */
     private function saveQuestionFiles(Question $question, array $filesData): void
     {
-        $savedFileIds = [];
+        /**
+         * Get first then delete one by one to also delete files from storage
+         */
+        $toDelete = $question->files()->whereNotIn(File::ATTR_ID, \array_map(
+            static function (array $item): int {
+                return (int)$item[File::ATTR_ID];
+            },
+            \array_filter(
+                $filesData,
+                static function (array $item): bool {
+                    return Arr::exists($item, File::ATTR_ID);
+                }
+            )
+        ))->get();
+
+        foreach ($toDelete as $deleted) {
+            $deleted->forceDelete();
+        }
 
         foreach ($filesData as $fileData) {
-            if (Arr::exists($fileData, File::ATTR_ID)) {
-                $savedFileIds[] = $fileData[File::ATTR_ID];
-            } else if (Arr::exists($fileData, GroupRequestFilter::FIELD_FILE_BASE64))  {
+            if (!Arr::exists($fileData, File::ATTR_ID)) {
                 $base64 = $fileData[GroupRequestFilter::FIELD_FILE_BASE64];
                 $f = \finfo_open();
                 $path = 'questions/' . $question->getKey() . '/' . ($fileData[File::ATTR_NAME] ?? (string)\time());
@@ -99,6 +114,7 @@ final class GroupService
                         File::ATTR_FILABLE_TYPE => Question::class,
                         File::ATTR_FILABLE_ID => $question->getKey(),
                     ]);
+
                     $file->compactFill([
                         File::ATTR_NAME => ($fileData[File::ATTR_NAME] ?? (string)\time()),
                         File::ATTR_MIME_TYPE => \finfo_buffer($f, base64_decode(Str::after($base64, ',')), FILEINFO_MIME_TYPE),
@@ -106,16 +122,10 @@ final class GroupService
                         File::ATTR_SIZE => $fileData[File::ATTR_SIZE] ?? 0,
                         File::ATTR_PATH => $path,
                     ]);
+
                     $file->save();
-                    $savedFileIds[] = $file->getKey();
                 }
             }
-        }
-
-        /** @var File[] $toDelete */
-        $toDelete = $question->files()->whereNotIn(File::ATTR_ID, $savedFileIds)->get();
-        foreach ($toDelete as $fileToDelete) {
-            $fileToDelete->forceDelete();
         }
     }
 

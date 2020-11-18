@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Parents\Model;
 use App\Queries\TestsQueryBuilder;
+use Illuminate\Support\Carbon;
 
 /**
  * Class Test
@@ -16,7 +17,9 @@ use App\Queries\TestsQueryBuilder;
  * @property int $time_limit
  * @property int $questions_number
  * @property \App\Models\User $professor
+ * @property-read \Illuminate\Support\Carbon $end_date
  * @property \Illuminate\Support\Collection|\App\Models\User[] $assistants
+ * @property \Illuminate\Support\Collection|\App\Models\User[] $students
  * @property \Illuminate\Support\Collection|\App\Models\Group[] $groups
  * @package App\Models
  */
@@ -29,10 +32,12 @@ final class Test extends Model
     public const ATTR_START_DATE = 'start_date';
     public const ATTR_TIME_LIMIT = 'time_limit';
     public const ATTR_QUESTIONS_NUMBER = 'questions_number';
+    public const ATTR_END_DATE = 'end_date';
 
     public const RELATION_PROFESSOR = 'professor';
     public const RELATION_ASSISTANTS = 'assistants';
     public const RELATION_GROUPS = 'groups';
+    public const RELATION_STUDENTS = 'students';
 
     /**
      * @var string[] $fillable
@@ -61,6 +66,15 @@ final class Test extends Model
     ];
 
     /**
+     * Attributes appended to json
+     *
+     * @var string[] $appends
+     */
+    protected $appends = [
+        self::ATTR_END_DATE,
+    ];
+
+    /**
      * @return \App\Models\Test|\App\Queries\TestsQueryBuilder|\Illuminate\Database\Eloquent\Builder
      */
     public function newModelQuery()
@@ -79,7 +93,7 @@ final class Test extends Model
     }
 
     /**
-     * Test has one assistant
+     * Test has many assistants
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -92,6 +106,22 @@ final class Test extends Model
             TestAssistant::ATTR_ASSISTANT_ID
         )->withPivot(TestAssistant::ATTR_ACCEPTED)
             ->orderBy(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, 'desc');
+    }
+
+    /**
+     * Test has many students
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function students(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            TestStudent::class,
+            TestStudent::ATTR_TEST_ID,
+            TestStudent::ATTR_STUDENT_ID
+        )->withPivot(TestStudent::ATTR_ACCEPTED)
+            ->orderBy(TestStudent::table() . '.' . TestStudent::ATTR_ACCEPTED, 'desc');
     }
 
     /**
@@ -121,5 +151,15 @@ final class Test extends Model
         }
 
         return true;
+    }
+
+    /**
+     * Add time limit to start date
+     *
+     * @return \Illuminate\Support\Carbon
+     */
+    public function getEndDateAttribute(): Carbon
+    {
+        return $this->start_date->addMinutes($this->time_limit);
     }
 }

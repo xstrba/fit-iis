@@ -42,10 +42,7 @@ final class Option extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function question()
+    public function question(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Question::class, self::ATTR_QUESTION_ID);
     }

@@ -21,6 +21,7 @@ final class CreateGroupStudentTable extends Migration
             $table->foreignId('group_id')->constrained('group')->onDelete('cascade');
             $table->foreignId('student_id')->constrained('user')->onDelete('cascade');
             $table->boolean('finished')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

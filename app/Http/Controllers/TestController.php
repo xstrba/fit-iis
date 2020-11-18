@@ -109,7 +109,7 @@ final class TestController extends FrontEndController
     ): \Illuminate\Http\RedirectResponse {
         $this->authorize(PermissionsEnum::CREATE, Test::class);
         $testsRepository->create($filter->validated($request));
-        $this->notify->success($this->translator->get('messages.tests.created'));
+        $this->notify->success($this->translator->get('messages.tests.created'), '');
         return $this->responseFactory->redirectToRoute('tests.index');
     }
 
@@ -189,7 +189,7 @@ final class TestController extends FrontEndController
         $test = $testsRepository->get($id);
         $this->authorize(PermissionsEnum::EDIT, $test);
         $testsRepository->update($testRequestFilter->validated($request, $test), $test);
-        $this->notify->success($this->translator->get('messages.tests.updated'));
+        $this->notify->success($this->translator->get('messages.tests.updated'), '');
         return $this->back();
     }
 
@@ -212,7 +212,7 @@ final class TestController extends FrontEndController
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'deleted']);
         }
-        $this->notify->success($this->translator->get('messages.tests.deleted'));
+        $this->notify->success($this->translator->get('messages.tests.deleted'), '');
         return $this->back();
     }
 
@@ -232,7 +232,7 @@ final class TestController extends FrontEndController
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'restored']);
         }
-        $this->notify->success($this->translator->get('messages.tests.restored'));
+        $this->notify->success($this->translator->get('messages.tests.restored'), '');
         return $this->back();
     }
 
@@ -252,7 +252,7 @@ final class TestController extends FrontEndController
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'assistant requested']);
         }
-        $this->notify->success($this->translator->get('messages.assistant.requested'));
+        $this->notify->success($this->translator->get('messages.assistant.requested'), '');
         return $this->back();
     }
 
@@ -284,7 +284,7 @@ final class TestController extends FrontEndController
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'assistant accepted']);
         }
-        $this->notify->success($this->translator->get('messages.assistant.accepted'));
+        $this->notify->success($this->translator->get('messages.assistant.accepted'), '');
         return $this->back();
     }
 
@@ -312,7 +312,7 @@ final class TestController extends FrontEndController
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'assistant accepted']);
         }
-        $this->notify->success($this->translator->get('messages.assistant.accepted'));
+        $this->notify->success($this->translator->get('messages.assistant.accepted'), '');
         return $this->back();
     }
 

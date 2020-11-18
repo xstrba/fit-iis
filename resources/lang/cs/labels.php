@@ -46,6 +46,10 @@ return [
     'filter_roles' => 'Podle rolí',
     'pick_group' => 'Vyberte skupinu',
     'startverb' => 'Začít',
+    'solve' => 'Řešit',
+    'end' => 'Konec',
+    'max_points' => 'Maximálně bodů',
+    'finish' => 'Ukončit',
 
     // genders enum
     'male' => 'Muž',

@@ -108,12 +108,13 @@ final class TestPolicy extends Policy
             return false;
         }
 
-        return $user->role === RolesEnum::ROLE_ADMINISTRATOR || $test->professor_id === $user->id ||
-            $test->assistants()->wherePivot(TestAssistant::ATTR_ACCEPTED, true)->get()->contains($user->getKey()) ||
-            (
-                !$user->testSolutions()->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())->first() &&
+        return (
+                $user->role === RolesEnum::ROLE_ADMINISTRATOR ||
+                $test->professor_id === $user->id ||
+                $test->assistants()->wherePivot(TestAssistant::ATTR_ACCEPTED, true)->get()->contains($user->getKey()) ||
                 $test->start_date->lt(Carbon::now())
-            );
+            ) &&
+            !$user->testSolutions->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())->first();
     }
 
     /**
@@ -135,5 +136,31 @@ final class TestPolicy extends Policy
             ->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())
             ->where(GroupStudent::ATTR_FINISHED, false)
             ->first();
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function finishTest(User $user, Test $test): bool
+    {
+        if (!$test->isValid()) {
+            return false;
+        }
+
+        if ($user->role === RolesEnum::ROLE_ADMINISTRATOR) {
+            return true;
+        }
+
+        if ($user->role === RolesEnum::ROLE_PROFESSOR && $user->id === $test->professor_id) {
+            return true;
+        }
+
+        return $test->assistants()->wherePivot(TestAssistant::ATTR_ACCEPTED, true)->get()->contains($user->id) ||
+            $user->testSolutions()->whereIn(
+                GroupStudent::ATTR_GROUP_ID,
+                $test->groups->pluck(Group::ATTR_ID)->toArray()
+            )->where(GroupStudent::ATTR_FINISHED, false)->first();
     }
 }

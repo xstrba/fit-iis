@@ -17,6 +17,7 @@ class CreateQuestionStudentOptionTable extends Migration
             $table->id();
             $table->foreignId('question_student_id')->constrained('question_student')->onDelete('cascade');
             $table->foreignId('option_id')->constrained('option')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

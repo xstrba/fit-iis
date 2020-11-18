@@ -107,6 +107,15 @@
                                             </form>
                                         </td>
                                     </tr>
+                                @elsecan(\App\Enums\PermissionsEnum::SOLVE_TEST, $test)
+                                    <tr>
+                                        <th scope="row" width="200"></th>
+                                        <td>
+                                            <a href="{{ route('tests.solution', $test->id) }}" class="btn btn-info">
+                                                {{ __('labels.solve') }}
+                                            </a>
+                                        </td>
+                                    </tr>
                                 @endcan
                                 </tbody>
                             </table>

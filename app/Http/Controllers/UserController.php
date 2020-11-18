@@ -102,7 +102,7 @@ final class UserController extends FrontEndController
     ): \Illuminate\Http\RedirectResponse {
         $this->authorize(PermissionsEnum::CREATE, User::class);
         $usersRepository->create($filter->validated($request));
-        $this->notify->success($this->translator->get('messages.users.created'));
+        $this->notify->success($this->translator->get('messages.users.created'), '');
         return $this->responseFactory->redirectToRoute('users.index');
     }
 
@@ -164,7 +164,7 @@ final class UserController extends FrontEndController
         $user = $usersRepository->get($id);
         $this->authorize(PermissionsEnum::EDIT, $user);
         $usersRepository->update($userRequestFilter->validated($request, $user), $user);
-        $this->notify->success($this->translator->get('messages.users.updated'));
+        $this->notify->success($this->translator->get('messages.users.updated'), '');
         return $this->back();
     }
 
@@ -187,7 +187,7 @@ final class UserController extends FrontEndController
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'deleted']);
         }
-        $this->notify->success($this->translator->get('messages.users.deleted'));
+        $this->notify->success($this->translator->get('messages.users.deleted'), '');
         return $this->back();
     }
 
@@ -207,7 +207,7 @@ final class UserController extends FrontEndController
         if ($request->wantsJson()) {
             return $this->responseFactory->json(['message' => 'restored']);
         }
-        $this->notify->success($this->translator->get('messages.users.restored'));
+        $this->notify->success($this->translator->get('messages.users.restored'), '');
         return $this->back();
     }
 

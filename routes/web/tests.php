@@ -13,3 +13,4 @@ Route::get('json/tests', 'TestController@indexJson')->name('tests.json.index');
 // users playing tests
 Route::post('tests/{id}/start', 'TestSolutionController@start')->name('tests.start');
 Route::get('tests/{id}/solution', 'TestSolutionController@solution')->name('tests.solution');
+Route::post('tests/{id}/finish', 'TestSolutionController@finish')->name('tests.finish');
