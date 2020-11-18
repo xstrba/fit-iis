@@ -4,6 +4,8 @@
      * @var \App\Models\Test $test
      * @var \App\Models\User[]|\Illuminate\Support\Collection $assistants
      * @var \App\Models\User[]|\Illuminate\Support\Collection $askedAssistants
+     * @var \App\Models\GroupStudent $solution
+     * @var \Illuminate\Support\Collection|\App\Models\QuestionStudent[] $questionSolutions
     */
 @endphp
 
@@ -36,6 +38,14 @@
                     @component('app.components.panel-label', ['target' => 'panelGroups', 'parent' => 'mainLabels'])
                         @slot('label')
                             Skupiny otázek
+                        @endslot
+                    @endcomponent
+                @endif
+
+                @if($solution)
+                    @component('app.components.panel-label', ['target' => 'panelSolution', 'parent' => 'mainLabels'])
+                        @slot('label')
+                            Moje řešení
                         @endslot
                     @endcomponent
                 @endif
@@ -127,6 +137,14 @@
                     @component('app.components.form-panel', ['id' => 'panelGroups', 'parent' => 'testFormPanels'])
                         <div>
                             @include('app.tests.show_groups')
+                        </div>
+                    @endcomponent
+                @endif
+
+                @if($solution)
+                    @component('app.components.form-panel', ['id' => 'panelSolution', 'parent' => 'testFormPanels'])
+                        <div>
+                            @include('app.tests.show_solution')
                         </div>
                     @endcomponent
                 @endif

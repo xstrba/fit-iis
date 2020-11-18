@@ -63,6 +63,7 @@ export default {
         save() {
             this.errors = {},
             this.saved = false;
+            this.dataSolution.points = 0;
             axios.put(`/questionStudents/${this.dataSolution.id}`, this.dataSolution)
                 .then((response) => {
                     this.dataSolution = response.data;

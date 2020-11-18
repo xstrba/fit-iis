@@ -50,6 +50,7 @@ return [
     'end' => 'Konec',
     'max_points' => 'Maximálně bodů',
     'finish' => 'Ukončit',
+    'points' => 'Body',
 
     // genders enum
     'male' => 'Muž',

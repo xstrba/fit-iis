@@ -15,6 +15,9 @@ use App\Queries\QuestionStudentQueryBuilder;
  * @property \App\Models\Question $question
  * @property \App\Models\User $student
  * @property \App\Models\User $user
+ * @property int $points
+ * @property string|null $notes
+ * @property string|null $text
  * @property \Illuminate\Support\Collection|\App\Models\Option $options
  * @property \Illuminate\Support\Collection|\App\Models\File[] $files
  * @package App\Models

@@ -163,7 +163,7 @@ final class TestSolutionController extends FrontEndController
         $this->notify->success('Test ukončen', '');
 
         if ($request->wantsJson()) {
-            return $this->responseFactory->json(['redirect' => $this->urlGenerator->route('tests.detail', $test->id)]);
+            return $this->responseFactory->json(['redirect' => $this->urlGenerator->route('tests.show', $test->id)]);
         }
         return $this->responseFactory->redirectToRoute('tests.show', $test->id);
     }

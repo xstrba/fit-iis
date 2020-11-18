@@ -35,7 +35,7 @@ export default {
 
     methods: {
         checkTime() {
-            if (Date.now() < this.endTime && !this.alertOn) {
+            if (Date.now() >= this.endTime && !this.alertOn) {
                 this.alertOn = true;
                 this.$fire({text: "Test ukončen",
                     confirmButtonText: 'Ok',
@@ -51,7 +51,7 @@ export default {
 
         finish(alert = true) {
             if (alert) {
-                this.$confirm("Naza si přejete ukončit test?", '', null, {
+                this.$confirm("Naozaj si přejete ukončit test?", '', null, {
                     confirmButtonText: 'Ano',
                     cancelButtonText: 'Ne',
                 })

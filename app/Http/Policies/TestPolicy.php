@@ -108,13 +108,20 @@ final class TestPolicy extends Policy
             return false;
         }
 
+        if ($user->role < RolesEnum::ROLE_ASSISTANT) {
+            return $test->start_date->lte(Carbon::now()) &&
+                !$user->testSolutions->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())
+                    ->first();
+        }
+
         return (
                 $user->role === RolesEnum::ROLE_ADMINISTRATOR ||
                 $test->professor_id === $user->id ||
-                $test->assistants()->wherePivot(TestAssistant::ATTR_ACCEPTED, true)->get()->contains($user->getKey()) ||
-                $test->start_date->lt(Carbon::now())
+                $test->assistants()->wherePivot(TestAssistant::ATTR_ACCEPTED, true)->get()->contains($user->getKey())
             ) &&
-            !$user->testSolutions->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())->first();
+            !$user->testSolutions->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())
+                ->where(GroupStudent::ATTR_FINISHED, false)
+                ->first();
     }
 
     /**

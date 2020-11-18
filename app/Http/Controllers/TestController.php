@@ -8,6 +8,9 @@ use App\Enums\PermissionsEnum;
 use App\Enums\RolesEnum;
 use App\Http\Requests\TestRequestFilter;
 use App\Models\Group;
+use App\Models\GroupStudent;
+use App\Models\Question;
+use App\Models\QuestionStudent;
 use App\Models\Test;
 use App\Models\TestAssistant;
 use App\Models\User;
@@ -19,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * Class TestController
@@ -133,14 +137,31 @@ final class TestController extends FrontEndController
             ])
             ->getById($id);
         $this->authorize(PermissionsEnum::SHOW, $test);
+        $user = $this->authService->user();
         $this->setTitle('pages.tests.detail', ['test' => $test->name]);
+
+        /** @var GroupStudent|null $solution */
+        $solution = $user->testSolutions()->whereIn(
+            GroupStudent::ATTR_ID,
+            $test->groups->pluck(Group::ATTR_ID)->toArray()
+        )->where(GroupStudent::ATTR_FINISHED, true)->first();
+
+        $questionSolutions = new Collection();
+        if ($solution) {
+            $questionSolutions = $user->questionSolutions()->whereIn(
+                QuestionStudent::ATTR_QUESTION_ID,
+                $solution->group->questions->pluck(Question::ATTR_ID)->toArray()
+            )->get();
+        }
+
         $assistants = $test->assistants->filter(static function (User $user): bool {
             return (bool)optional($user->pivot)->getAttributeValue(TestAssistant::ATTR_ACCEPTED);
         });
         $askedAssistants = $test->assistants->filter(static function (User $user): bool {
             return !(bool)optional($user->pivot)->getAttributeValue(TestAssistant::ATTR_ACCEPTED);
         });
-        return $this->view('app.tests.detail', compact('test', 'assistants', 'askedAssistants'));
+
+        return $this->view('app.tests.detail', compact('test', 'assistants', 'askedAssistants', 'solution', 'questionSolutions'));
     }
 
     /**
