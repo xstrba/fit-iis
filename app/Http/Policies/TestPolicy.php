@@ -182,7 +182,12 @@ final class TestPolicy extends Policy
             return false;
         }
 
-        return !$test->students->contains($user->id) && $test->start_date->gt(Carbon::now());
+        $isNotStudent = !$test->students->contains($user->id);
+        if ($user->role >= RolesEnum::ROLE_ASSISTANT) {
+            return $isNotStudent;
+        }
+
+        return $isNotStudent && $test->start_date->gt(Carbon::now());
     }
 
     /**

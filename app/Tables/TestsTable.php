@@ -240,9 +240,6 @@ class TestsTable extends Table
         // my all assistant
         $rolesFilter = new Filter('filter_test_role', $this->translator->get('labels.filter_test_role'));
         $rolesOptions = [FilterOption::init(null, $this->translator->get('labels.all_items')),];
-        if ($user->role >= RolesEnum::ROLE_PROFESSOR) {
-            $rolesOptions[] =  FilterOption::init('prof', $this->translator->get('labels.i_am_professor'));
-        }
 
         if ($user->role >= RolesEnum::ROLE_PROFESSOR) {
             $rolesOptions[] =  FilterOption::init('prof', $this->translator->get('labels.i_am_professor'));
