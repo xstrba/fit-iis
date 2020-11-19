@@ -108,19 +108,19 @@ final class TestPolicy extends Policy
             return false;
         }
 
-        if ($user->role < RolesEnum::ROLE_ASSISTANT) {
-            return $test->start_date->lte(Carbon::now()) &&
-                !$user->testSolutions->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())
-                    ->first();
+        if (
+            $user->role === RolesEnum::ROLE_ADMINISTRATOR ||
+            $test->professor_id === $user->id ||
+            $test->assistants()->wherePivot(TestAssistant::ATTR_ACCEPTED, true)->get()->contains($user->getKey())
+        ) {
+            return !$user->testSolutions->whereIn(GroupStudent::ATTR_GROUP_ID,
+                $test->groups->pluck(Group::ATTR_ID)->toArray())
+                ->where(GroupStudent::ATTR_FINISHED, false)
+                ->first();
         }
 
-        return (
-                $user->role === RolesEnum::ROLE_ADMINISTRATOR ||
-                $test->professor_id === $user->id ||
-                $test->assistants()->wherePivot(TestAssistant::ATTR_ACCEPTED, true)->get()->contains($user->getKey())
-            ) &&
+        return $test->start_date->lte(Carbon::now()) &&
             !$user->testSolutions->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())
-                ->where(GroupStudent::ATTR_FINISHED, false)
                 ->first();
     }
 
@@ -178,6 +178,10 @@ final class TestPolicy extends Policy
      */
     public function requestStudent(User $user, Test $test): bool
     {
+        if (!$test->isValid()) {
+            return false;
+        }
+
         return !$test->students->contains($user->id) && $test->start_date->gt(Carbon::now());
     }
 
@@ -188,6 +192,10 @@ final class TestPolicy extends Policy
      */
     public function acceptStudent(User $user, Test $test): bool
     {
+        if (!$test->isValid()) {
+            return false;
+        }
+
         return $test->assistants->contains($user->id) || $test->professor_id === $user->id || $user->role >= RolesEnum::ROLE_PROFESSOR;
     }
 

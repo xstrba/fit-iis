@@ -57,6 +57,7 @@ final class TestSolutionRequestFilter extends RequestFilter
     public function validate(Request $request, Test $test): void
     {
         $this->request = $request;
+
         $user = $this->authService->user();
         if ($user->role < RolesEnum::ROLE_ASSISTANT) {
             if (

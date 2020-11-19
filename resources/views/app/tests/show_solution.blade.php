@@ -85,7 +85,13 @@
                                         @foreach($question->options as $option)
                                             @php
                                                 if ($questionSolution->options->contains($option->id)) {
-                                                    $class = 'last-group-item-success';
+                                                    if ($option->points < 0) {
+                                                        $class = 'list-group-item-danger';
+                                                    } else if ($option->points > 0) {
+                                                        $class = 'list-group-item-success';
+                                                    } else {
+                                                        $class = 'list-group-item-warning';
+                                                    }
                                                 } else {
                                                     $class = '';
                                                 }

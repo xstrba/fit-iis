@@ -25,3 +25,10 @@ Route::post('tests/{id}/request-assistant', 'TestAssistantsController@requestAss
 Route::post('tests/{id}/remove-assistant/{userId}', 'TestAssistantsController@removeAssistant')->name('tests.remove-assistant');
 Route::post('tests/{id}/accept-assistant/{userId}', 'TestAssistantsController@acceptAssistant')->name('tests.accept-assistant');
 
+// my tests
+Route::get('my-tests', 'MyTestsController@index')->name('tests.my');
+Route::post('json/filters/my-tests', 'MyTestsController@jsonFilters')->name('tests.my.json.filters');
+Route::get('json/my-tests', 'MyTestsController@indexJson')->name('tests.my.json.index');
+
+// solution
+Route::get('tests/{id}/solution/{userId}', 'TestSolutionController@usersSolution')->name('tests.solution.users');

@@ -13,7 +13,6 @@ use App\Models\Question;
 use App\Models\QuestionStudent;
 use App\Models\Test;
 use App\Models\TestAssistant;
-use App\Models\TestStudent;
 use App\Models\User;
 use App\Parents\FrontEndController;
 use App\Services\SidebarService;
@@ -143,7 +142,7 @@ final class TestController extends FrontEndController
 
         /** @var GroupStudent|null $solution */
         $solution = $user->testSolutions()->whereIn(
-            GroupStudent::ATTR_ID,
+            GroupStudent::ATTR_GROUP_ID,
             $test->groups->pluck(Group::ATTR_ID)->toArray()
         )->where(GroupStudent::ATTR_FINISHED, true)->first();
 
@@ -259,5 +258,13 @@ final class TestController extends FrontEndController
         }
         $this->notify->success($this->translator->get('messages.tests.restored'), '');
         return $this->back();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function initMiddleware(): void
+    {
+        $this->middleware('auth');
     }
 }

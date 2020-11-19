@@ -28,7 +28,7 @@ use Illuminate\Support\Carbon;
  *
  * @package App\Tables
  */
-final class TestsTable extends Table
+class TestsTable extends Table
 {
     /**
      * @var int $perPage
@@ -48,12 +48,12 @@ final class TestsTable extends Table
     /**
      * @var \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
      */
-    private TestsRepositoryInterface $testsRepository;
+    protected TestsRepositoryInterface $testsRepository;
 
     /**
      * @var \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
      */
-    private UsersRepositoryInterface $usersRepository;
+    protected UsersRepositoryInterface $usersRepository;
 
     /**
      * Table constructor.

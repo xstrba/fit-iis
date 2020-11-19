@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\PermissionsEnum;
+use App\Enums\RolesEnum;
 use App\Models\Test;
 use App\Models\User;
 use App\Sidebar\Sidebar;
@@ -20,6 +21,7 @@ final class SidebarService
     public const ITEM_TESTS = 'tests';
     public const ITEM_USERS = 'users';
     public const ITEM_PROFILE = 'profile';
+    public const ITEM_MY_TESTS = 'my_tests';
 
     /**
      * @var \Illuminate\Contracts\Routing\UrlGenerator $urlGenerator
@@ -56,6 +58,15 @@ final class SidebarService
     {
         $user = $this->authService->user();
         $sidebar = new Sidebar();
+
+        if ($user->role < RolesEnum::ROLE_ADMINISTRATOR) {
+            $sidebar->addItem(new SidebarItem(
+                self::ITEM_MY_TESTS,
+                'tasks',
+                $this->urlGenerator->route('tests.my'),
+                    self::ITEM_MY_TESTS === $activeItem,
+                ));
+        }
 
         if ($user->can(PermissionsEnum::SHOW, Test::class)) {
             $sidebar->addItem(new SidebarItem(

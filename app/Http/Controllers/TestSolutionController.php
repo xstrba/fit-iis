@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Contracts\Repositories\TestsRepositoryInterface;
+use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\PermissionsEnum;
 use App\Http\Requests\StartTestRequestFilter;
 use App\Http\Requests\TestSolutionRequestFilter;
@@ -106,6 +107,7 @@ final class TestSolutionController extends FrontEndController
         $this->authorize(PermissionsEnum::SOLVE_TEST, $test);
         $user = $this->authService->user();
         $filter->validate($request, $test);
+
         if ($filter->getGroupId()) {
             $groupIds = [$filter->getGroupId()];
         } else {
@@ -125,11 +127,13 @@ final class TestSolutionController extends FrontEndController
         ]);
 
         $questionSolutions = $user->questionSolutions()
-            ->whereIn(QuestionStudent::ATTR_QUESTION_ID, $groupSolution->group->questions->pluck(Question::ATTR_ID)->toArray())
+            ->whereIn(QuestionStudent::ATTR_QUESTION_ID,
+                $groupSolution->group->questions->pluck(Question::ATTR_ID)->toArray())
             ->oldest()
             ->get();
 
-        $this->setTitle('pages.tests.solution', ['group' => $groupSolution->group->name, 'test' => $groupSolution->group->test->name]);
+        $this->setTitle('pages.tests.solution',
+            ['group' => $groupSolution->group->name, 'test' => $groupSolution->group->test->name]);
         return $this->view('app.tests.solutions.index', compact('groupSolution', 'questionSolutions'));
     }
 
@@ -166,6 +170,38 @@ final class TestSolutionController extends FrontEndController
             return $this->responseFactory->json(['redirect' => $this->urlGenerator->route('tests.show', $test->id)]);
         }
         return $this->responseFactory->redirectToRoute('tests.show', $test->id);
+    }
+
+    /**
+     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
+     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
+     * @param int $id
+     * @param int $userId
+     */
+    public function usersSolution(
+        TestsRepositoryInterface $testsRepository,
+        UsersRepositoryInterface $usersRepository,
+        int $id,
+        int $userId
+    ) {
+        $test = $testsRepository->get($id);
+        $user = $usersRepository->get($userId);
+
+        /** @var GroupStudent|null $groupSolution */
+        $groupSolution = $user->testSolutions()->whereIn(
+            GroupStudent::ATTR_GROUP_ID,
+            $test->groups->pluck(Group::ATTR_ID)->toArray()
+        )->where(GroupStudent::ATTR_FINISHED, true)->first();
+
+        if (!$groupSolution) {
+            throw new ModelNotFoundException('Řešení nenalezeno');
+        }
+
+        $questionSolutions = $user->questionSolutions()
+            ->whereIn(QuestionStudent::ATTR_QUESTION_ID,
+                $groupSolution->group->questions->pluck(Question::ATTR_ID)->toArray())
+            ->oldest()
+            ->get();
     }
 
     /**
