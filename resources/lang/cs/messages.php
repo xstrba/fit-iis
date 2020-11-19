@@ -13,4 +13,16 @@ return [
         'deleted' => 'Test byl smazán',
         'created' => 'Test byl vytvořen',
     ],
+
+    'assistant' => [
+        'requested' => 'Asistent přihlášen',
+        'accepted' => 'Asistent akceptován',
+        'removed' => 'Asistent odstráněn',
+    ],
+
+    'student' => [
+        'requested' => 'Student přihlášen',
+        'accepted' => 'Student akceptován',
+        'removed' => 'Student odstráněn',
+    ],
 ];

@@ -170,4 +170,34 @@ final class TestPolicy extends Policy
                 $test->groups->pluck(Group::ATTR_ID)->toArray()
             )->where(GroupStudent::ATTR_FINISHED, false)->first();
     }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function requestStudent(User $user, Test $test): bool
+    {
+        return !$test->students->contains($user->id) && $test->start_date->gt(Carbon::now());
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function acceptStudent(User $user, Test $test): bool
+    {
+        return $test->assistants->contains($user->id) || $test->professor_id === $user->id || $user->role >= RolesEnum::ROLE_PROFESSOR;
+    }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function removeStudent(User $user, Test $test): bool
+    {
+        return $test->assistants->contains($user->id) || $test->professor_id === $user->id || $user->role >= RolesEnum::ROLE_PROFESSOR;
+    }
 }

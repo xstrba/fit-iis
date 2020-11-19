@@ -51,6 +51,11 @@ return [
     'max_points' => 'Maximálně bodů',
     'finish' => 'Ukončit',
     'points' => 'Body',
+    'students' => 'Studenti',
+    'accepted' => 'Schváleno',
+    'nonaccepted' => 'Jěště neschváleno',
+    'yes' => 'Ano',
+    'no' => 'Ne',
 
     // genders enum
     'male' => 'Muž',
@@ -78,4 +83,11 @@ return [
     'edit' => 'Upravit',
     'delete' => 'Smazat',
     'restore' => 'Obnovit',
+
+    // students
+    'accept_student' => 'Potvrdit studenta',
+    'remove_student' => 'Odhlásit studenta',
+    'request_student' => 'Přihlásit se jako student',
+    'i_am_student' => 'Jsme přihlášen',
+    'i_have_student_request' => 'Mám přihlášku',
 ];

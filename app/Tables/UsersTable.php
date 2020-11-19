@@ -147,14 +147,18 @@ final class UsersTable extends Table
     }
 
     /**
-     *  @inheritDoc
+     * @inheritDoc
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function initializeFilters(): void
     {
         $itemsFilter = new Filter('filter_items', '');
 
         $options = [FilterOption::init(null, $this->translator->get('labels.all_items'))];
-        if ($this->usersRepository->query()->whereNotNull(User::ATTR_DELETED_AT)->count()) {
+        if (
+            $this->authService->user()->role >= RolesEnum::ROLE_ASSISTANT &&
+            $this->usersRepository->query()->whereNotNull(User::ATTR_DELETED_AT)->count()
+        ) {
             $options[] = FilterOption::init('deleted', $this->translator->get('labels.deleted'));
         }
         $itemsFilter->addOptions($options);

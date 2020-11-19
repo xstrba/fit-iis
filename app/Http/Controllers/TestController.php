@@ -13,12 +13,12 @@ use App\Models\Question;
 use App\Models\QuestionStudent;
 use App\Models\Test;
 use App\Models\TestAssistant;
+use App\Models\TestStudent;
 use App\Models\User;
 use App\Parents\FrontEndController;
-use App\Queries\UsersQueryBuilder;
 use App\Services\SidebarService;
 use App\Tables\TestsTable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Tables\TestStudentsTable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -121,11 +121,12 @@ final class TestController extends FrontEndController
      * Display the specified resource.
      *
      * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
+     * @param \App\Tables\TestStudentsTable $studentsTable
      * @param int $id
      * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show(TestsRepositoryInterface $testsRepository, int $id)
+    public function show(TestsRepositoryInterface $testsRepository, TestStudentsTable $studentsTable, int $id)
     {
         /** @var Test $test */
         $test = $testsRepository
@@ -161,7 +162,10 @@ final class TestController extends FrontEndController
             return !(bool)optional($user->pivot)->getAttributeValue(TestAssistant::ATTR_ACCEPTED);
         });
 
-        return $this->view('app.tests.detail', compact('test', 'assistants', 'askedAssistants', 'solution', 'questionSolutions'));
+        $studentsTable->initializeTable($test);
+
+        return $this->view('app.tests.detail',
+            compact('test', 'assistants', 'askedAssistants', 'solution', 'questionSolutions', 'studentsTable'));
     }
 
     /**
@@ -255,93 +259,5 @@ final class TestController extends FrontEndController
         }
         $this->notify->success($this->translator->get('messages.tests.restored'), '');
         return $this->back();
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function requestAssistant(Request $request, TestsRepositoryInterface $testsRepository, int $id)
-    {
-        $test = $testsRepository->get($id);
-        $this->authorize(PermissionsEnum::REQUEST_ASSISTANT, $test);
-        $test->assistants()->attach($this->authService->getId());
-
-        if ($request->wantsJson()) {
-            return $this->responseFactory->json(['message' => 'assistant requested']);
-        }
-        $this->notify->success($this->translator->get('messages.assistant.requested'), '');
-        return $this->back();
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
-     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
-     * @param int $id
-     * @param int $userId
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function acceptAssistant(
-        Request $request,
-        TestsRepositoryInterface $testsRepository,
-        UsersRepositoryInterface $usersRepository,
-        int $id,
-        int $userId
-    ) {
-        $test = $testsRepository->get($id);
-        $this->authorize(PermissionsEnum::ACCEPT_ASSISTANT, $test);
-        $user = $usersRepository->get($userId);
-        $test->assistants()
-            ->wherePivot(TestAssistant::ATTR_ACCEPTED, false)
-            ->updateExistingPivot($user, [
-                TestAssistant::ATTR_ACCEPTED => true,
-            ], true);
-
-        if ($request->wantsJson()) {
-            return $this->responseFactory->json(['message' => 'assistant accepted']);
-        }
-        $this->notify->success($this->translator->get('messages.assistant.accepted'), '');
-        return $this->back();
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Contracts\Repositories\TestsRepositoryInterface $testsRepository
-     * @param \App\Contracts\Repositories\UsersRepositoryInterface $usersRepository
-     * @param int $id
-     * @param int $userId
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    public function removeAssistant(
-        Request $request,
-        TestsRepositoryInterface $testsRepository,
-        UsersRepositoryInterface $usersRepository,
-        int $id,
-        int $userId
-    ) {
-        $test = $testsRepository->get($id);
-        $this->authorize(PermissionsEnum::REMOVE_ASSISTANT, $test);
-        $user = $usersRepository->get($userId);
-        $test->assistants()->detach($user->getKey());
-
-        if ($request->wantsJson()) {
-            return $this->responseFactory->json(['message' => 'assistant accepted']);
-        }
-        $this->notify->success($this->translator->get('messages.assistant.accepted'), '');
-        return $this->back();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function initMiddleware(): void
-    {
-        $this->middleware('auth');
     }
 }

@@ -1,12 +1,13 @@
 @php
-    /**
-     * @var \App\Models\User $auth
-     * @var \App\Models\Test $test
-     * @var \App\Models\User[]|\Illuminate\Support\Collection $assistants
-     * @var \App\Models\User[]|\Illuminate\Support\Collection $askedAssistants
-     * @var \App\Models\GroupStudent $solution
-     * @var \Illuminate\Support\Collection|\App\Models\QuestionStudent[] $questionSolutions
-    */
+/**
+ * @var \App\Models\User $auth
+ * @var \App\Models\Test $test
+ * @var \App\Models\User[]|\Illuminate\Support\Collection $assistants
+ * @var \App\Models\User[]|\Illuminate\Support\Collection $askedAssistants
+ * @var \App\Models\GroupStudent $solution
+ * @var \Illuminate\Support\Collection|\App\Models\QuestionStudent[] $questionSolutions
+ * @var \App\Tables\TestStudentsTable $studentsTable
+*/
 @endphp
 
 @extends('layouts.app')
@@ -24,6 +25,14 @@
                 @if ($askedAssistants->contains($auth->getKey()))
                     <button class="btn btn-success" disabled>Požádali jste o to být asistent</button>
                 @endif
+            @endcan
+
+            @can(\App\Enums\PermissionsEnum::REQUEST_STUDENT, $test)
+                <form action="{{ route('tests.request-student', $test->id) }}" id="requestStudentForm"
+                      method="POST">
+                    @csrf
+                    <button class="btn btn-outline-success" type="submit">Přihlásit se jako student</button>
+                </form>
             @endcan
         </div>
         <div>
@@ -49,6 +58,12 @@
                         @endslot
                     @endcomponent
                 @endif
+
+                @component('app.components.panel-label', ['target' => 'panelStudents', 'parent' => 'mainLabels'])
+                    @slot('label')
+                        {{ __('labels.students') }}
+                    @endslot
+                @endcomponent
             </div>
             <div id="testFormPanels">
                 @component('app.components.form-panel', ['id' => 'panelInfo', 'active' => true, 'parent' => 'testFormPanels'])
@@ -148,6 +163,24 @@
                         </div>
                     @endcomponent
                 @endif
+
+                @component('app.components.form-panel', ['id' => 'panelStudents', 'parent' => 'testFormPanels'])
+                    <div>
+                        <data-table :fields="{{ $studentsTable->getColumnsJson() }}"
+                                    api-url="{{ $studentsTable->getBaseApiUrl() }}"
+                                    filters-url="{{ route('tests.students.json.filters', $test->id) }}">
+                            <template slot="test_student.accepted" slot-scope="{rowData}">
+                                <span>
+                                    <i v-if="rowData['test_student.accepted']" class="fas fa-check-circle fa-2x text-success"></i>
+                                    <i v-else class="fas fa-times-circle fa-2x text-danger"></i>
+                                </span>
+                            </template>
+                            <template slot="nickname" slot-scope="{rowData}">
+                                <a :href="`/users/${rowData.id}`" class="text-info">@{{ rowData.nickname }}</a>
+                            </template>
+                        </data-table>
+                    </div>
+                @endcomponent
             </div>
         </div>
     @else

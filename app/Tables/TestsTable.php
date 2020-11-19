@@ -8,6 +8,7 @@ use App\Enums\PermissionsEnum;
 use App\Enums\RolesEnum;
 use App\Models\Test;
 use App\Models\TestAssistant;
+use App\Models\TestStudent;
 use App\Models\User;
 use App\Parents\Table;
 use App\Queries\TestsQueryBuilder;
@@ -20,6 +21,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 /**
  * Class TestsTable
@@ -84,10 +86,15 @@ final class TestsTable extends Table
 
     /**
      * @inheritDoc
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function getData(Request $request): LengthAwarePaginator
     {
         $query = $this->testsRepository->query();
+
+        if ($this->authService->user()->role < RolesEnum::ROLE_ASSISTANT) {
+            $query->where(Test::ATTR_START_DATE, '>', Carbon::now());
+        }
 
         $this->applyFilters($request, $query);
 
@@ -152,14 +159,19 @@ final class TestsTable extends Table
     }
 
     /**
-     *  @inheritDoc
+     * @inheritDoc
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function initializeFilters(): void
     {
         $itemsFilter = new Filter('filter_items', '');
+        $user = $this->authService->user();
 
         $options = [FilterOption::init(null, $this->translator->get('labels.all_items'))];
-        if ($this->testsRepository->query()->whereNotNull(Test::ATTR_DELETED_AT)->count()) {
+        if (
+            $this->authService->user()->role >= RolesEnum::ROLE_ASSISTANT &&
+            $this->testsRepository->query()->whereNotNull(Test::ATTR_DELETED_AT)->count()
+        ) {
             $options[] = FilterOption::init('deleted', $this->translator->get('labels.deleted'));
         }
         $itemsFilter->addOptions($options);
@@ -227,13 +239,27 @@ final class TestsTable extends Table
 
         // my all assistant
         $rolesFilter = new Filter('filter_test_role', $this->translator->get('labels.filter_test_role'));
+        $rolesOptions = [FilterOption::init(null, $this->translator->get('labels.all_items')),];
+        if ($user->role >= RolesEnum::ROLE_PROFESSOR) {
+            $rolesOptions[] =  FilterOption::init('prof', $this->translator->get('labels.i_am_professor'));
+        }
 
-        $rolesFilter->addOptions([
-            FilterOption::init(null, $this->translator->get('labels.all_items')),
-            FilterOption::init('prof', $this->translator->get('labels.i_am_professor')),
-            FilterOption::init('assis', $this->translator->get('labels.i_am_assistant')),
-            FilterOption::init('assis_req', $this->translator->get('labels.i_have_assistant_request')),
-        ]);
+        if ($user->role >= RolesEnum::ROLE_PROFESSOR) {
+            $rolesOptions[] =  FilterOption::init('prof', $this->translator->get('labels.i_am_professor'));
+        }
+
+        if ($user->role >= RolesEnum::ROLE_ASSISTANT) {
+            $rolesOptions[] =  FilterOption::init('assis', $this->translator->get('labels.i_am_assistant'));
+            $rolesOptions[] = FilterOption::init('assis_req', $this->translator->get('labels.i_have_assistant_request'));
+        }
+
+        if ($user->role < RolesEnum::ROLE_ASSISTANT) {
+            $rolesOptions[] =  FilterOption::init('student', $this->translator->get('labels.i_am_student'));
+            $rolesOptions[] = FilterOption::init('student_req', $this->translator->get('labels.i_have_student_request'));
+        }
+
+        $rolesFilter->addOptions($rolesOptions);
+
         $this->addFilter($rolesFilter, function (TestsQueryBuilder $query, ?string $value = null): TestsQueryBuilder {
             if ($value === 'prof') {
                 return $query->where(Test::ATTR_PROFESSOR_ID, $this->authService->getId());
@@ -250,6 +276,20 @@ final class TestsTable extends Table
                 return $query->whereHas(Test::RELATION_ASSISTANTS, function (UsersQueryBuilder $subQuery): void {
                     $subQuery->where(TestAssistant::table() . '.' . TestAssistant::ATTR_ACCEPTED, false)
                         ->where(TestAssistant::ATTR_ASSISTANT_ID, $this->authService->getId());
+                });
+            }
+
+            if ($value === 'student') {
+                return $query->whereHas(Test::RELATION_STUDENTS, function (UsersQueryBuilder $subQuery): void {
+                    $subQuery->where(TestStudent::table() . '.' . TestStudent::ATTR_ACCEPTED, true)
+                        ->where(TestStudent::ATTR_STUDENT_ID, $this->authService->getId());
+                });
+            }
+
+            if ($value === 'student_req') {
+                return $query->whereHas(Test::RELATION_STUDENTS, function (UsersQueryBuilder $subQuery): void {
+                    $subQuery->where(TestStudent::table() . '.' . TestStudent::ATTR_ACCEPTED, false)
+                        ->where(TestStudent::ATTR_STUDENT_ID, $this->authService->getId());
                 });
             }
             return $query;
@@ -284,9 +324,18 @@ final class TestsTable extends Table
 
         if ($auth->can(PermissionsEnum::REQUEST_ASSISTANT, $test)) {
             $actions[] = $this->getActionData(
-                'eye',
+                'check',
                 $this->translator->get('labels.assistant_request'),
                 $this->urlGenerator->route('tests.request-assistant', $test->getKey()),
+                'post'
+            );
+        }
+
+        if ($auth->role < RolesEnum::ROLE_ASSISTANT && $auth->can(PermissionsEnum::REQUEST_STUDENT, $test)) {
+            $actions[] = $this->getActionData(
+                'check',
+                $this->translator->get('labels.request_student'),
+                $this->urlGenerator->route('tests.request-student', $test->getKey()),
                 'post'
             );
         }
