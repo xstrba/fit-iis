@@ -69,13 +69,13 @@ final class TestSolutionRequestFilter extends RequestFilter
                 ]);
             }
 
-            if ($test->start_date->lt(Carbon::now())) {
+            if ($test->start_date->gt(Carbon::now())) {
                 throw ValidationException::withMessages([
                     self::FIELD_TIME => "Jěště nemůžete řešit test.",
                 ]);
             }
 
-            if ($test->start_date->gte(Carbon::now())) {
+            if ($test->end_date->lte(Carbon::now())) {
                 throw ValidationException::withMessages([
                     self::FIELD_TIME => "Už nemůžete řešit test.",
                 ]);

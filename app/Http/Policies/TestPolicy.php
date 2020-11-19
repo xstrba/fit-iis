@@ -135,7 +135,11 @@ final class TestPolicy extends Policy
             return false;
         }
 
-        if ($user->role < RolesEnum::ROLE_ASSISTANT && $test->start_date->addMinutes($test->time_limit)->gte(Carbon::now())) {
+        if (
+            $user->role < RolesEnum::ROLE_ASSISTANT &&
+            $test->start_date->gte(Carbon::now()) &&
+            $test->start_date->addMinutes($test->time_limit)->lt(Carbon::now())
+        ) {
             return false;
         }
 

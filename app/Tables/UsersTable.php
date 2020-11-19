@@ -180,7 +180,7 @@ final class UsersTable extends Table
         }
         $rolesFilter->addOptions($rolesOptions);
         $this->addFilter($rolesFilter, static function (UsersQueryBuilder $query, ?string $value = null): UsersQueryBuilder {
-            if (!$value) {
+            if ($value === null) {
                 return $query;
             }
 

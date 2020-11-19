@@ -64,7 +64,7 @@ final class StartTestRequestFilter extends RequestFilter
                 ]);
             }
 
-            if ($test->start_date->lt(Carbon::now())) {
+            if ($test->start_date->gte(Carbon::now())) {
                 throw ValidationException::withMessages([
                     self::FIELD_TIME => "Jěště nemůžete začít test.",
                 ]);
