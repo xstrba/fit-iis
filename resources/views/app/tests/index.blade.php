@@ -9,7 +9,7 @@
 
 @section('content')
     <div>
-        @can(\App\Enums\PermissionsEnum::CREATE, \App\Models\User::class)
+        @can(\App\Enums\PermissionsEnum::CREATE, \App\Models\Test::class)
             <div class="actions text-right mb-4">
                 <a href="{{ route('tests.create') }}" class="btn btn-info">
                     <i class="fas fa-plus-circle"></i> {{ trans('labels.new_test') }}

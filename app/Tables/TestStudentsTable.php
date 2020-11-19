@@ -202,6 +202,7 @@ final class TestStudentsTable extends Table
         $auth = $this->authService->user();
         if (
             $auth->role >= RolesEnum::ROLE_PROFESSOR ||
+            $user->is($auth) ||
             $this->test->assistants->where('pivot.' . TestAssistant::ATTR_ACCEPTED, true)->contains($auth->id)
         ) {
             /** @var GroupStudent|null $groupSolution */

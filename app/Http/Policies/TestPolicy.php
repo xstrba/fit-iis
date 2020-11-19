@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\GroupStudent;
 use App\Models\Test;
 use App\Models\TestAssistant;
+use App\Models\TestStudent;
 use App\Models\User;
 use App\Parents\Policy;
 use Illuminate\Support\Carbon;
@@ -120,6 +121,11 @@ final class TestPolicy extends Policy
         }
 
         return $test->start_date->lte(Carbon::now()) &&
+            $test->end_date->gt(Carbon::now()) &&
+            $test->students()
+                ->where(TestStudent::ATTR_ACCEPTED, true)
+                ->where(TestStudent::ATTR_STUDENT_ID, $user->id)
+                ->first() &&
             !$user->testSolutions->whereIn(GroupStudent::ATTR_GROUP_ID, $test->groups->pluck(Group::ATTR_ID)->toArray())
                 ->first();
     }
@@ -137,8 +143,14 @@ final class TestPolicy extends Policy
 
         if (
             $user->role < RolesEnum::ROLE_ASSISTANT &&
-            $test->start_date->gte(Carbon::now()) &&
-            $test->start_date->addMinutes($test->time_limit)->lt(Carbon::now())
+            (
+                $test->start_date->gte(Carbon::now()) ||
+                $test->start_date->addMinutes($test->time_limit)->lt(Carbon::now()) ||
+                !$test->students()
+                    ->where(TestStudent::ATTR_ACCEPTED, true)
+                    ->where(TestStudent::ATTR_STUDENT_ID, $user->id)
+                    ->first()
+            )
         ) {
             return false;
         }

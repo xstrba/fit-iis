@@ -108,6 +108,8 @@ export default {
                         base64: reader.result,
                         size: file.size,
                     });
+
+                    component.saved = false;
                     component.$forceUpdate();
                 };
 
