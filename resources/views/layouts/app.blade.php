@@ -45,7 +45,9 @@
         </main>
     </div>
 </div>
-@include('notify::messages')
+<div id="notifyWrapper">
+    @include('notify::messages')
+</div>
 
 @stack('scripts')
 <script>

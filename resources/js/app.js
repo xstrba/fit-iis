@@ -12,6 +12,12 @@ window.Vue = require('vue');
  * Components
  */
 import DataTable from "./components/DataTable";
+import AssistantsList from "./components/AssistantsList";
+import VueSimpleAlert from "vue-simple-alert";
+import GroupsForm from "./components/GroupsForm";
+import GroupSolution from "./components/GroupSolution";
+import QuestionSolution from "./components/QuestionSolution";
+import GroupEvaluation from "./components/GroupEvaluation";
 
 /**
  * The following block of code may be used to automatically register your
@@ -24,8 +30,6 @@ import DataTable from "./components/DataTable";
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-
 // ignore ion-icons
 Vue.config.ignoredElements = [/^ion-/];
 
@@ -35,10 +39,57 @@ Vue.config.ignoredElements = [/^ion-/];
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.use(VueSimpleAlert);
+
 const app = new Vue({
     el: '#app',
 
     components: {
         DataTable,
+        AssistantsList,
+        GroupsForm,
+        GroupSolution,
+        QuestionSolution,
+        GroupEvaluation,
     },
 });
+
+[...document.getElementsByClassName('form-panel-label')].forEach(node => {
+   node.addEventListener('click', (event) => {
+       let targetPanel = document.getElementById(node.dataset.target);
+       const color = node.dataset.color;
+       let labelsParent = document.getElementById(node.dataset.parent);
+
+       [...document.getElementById(targetPanel.dataset.parent).getElementsByClassName('form-panel')].forEach(panel => {
+           if (panel.id !== node.dataset.target && panel.dataset.parent === targetPanel.dataset.parent) {
+               panel.classList.add('d-none');
+           }
+       });
+
+       targetPanel.classList.remove('d-none');
+
+       [...labelsParent.getElementsByClassName('form-panel-label')].forEach(label => {
+          if (!label.isEqualNode(node)) {
+            let nodeColor = label.dataset.color;
+            label.classList.remove('btn-' + nodeColor);
+            label.classList.add('btn-outline-' + nodeColor);
+          }
+       });
+
+       node.classList.remove('btn-outline-' + color);
+       node.classList.add('btn-' + color);
+   });
+});
+
+let timeEl = document.getElementById('globalTime');
+if (timeEl) {
+    const setGlobalTime  = () => {
+        const date = new Date();
+        window.currentDate = date;
+        timeEl.innerText = date.toLocaleTimeString('cs-CZ', {timeZone: 'Europe/Prague'});
+    };
+
+    // set global time
+    setGlobalTime();
+    setInterval(setGlobalTime, 1000);
+}

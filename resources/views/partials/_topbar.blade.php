@@ -9,6 +9,9 @@
         <i class="fas fa-bars"></i>
     </button>
     @auth
-        <span class="ml-5">{{ $auth->nickname }} - {{ __('roles.' . $auth->role) }}</span>
+        <span class="ml-4">{{ $auth->nickname }} - {{ __('roles.' . $auth->role) }}</span>
     @endauth
+    <span class="text-primary ml-4">
+        {{ __('labels.time') }}: <span class="font-weight-bold" id="globalTime"></span>
+    </span>
 </div>

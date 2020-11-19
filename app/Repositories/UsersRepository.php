@@ -4,9 +4,7 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Models\User;
-use App\Parents\Model;
 use App\Queries\UsersQueryBuilder;
-use Highlight\Mode;
 use Illuminate\Support\Collection;
 
 /**

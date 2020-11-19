@@ -74,20 +74,28 @@ final class LoginController extends Controller
     /**
      * Attempt to log the user into the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return bool
      * @noinspection ReturnTypeCanBeDeclaredInspection
+     * @throws \Illuminate\Validation\ValidationException
      */
     protected function attemptLogin(Request $request)
     {
-        /** @var User|null $user */
-        $user = $this->usersRepository->query()->whereEmailOrNickname(
+        $query = $this->usersRepository->query()->whereEmailOrNickname(
             $request->input($this->username(), '')
-        )->getFirst();
+        );
+        if ($request->input(User::ATTR_ROLE) !== null) {
+            $query->whereRole($request->input(User::ATTR_ROLE));
+        }
+
+        /** @var User|null $user */
+        $user = $query->getFirst();
 
         $credentials = $this->credentials($request);
         if ($user) {
             $credentials[$this->username()] = $user->getAttributeValue($this->username());
+        } else {
+            $this->sendFailedLoginResponse($request);
         }
 
         return $this->guard()->attempt(

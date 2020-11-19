@@ -11,6 +11,7 @@ use App\Parents\Enum;
  */
 final class LanguagesEnum extends Enum
 {
+    // english language is not yet supported
     public const EN = 'en';
     public const CZ = 'cs';
 
@@ -19,6 +20,5 @@ final class LanguagesEnum extends Enum
      */
     protected array $values = [
         self::CZ,
-        self::EN,
     ];
 }

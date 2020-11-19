@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
+ * @property \App\Parents\Model|null pivot
  */
 abstract class Model extends FWModel
 {
@@ -27,6 +28,8 @@ abstract class Model extends FWModel
     public const ATTR_DELETED_AT = 'deleted_at';
 
     /**
+     * Fill model with given values
+     *
      * @param mixed[] $data
      * @return void
      */
@@ -46,6 +49,14 @@ abstract class Model extends FWModel
     public function getTable()
     {
         return $this->table ?? Str::snake(Str::studly(class_basename($this)));
+    }
+
+    /**
+     * @return string
+     */
+    public static function table(): string
+    {
+        return (new static())->getTable();
     }
 
     /**

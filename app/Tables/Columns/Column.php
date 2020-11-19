@@ -150,9 +150,7 @@ final class Column
             $data[self::PROPERTY_TITLE_CLASS] = $this->class;
         }
 
-        if ($this->width) {
-            $data[self::PROPERTY_WIDTH] = $this->width;
-        }
+        $data[self::PROPERTY_WIDTH] = $this->width ?: '200px';
 
         return $data;
     }

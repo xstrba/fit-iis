@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Contracts\Repositories\GroupsRepositoryInterface;
+use App\Contracts\Repositories\TestsRepositoryInterface;
 use App\Contracts\Repositories\UsersRepositoryInterface;
+use App\Repositories\GroupsRepository;
+use App\Repositories\TestsRepository;
 use App\Repositories\UsersRepository;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,5 +26,7 @@ final class RepositoriesServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(UsersRepositoryInterface::class, UsersRepository::class);
+        $this->app->bind(TestsRepositoryInterface::class, TestsRepository::class);
+        $this->app->bind(GroupsRepositoryInterface::class, GroupsRepository::class);
     }
 }

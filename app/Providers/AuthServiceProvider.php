@@ -2,7 +2,13 @@
 
 namespace App\Providers;
 
+use App\Http\Policies\GroupPolicy;
+use App\Http\Policies\QuestionStudentPolicy;
+use App\Http\Policies\TestPolicy;
 use App\Http\Policies\UserPolicy;
+use App\Models\Group;
+use App\Models\QuestionStudent;
+use App\Models\Test;
 use App\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -20,6 +26,9 @@ final class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         User::class => UserPolicy::class,
+        Test::class => TestPolicy::class,
+        Group::class => GroupPolicy::class,
+        QuestionStudent::class => QuestionStudentPolicy::class,
     ];
 
     /**

@@ -222,6 +222,7 @@ abstract class Table
     {
         $this->addColumn(
             Column::init(self::FIELD_ACTIONS, $this->translator->get('labels.' . self::FIELD_ACTIONS))
+                ->width("100px")
                 ->right()
         );
     }
@@ -292,17 +293,15 @@ abstract class Table
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @param \App\Parents\QueryBuilder $query
+     * @param \App\Parents\QueryBuilder|\Illuminate\Database\Eloquent\Relations\Relation $query
      */
-    protected function applyFilters(Request $request, QueryBuilder $query): void
+    protected function applyFilters(Request $request, $query): void
     {
         foreach ($this->filterFunctions as $filterKey => $filterFunction) {
             $requestValue = $request->input($filterKey, null);
 
-            if ($requestValue !== null ) {
-                if (\strpos(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue)) {
-                    $requestValue = \explode(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue);
-                }
+            if (($requestValue !== null) && \strpos(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue)) {
+                $requestValue = \explode(self::QUERY_FILTER_VALUE_DELIMITER, $requestValue);
             }
 
             $filterFunction($query, $requestValue);
