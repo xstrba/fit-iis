@@ -156,7 +156,7 @@ final class MyTestsTable extends TestsTable
         $groupSolution = $user->testSolutions()->whereIn(
             GroupStudent::ATTR_GROUP_ID,
             $test->groups->pluck(Group::ATTR_ID)->toArray()
-        )->first();
+        )->where(GroupStudent::ATTR_FINISHED, true)->first();
 
         if ($groupSolution) {
             $questionSolution = $user->questionSolutions()->whereIn(

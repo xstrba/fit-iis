@@ -17,6 +17,7 @@ import VueSimpleAlert from "vue-simple-alert";
 import GroupsForm from "./components/GroupsForm";
 import GroupSolution from "./components/GroupSolution";
 import QuestionSolution from "./components/QuestionSolution";
+import GroupEvaluation from "./components/GroupEvaluation";
 
 /**
  * The following block of code may be used to automatically register your
@@ -49,6 +50,7 @@ const app = new Vue({
         GroupsForm,
         GroupSolution,
         QuestionSolution,
+        GroupEvaluation,
     },
 });
 

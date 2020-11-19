@@ -6,6 +6,10 @@ use App\Contracts\Repositories\TestsRepositoryInterface;
 use App\Contracts\Repositories\UsersRepositoryInterface;
 use App\Enums\PermissionsEnum;
 use App\Enums\RolesEnum;
+use App\Models\Group;
+use App\Models\GroupStudent;
+use App\Models\Question;
+use App\Models\QuestionStudent;
 use App\Models\Test;
 use App\Models\TestAssistant;
 use App\Models\TestStudent;
@@ -30,6 +34,7 @@ use Illuminate\Http\Request;
 final class TestStudentsTable extends Table
 {
     private const ROUTE_PARAM_TEST_ID = 'id';
+    private const COLUMN_POINTS = 'points';
 
     /**
      * @var int $perPage
@@ -152,6 +157,12 @@ final class TestStudentsTable extends Table
                 ->width('150px')
         );
 
+        $this->addColumn(
+            Column::init(self::COLUMN_POINTS, $this->translator->get('labels.points'))
+                ->centered()
+                ->width('150px')
+        );
+
         $this->addActionsColumn();
     }
 
@@ -187,9 +198,38 @@ final class TestStudentsTable extends Table
      */
     private function modelToArray(User $user): array
     {
+        $points = '0/0';
+        $auth = $this->authService->user();
+        if (
+            $auth->role >= RolesEnum::ROLE_PROFESSOR ||
+            $this->test->assistants->where('pivot.' . TestAssistant::ATTR_ACCEPTED, true)->contains($auth->id)
+        ) {
+            /** @var GroupStudent|null $groupSolution */
+            $groupSolution = $user->testSolutions()->whereIn(
+                GroupStudent::ATTR_GROUP_ID,
+                $this->test->groups->pluck(Group::ATTR_ID)->toArray()
+            )->where(GroupStudent::ATTR_FINISHED, true)->first();
+
+            if ($groupSolution) {
+                $questionSolution = $user->questionSolutions()->whereIn(
+                    QuestionStudent::ATTR_QUESTION_ID,
+                    $groupSolution->group->questions->pluck(Question::ATTR_ID)->toArray(),
+                )->get();
+                $gotPoints = $questionSolution->sum(QuestionStudent::ATTR_POINTS);
+                $maxPoints = $questionSolution->sum(static function (QuestionStudent $questionStudent): int {
+                    return $questionStudent->question->max_points;
+                });
+
+                $points = $gotPoints . ' / ' . $maxPoints;
+            }
+        } else {
+            $points = '';
+        }
+
         return \array_merge($user->toArray(), [
             TestStudent::table() . '.' .TestStudent::ATTR_ACCEPTED => $user->pivot->getAttribute(TestStudent::ATTR_ACCEPTED),
-            self::FIELD_ACTIONS => $this->getActions($user)
+            self::FIELD_ACTIONS => $this->getActions($user),
+            self::COLUMN_POINTS => $points,
         ]);
     }
 
@@ -226,6 +266,19 @@ final class TestStudentsTable extends Table
                 $this->urlGenerator->route('tests.remove-student', [$this->test->id, $user->id]),
                 'post'
             );
+
+            /** @var GroupStudent|null $solution */
+            $solution = $user->testSolutions()->whereIn(
+                GroupStudent::ATTR_GROUP_ID,
+                $this->test->groups->pluck(Group::ATTR_ID)->toArray(),
+            )->where(GroupStudent::ATTR_FINISHED, true)->first();
+            if ($solution) {
+                $actions[] = $this->getActionData(
+                    'check',
+                    $this->translator->get('labels.evaluate'),
+                    $this->urlGenerator->route('tests.solution.users', [$this->test->id, $user->id])
+                );
+            }
         }
 
         return $actions;

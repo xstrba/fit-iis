@@ -15,6 +15,11 @@
             <table class="table table-hover test-info-table">
                 <tbody>
                 <tr>
+                    <th scope="row" width="200">{{ __('labels.group') }}</th>
+                    <td>{{ $solution->group->name }}</td>
+                </tr>
+
+                <tr>
                     <th scope="row" width="200">{{ __('labels.points') }}</th>
                     <td>{{ $questionSolutions->sum(static function (\App\Models\QuestionStudent $questionStudent): int {
                         return $questionStudent->points;
@@ -136,6 +141,11 @@
                                 </div>
                             </div>
                         @endif
+
+                        <div class="mt-3">
+                            <label>Poznámka k hodnocení</label>
+                            <p>{{ $questionSolution->notes }}</p>
+                        </div>
                     </div>
                 </div>
             </div>

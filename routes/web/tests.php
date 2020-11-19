@@ -32,3 +32,4 @@ Route::get('json/my-tests', 'MyTestsController@indexJson')->name('tests.my.json.
 
 // solution
 Route::get('tests/{id}/solution/{userId}', 'TestSolutionController@usersSolution')->name('tests.solution.users');
+Route::post('tests/{id}/evaluate', 'TestSolutionController@evaluate')->name('tests.evaluate');

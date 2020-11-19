@@ -90,4 +90,7 @@ return [
     'request_student' => 'Přihlásit se jako student',
     'i_am_student' => 'Jsme přihlášen',
     'i_have_student_request' => 'Mám přihlášku',
+
+    'evaluate' => 'Ohodnotit',
+    'group' => 'Skupina',
 ];
