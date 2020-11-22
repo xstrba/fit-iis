@@ -57,7 +57,8 @@ return [
     'yes' => 'Ano',
     'no' => 'Ne',
     'remember_me' => 'Zapamatovat si mně',
-    'login' => 'Přihlásit se',
+    'login_username' => 'Email nebo použivatelské jméno',
+    'login_password' => 'Heslo',
 
     // genders enum
     'male' => 'Muž',

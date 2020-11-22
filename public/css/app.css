@@ -11026,6 +11026,10 @@ main {
   min-width: 320px;
 }
 
+.login-page-bg {
+  min-height: 100vh;
+}
+
 #topbar {
   position: fixed;
   width: 100%;
