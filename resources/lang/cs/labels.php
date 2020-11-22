@@ -59,6 +59,9 @@ return [
     'remember_me' => 'Zapamatovat si mně',
     'login_username' => 'Email nebo použivatelské jméno',
     'login_password' => 'Heslo',
+    'welcome' => 'Vítejte',
+    'logged_as' => 'Jset přihlášen jako',
+    'inspiring_quote' => 'Isnpirující citát',
 
     // genders enum
     'male' => 'Muž',

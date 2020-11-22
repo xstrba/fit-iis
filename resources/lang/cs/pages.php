@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'dashboard' => 'Dashboard',
+    'dashboard' => 'Úvod',
     'profile' => 'Profil',
     'users' => [
         'index' => 'Uživatelé',
