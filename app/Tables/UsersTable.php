@@ -25,11 +25,6 @@ use Illuminate\Http\Request;
 final class UsersTable extends Table
 {
     /**
-     * @var int $perPage
-     */
-    protected int $perPage = 30;
-
-    /**
      * @var string|null $defaultSort
      */
     protected ?string $defaultSort = User::ATTR_CREATED_AT;

@@ -37,11 +37,6 @@ final class TestStudentsTable extends Table
     private const COLUMN_POINTS = 'points';
 
     /**
-     * @var int $perPage
-     */
-    protected int $perPage = 30;
-
-    /**
      * @var string|null $defaultSort
      */
     protected ?string $defaultSort = null;

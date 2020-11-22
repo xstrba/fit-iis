@@ -31,11 +31,6 @@ use Illuminate\Support\Carbon;
 class TestsTable extends Table
 {
     /**
-     * @var int $perPage
-     */
-    protected int $perPage = 30;
-
-    /**
      * @var string|null $defaultSort
      */
     protected ?string $defaultSort = Test::ATTR_CREATED_AT;
