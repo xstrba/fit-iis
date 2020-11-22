@@ -73,7 +73,6 @@
                 'name' => 'street',
                 'label' => __('labels.street'),
                 'value' => old('street', $user->street),
-                'required' => true,
                 'placeholder' => trans('common.eg') . ': Masarykova',
             ])
             @include('partials.input-text', [

@@ -145,7 +145,7 @@ final class UserRequestFilter extends RequestFilter
                 'string',
                 'date_format:Y-m-d',
             ],
-            self::FIELD_STREET => [$required, 'string', 'max:255'],
+            self::FIELD_STREET => ['nullable', 'string', 'max:255'],
             self::FIELD_HOUSE_NUMBER => [$required, 'string', 'max:255'],
             self::FIELD_CITY => [$required, 'string', 'max:255'],
             self::FIELD_COUNTRY => [$required, 'string', CountriesEnum::instance()->getValidationRule()],

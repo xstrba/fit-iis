@@ -24,12 +24,12 @@ use Illuminate\Support\Carbon;
  * @property string $nickname
  * @property int $role
  * @property \Illuminate\Support\Carbon birth
- * @property string $street
- * @property string $house_number
- * @property string $city
+ * @property string|null $street
+ * @property string|null $house_number
+ * @property string|null $city
  * @property string $country
  * @property string $gender
- * @property string $phone
+ * @property string|null $phone
  * @property string $name
  * @property string $language
  * @property string $address
@@ -170,13 +170,20 @@ final class User extends Model implements
         }
 
         if ($this->house_number) {
-            $address .= ' ' . $this->house_number;
+            if ($address) {
+                $address .= ' ';
+            }
+            $address .= $this->house_number;
 
             if ($this->city) {
                 $address .= ', ' . $this->city;
             }
         } else if ($this->city) {
-            $address .= ', ' . $this->city;
+            if ($address) {
+                $address .= ', ';
+            }
+
+            $address .= $this->city;
         }
 
         return $address;

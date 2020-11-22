@@ -68,7 +68,6 @@
                 'name' => 'street',
                 'label' => __('labels.street'),
                 'value' => old('street', $auth->street),
-                'required' => true,
                 'placeholder' => trans('common.eg') . ': Masarykova',
             ])
             @include('partials.input-text', [
@@ -124,6 +123,7 @@
                 'classes' => 'col-md-6',
                 'name' => 'password',
                 'label' => __('labels.new_password'),
+                'description' => 'Vyplňte pokud chcete změnit heslo.',
             ])
             @include('partials.input-password', [
                 'classes' => 'col-md-6',
