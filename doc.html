@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-2"/>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <title>Projekt IIS</title>
 <style type="text/css">
     table { border-collapse: collapse; }
@@ -35,174 +35,174 @@
 </head>
 <body>
 
-<h1>Testy: tvorba, plnění a hodnocení testových zkoušek</h1>
+<h1>Testy: tvorba, plnÄnĂ­ a hodnocenĂ­ testovĂ˝ch zkouĹĄek</h1>
 
 <dl>
-<dt>Autoři</dt>
-<dd>Boris Štrbák (xstrba05)
+<dt>AutoĹi</dt>
+<dd>Boris Ĺ trbĂĄk (xstrba05)
     <a href="mailto:xstrba05@vutbr.cz">xstrba05@vutbr.cz</a> -
-    Vedení týmu, code review, implementace správy testů, vyplňování testů. přihlašování studentů a asistentů, přihlašování do a odhlašování z aplikace, nasazení aplikac.
+    VedenĂ­ tĂ˝mu, code review, implementace sprĂĄvy testĹŻ, vyplĹovĂĄnĂ­ testĹŻ. pĹihlaĹĄovĂĄnĂ­ studentĹŻ a asistentĹŻ, pĹihlaĹĄovĂĄnĂ­ do a odhlaĹĄovĂĄnĂ­ z aplikace, nasazenĂ­ aplikace.
 </dd>
-<dd>Filip Bartoník (xbarto98)
+<dd>Filip BartonĂ­k (xbarto98)
     <a href="mailto:xbarto98@stud.fit.vutbr.cz">xbarto98@stud.fit.vutbr.cz</a> -
     ER - diagram, use case diagram, frontend aplikace.
 </dd>
-<dd>Samuel Líška (xliska20)
+<dd>Samuel LĂ­ĹĄka (xliska20)
     <a href="mailto:206818@vutbr.cz">206818@vutbr.cz</a> -
-    ER - diagram, správa uživatelů, vytvoření tabulek, seeder uživatelů, některé javascriptové funkce frontendu.
+    ER - diagram, sprĂĄva uĹživatelĹŻ, vytvoĹenĂ­ tabulek, seeder uĹživatelĹŻ, nÄkterĂŠ javascriptovĂŠ funkce frontendu.
 </dd>
 <dt>URL aplikace</dt>
 <dd><a href="https://xstrba05.site" target="_blank">https://xstrba05.site</a></dd>
 </dl>
 
-<h2>Uživatelé systému pro testování</h2>
+<h2>UĹživatelĂŠ systĂŠmu pro testovĂĄnĂ­</h2>
 
 <table>
 <tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
-<tr><td>root</td><td>123456</td><td>Administrátor</td></tr>
+<tr><td>root</td><td>123456</td><td>AdministrĂĄtor</td></tr>
 <tr><td>arowe</td><td>123456</td><td>Profesor</td></tr>
 <tr><td>garrison02</td><td>123456</td><td>Asistent</td></tr>
 <tr><td>horace07</td><td>123456</td><td>Student</td></tr>
 </table>
 
-<img src="./doc/use-case.png" alt="Diagram pípadďż˝ uďż˝ití" class="use-case">
+<img src="./doc/use-case.png" alt="Diagram pĂ­padĹŻ uĹžitĂ­" class="use-case">
 
 <h2>Implementace</h2>
 
-<h4>Důležité složky projektu:</h4>
+<h4>DĹŻleĹžitĂŠ sloĹžky projektu:</h4>
 <p>
-    <li><strong>app</strong> - obsahuje implementaci hlavních funkcí systému</li>
+    <li><strong>app</strong> - obsahuje implementaci hlavnĂ­ch funkcĂ­ systĂŠmu</li>
     <li><strong>config</strong> - obsahuje konfiguraci aplikace</li>
-    <li><strong>database</strong> - soubory pro vytvoření tabulek (složka <strong>migrations</strong>) a složka
-    pro vytvořenďż˝ prvontích záznamů(<strong>seeds</strong>)</li>
-    <li><strong>public</strong> - vstupní bod aplikace (<strong>index.php</strong>), javascript, css, fonty...</li>
-    <li><strong>resources</strong> - obsahuje překlady, nezkompilované assety (vue, js, sass) a html templaty (.blade.php soubory).</li>
-    <li><strong>routes</strong> - obsahuje mapování endpointů aplikace na funkce tříd, které je zpracovávají</li>
-    <li><strong>storage</strong> - ve složce app jsou nahrané soubory uživateli aplikace, ve složce framework jsou zacachované soboury aplikace a ve složce logs jsou chybová hlášení</li>
+    <li><strong>database</strong> - soubory pro vytvoĹenĂ­ tabulek (sloĹžka <strong>migrations</strong>) a sloĹžka
+    pro vytvoĹenĂ­ prvotnĂ­ch zĂĄznamĹŻ(<strong>seeds</strong>)</li>
+    <li><strong>public</strong> - vstupnĂ­ bod aplikace (<strong>index.php</strong>), javascript, css, fonty...</li>
+    <li><strong>resources</strong> - obsahuje pĹeklady, nezkompilovanĂŠ assety (vue, js, sass) a html templaty (.blade.php soubory).</li>
+    <li><strong>routes</strong> - obsahuje mapovĂĄnĂ­ endpointĹŻ aplikace na funkce tĹĂ­d, kterĂŠ je zpracovĂĄvajĂ­</li>
+    <li><strong>storage</strong> - ve sloĹžce app jsou nahranĂŠ soubory uĹživateli aplikace, ve sloĹžce framework jsou zacachovanĂŠ soboury aplikace a ve sloĹžce logs jsou chybovĂĄ hlĂĄĹĄenĂ­</li>
 </p>
 
-<h4>Jádro systému - složka <strong>app</strong></h4>
+<h4>JĂĄdro systĂŠmu - sloĹžka <strong>app</strong></h4>
 <div class="lm">
     <h5>Contracts</h5>
-    <p>Rozhraní repozitářů a trait</p>
+    <p>RozhranĂ­ repozitĂĄĹĹŻ a trait</p>
 
     <h5>Enums</h5>
-    <p>Enumerátory (Krajiny, role, povolení, jazyky...)</p>
+    <p>EnumerĂĄtory (Krajiny, role, povolenĂ­, jazyky...)</p>
 
     <h5>Models</h5>
-    <p>Modely reprezentujíci tabulky databáze. Drží data tabulek a poskytují rozhraní pro jejich získanú a modifikaci</p>
+    <p>Modely reprezentujĂ­ci tabulky databĂĄze. DrĹžĂ­ data tabulek a poskytujĂ­ rozhranĂ­ pro jejich zĂ­skanĂş a modifikaci</p>
 
     <h5>Parents</h5>
-    <p>Rodičovské třídy. Obsahující implementace spoločních funkcí používaných všemi podtřídami a každá třída implementována v rámci systému by měla dědit od nějaké třídy v této složce (nebo dědice dané třídy).</p>
+    <p>RodiÄovskĂŠ tĹĂ­dy. ObsahujĂ­cĂ­ implementace spoloÄnĂ­ch funkcĂ­ pouĹžĂ­vanĂ˝ch vĹĄemi podtĹĂ­dami a kaĹždĂĄ tĹĂ­da implementovĂĄna v rĂĄmci systĂŠmu by mÄla dÄdit od nÄjakĂŠ tĹĂ­dy v tĂŠto sloĹžce (nebo dÄdice danĂŠ tĹĂ­dy).</p>
 
     <h5>Providers</h5>
-    <p>Třídy, které inicializují základní funkce aplikace. Nejdůležitější jsou <code>RouteServiceProvider</code> pro incializaci rout aplikace, <code>RepositoriesServiceProvider</code> pro bindovaní rozhraní repozitářů na konkrétní třídy (důležité pro dependency injections) a <code>AuthServiceProvider</code> pro mapovaní policies (viz. níe) na modely.</p>
+    <p>TĹĂ­dy, kterĂŠ inicializujĂ­ zĂĄkladnĂ­ funkce aplikace. NejdĹŻleĹžitÄjĹĄĂ­ jsou <code>RouteServiceProvider</code> pro incializaci rout aplikace, <code>RepositoriesServiceProvider</code> pro bindovanĂ­ rozhranĂ­ repozitĂĄĹĹŻ na konkrĂŠtnĂ­ tĹĂ­dy (dĹŻleĹžitĂŠ pro dependency injections) a <code>AuthServiceProvider</code> pro mapovanĂ­ policies (viz. nĂ­e) na modely.</p>
 
     <h5>Queries</h5>
-    <p>Třídy obsahujíci pomocné funkce pro vytvoření queries do databáze a pro filtrováni dat databáze.</p>
+    <p>TĹĂ­dy obsahujĂ­ci pomocnĂŠ funkce pro vytvoĹenĂ­ queries do databĂĄze a pro filtrovĂĄni dat databĂĄze.</p>
 
     <h5>
         Repositories
     </h5>
-    <p>Třídy, které poskytují další úroveň abstrakce pro získaní a modifikovaní dat databáze.</p>
+    <p>TĹĂ­dy, kterĂŠ poskytujĂ­ dalĹĄĂ­ ĂşroveĹ abstrakce pro zĂ­skanĂ­ a modifikovanĂ­ dat databĂĄze.</p>
 
     <h5>Services</h5>
-    <p>Třídy poskytujíci pomocné funkce využívané zejména kontolerama. Například pro získaní přihlášeneho uživatele, ukládaní base64 řetězců nebo Inicializaci bočního panelu.</p>
+    <p>TĹĂ­dy poskytujĂ­ci pomocnĂŠ funkce vyuĹžĂ­vanĂŠ zejmĂŠna kontolerama. NapĹĂ­klad pro zĂ­skanĂ­ pĹihlĂĄĹĄeneho uĹživatele, uklĂĄdanĂ­ base64 ĹetÄzcĹŻ nebo Inicializaci boÄnĂ­ho panelu.</p>
 
     <h5>Sidebar</h5>
-    <p>Třídy reprezentujíci boční panel a položky bočního panelu.</p>
+    <p>TĹĂ­dy reprezentujĂ­ci boÄnĂ­ panel a poloĹžky boÄnĂ­ho panelu.</p>
 
     <h5>Tables</h5>
-    <p>Obsahuje třídy tabulek používaných systémem. Každá třída obsahuje funkce pro inicializaci sloupců a filtrů, filtraci dat, vyhledávaní v datech a transformaci kolekce modelů do pole pro frontend.</p>
+    <p>Obsahuje tĹĂ­dy tabulek pouĹžĂ­vanĂ˝ch systĂŠmem. KaĹždĂĄ tĹĂ­da obsahuje funkce pro inicializaci sloupcĹŻ a filtrĹŻ, filtraci dat, vyhledĂĄvanĂ­ v datech a transformaci kolekce modelĹŻ do pole pro frontend.</p>
 
     <h5>Http</h5>
     <div class="lm">
         <h5>Requests</h5>
-        <p>Obsahuje třídy, které slouží pro validaci dat poslaných v tělech requestů.</p>
+        <p>Obsahuje tĹĂ­dy, kterĂŠ slouĹžĂ­ pro validaci dat poslanĂ˝ch v tÄlech requestĹŻ.</p>
 
         <h5>Policies</h5>
-        <p>Třídy pro definování povolení pro jednotlivé uživatele. Každá třída obsahuje metody: create, show, edit, delete. Třída <code>TestPolicy</code> navíc obsahuje metody pro autorizaci use case případů jako přihlášeni na test, schválení studenta, asistenta a podobně. Každá metoda dostane jako paramter uživatele a model, pro který je potřeba danou akci autorizovat. Vrací true nebo false.</p>
+        <p>TĹĂ­dy pro definovĂĄnĂ­ povolenĂ­ pro jednotlivĂŠ uĹživatele. KaĹždĂĄ tĹĂ­da obsahuje metody: create, show, edit, delete. TĹĂ­da <code>TestPolicy</code> navĂ­c obsahuje metody pro autorizaci use case pĹĂ­padĹŻ jako pĹihlĂĄĹĄeni na test, schvĂĄlenĂ­ studenta, asistenta a podobnÄ. KaĹždĂĄ metoda dostane jako paramter uĹživatele a model, pro kterĂ˝ je potĹeba danou akci autorizovat. VracĂ­ true nebo false.</p>
 
         <h5>Middleware</h5>
-        <p>Třídy, které jsou inicializovány a spouštěny před samotným zpracovánim requestu v kontroleru. Všechny jsou v původním stavu (při inicializaci aplikace laravelu), protože nebylo potřeba nic měnit.</p>
+        <p>TĹĂ­dy, kterĂŠ jsou inicializovĂĄny a spouĹĄtÄny pĹed samotnĂ˝m zpracovĂĄnim requestu v kontroleru. VĹĄechny jsou v pĹŻvodnĂ­m stavu (pĹi inicializaci aplikace laravelu), protoĹže nebylo potĹeba nic mÄnit.</p>
 
         <h5>Controllers</h5>
-        <p>Třídy zpracovávajíci jednotlivé requesty (případy užití). Ve složce <code>Auth</code> jsou implementovány funkce pro přihlašování ve třídě <code>LoginController</code>. Ostatní třídy jsou v původním stavu, protože dané funkce systém neposkytuje nebo to nebylo potřeba měnit. Byly ale ponechány pro případ budoucího využití.</p>
+        <p>TĹĂ­dy zpracovĂĄvajĂ­ci jednotlivĂŠ requesty (pĹĂ­pady uĹžitĂ­). Ve sloĹžce <code>Auth</code> jsou implementovĂĄny funkce pro pĹihlaĹĄovĂĄnĂ­ ve tĹĂ­dÄ <code>LoginController</code>. OstatnĂ­ tĹĂ­dy jsou v pĹŻvodnĂ­m stavu, protoĹže danĂŠ funkce systĂŠm neposkytuje nebo to nebylo potĹeba mÄnit. Byly ale ponechĂĄny pro pĹĂ­pad budoucĂ­ho vyuĹžitĂ­.</p>
 
         <ul>
-            <li><code>GroupController</code> - kontroler zpracováva dotazy na vytvoření, aktualizaci a vymazáni skupin v rámci jednoho testu.</li>
+            <li><code>GroupController</code> - kontroler zpracovĂĄva dotazy na vytvoĹenĂ­, aktualizaci a vymazĂĄni skupin v rĂĄmci jednoho testu.</li>
 
-            <li><code>HomeController</code> - zpracováva dotaz na domovskou stánku aplikace (Úvod)</li>
+            <li><code>HomeController</code> - zpracovĂĄva dotaz na domovskou stĂĄnku aplikace (Ăvod)</li>
 
-            <li><code>MediaController</code> - zpracováva dotaz na soubor ze storage</li>
+            <li><code>MediaController</code> - zpracovĂĄva dotaz na soubor ze storage</li>
 
-            <li><code>MyTestsController</code> - zpracováva dotazy na stránku "Moje testy" a dotazy na json data testů a filtrů pro tabulku s testami.</li>
+            <li><code>MyTestsController</code> - zpracovĂĄva dotazy na strĂĄnku "Moje testy" a dotazy na json data testĹŻ a filtrĹŻ pro tabulku s testami.</li>
 
-            <li><code>QuestionSolutionController</code> - kontroler pro aktualizaci řešení otázky.</li>
+            <li><code>QuestionSolutionController</code> - kontroler pro aktualizaci ĹeĹĄenĂ­ otĂĄzky.</li>
 
-            <li><code>TestAssistantController</code> - kontroler zpracovávajíci dotazy na přihlášení se na test jako asistent, schválení asistenta a odstrnánení asistenta.</li>
+            <li><code>TestAssistantController</code> - kontroler zpracovĂĄvajĂ­ci dotazy na pĹihlĂĄĹĄenĂ­ se na test jako asistent, schvĂĄlenĂ­ asistenta a odstrnĂĄnenĂ­ asistenta.</li>
 
-            <li><code>TestController</code> - kontoler zpracovávajíci dotazy pro vytvoření, akutalizaci, zmazáni, obnovení a zobrazení testů, pro získaní dat a filtrů tabulky testů a pro zobrazení odpovídajícich stránek.</li>
+            <li><code>TestController</code> - kontoler zpracovĂĄvajĂ­ci dotazy pro vytvoĹenĂ­, akutalizaci, zmazĂĄni, obnovenĂ­ a zobrazenĂ­ testĹŻ, pro zĂ­skanĂ­ dat a filtrĹŻ tabulky testĹŻ a pro zobrazenĂ­ odpovĂ­dajĂ­cich strĂĄnek.</li>
 
-            <li><code>TestSolutionController</code> - zpracováva dotazy pro začatí testu, zobrazení řešení testu, ukončení testu, zobrazení řešení uživatele, uložení hodnocení testu.</li>
+            <li><code>TestSolutionController</code> - zpracovĂĄva dotazy pro zaÄatĂ­ testu, zobrazenĂ­ ĹeĹĄenĂ­ testu, ukonÄenĂ­ testu, zobrazenĂ­ ĹeĹĄenĂ­ uĹživatele, uloĹženĂ­ hodnocenĂ­ testu.</li>
 
-            <li><code>TestStudentsController</code> - kontroler zpracovávajíci dotazy na přihlášení se na test jako student, schválení studenta a odstrnánení studenta.</li>
+            <li><code>TestStudentsController</code> - kontroler zpracovĂĄvajĂ­ci dotazy na pĹihlĂĄĹĄenĂ­ se na test jako student, schvĂĄlenĂ­ studenta a odstrnĂĄnenĂ­ studenta.</li>
 
-            <li><code>UserController</code> - kontoler zpracovávajíci dotazy pro vytvoření, akutalizaci, zmazáni, obnovení a zobrazení uživatele, zobrazení a aktualizaci profilu uživatele, pro získaní dat a filtrů tabulky uživatelů a pro zobrazení odpovídajícich stránek.</li>
+            <li><code>UserController</code> - kontoler zpracovĂĄvajĂ­ci dotazy pro vytvoĹenĂ­, akutalizaci, zmazĂĄni, obnovenĂ­ a zobrazenĂ­ uĹživatele, zobrazenĂ­ a aktualizaci profilu uĹživatele, pro zĂ­skanĂ­ dat a filtrĹŻ tabulky uĹživatelĹŻ a pro zobrazenĂ­ odpovĂ­dajĂ­cich strĂĄnek.</li>
         </ul>
     </div>
 </div>
 
-<h3>Databáze</h3>
+<h3>DatabĂĄze</h3>
 
-<img src="./doc/er.png" alt="Relační model databáze" class="er">
+<img src="./doc/er.png" alt="RelaÄnĂ­ model databĂĄze" class="er">
 
 <h2>Instalace</h2>
 
-<h4>Požadavky</h4>
+<h4>PoĹžadavky</h4>
 
 <ul>
     <li><strong>PHP</strong> >= 7.4.0</li>
-    <li><strong>BCMath PHP</strong> rozšířeni</li>
-    <li><strong>Ctype PHP</strong> rozšířeni</li>
-    <li><strong>Fileinfo PHP</strong> rozšířeni</li>
-    <li><strong>JSON PHP</strong> rozšířeni</li>
-    <li><strong>Mbstring PHP</strong> rozšířeni</li>
-    <li><strong>OpenSSL PHP</strong> rozšířeni</li>
-    <li><strong>PDO PHP</strong> rozšířeni</li>
-    <li><strong>Tokenizer PHP</strong> rozšířeni</li>
-    <li><strong>XML PHP</strong> rozšířeni</li>
+    <li><strong>BCMath PHP</strong> rozĹĄĂ­Ĺeni</li>
+    <li><strong>Ctype PHP</strong> rozĹĄĂ­Ĺeni</li>
+    <li><strong>Fileinfo PHP</strong> rozĹĄĂ­Ĺeni</li>
+    <li><strong>JSON PHP</strong> rozĹĄĂ­Ĺeni</li>
+    <li><strong>Mbstring PHP</strong> rozĹĄĂ­Ĺeni</li>
+    <li><strong>OpenSSL PHP</strong> rozĹĄĂ­Ĺeni</li>
+    <li><strong>PDO PHP</strong> rozĹĄĂ­Ĺeni</li>
+    <li><strong>Tokenizer PHP</strong> rozĹĄĂ­Ĺeni</li>
+    <li><strong>XML PHP</strong> rozĹĄĂ­Ĺeni</li>
 
-    <li>nainstalován <strong>Node js</strong></li>
-    <li>nainstalováno <strong>NPM</strong></li>
-    <li>nainstalován <strong>Composer</strong></li>
+    <li>nainstalovĂĄn <strong>Node js</strong></li>
+    <li>nainstalovĂĄno <strong>NPM</strong></li>
+    <li>nainstalovĂĄn <strong>Composer</strong></li>
 </ul>
 
 <h4>Instalace</h4>
 
-<p>Po rozbalení je potřeba v rozbaleném adresáři pustit příkaz <code>composer i</code> pro nainstalování všech
-potřebných balíčků Laravelu.</p>
-<p>Příkazem <code>npm i</code> se nainstalují všechny balíky pro kompilaci frontendu.</p>
-<p>Příkazem <code>npm run dev</code> (nebo na produkci <code>npm run prod</code>) se zkompilují styly a javascriptové soubory do adresáře public.</p>
-<p>Pak je potřeba zkopírovat soubor <code>.env.example</code> do souboru <code>.env</code> a nastavit potřebné parametry:
+<p>Po rozbalenĂ­ je potĹeba v rozbalenĂŠm adresĂĄĹi pustit pĹĂ­kaz <code>composer i</code> pro nainstalovĂĄnĂ­ vĹĄech
+potĹebnĂ˝ch balĂ­ÄkĹŻ Laravelu.</p>
+<p>PĹĂ­kazem <code>npm i</code> se nainstalujĂ­ vĹĄechny balĂ­ky pro kompilaci frontendu.</p>
+<p>PĹĂ­kazem <code>npm run dev</code> (nebo na produkci <code>npm run prod</code>) se zkompilujĂ­ styly a javascriptovĂŠ soubory do adresĂĄĹe public.</p>
+<p>Pak je potĹeba zkopĂ­rovat soubor <code>.env.example</code> do souboru <code>.env</code> a nastavit potĹebnĂŠ parametry:
 <ul>
-    <li>APP_NAME=Těsto</li>
+    <li>APP_NAME=TÄsto</li>
     <li>APP_ENV=local nebo APP_ENV=production</li>
     <li>APP_DEBUG=true nebo APP_DEBUG=false</li>
     <li>APP_URL=https://example.com</li>
-    <li>DB_DATABASE="jméno databáze"</li>
-    <li>DB_USERNAME="jméno uživatele databáze"</li>
-    <li>DB_PASSWORD="heslo uživatele databáze"</li>
+    <li>DB_DATABASE="jmĂŠno databĂĄze"</li>
+    <li>DB_USERNAME="jmĂŠno uĹživatele databĂĄze"</li>
+    <li>DB_PASSWORD="heslo uĹživatele databĂĄze"</li>
 </ul>
-<p>Případně jiné parametry.</p>
-<p>Po nastavení <code>.env</code> souboru je potřeba pustit příkaz <code>php artisan key:generate</code>, který do souboru přidá položku <code>APP_KEY</code></p>
-<p>Tabulky databáze se vytvoří příkazem <code>php artisan migrate</code> popřípadě <code>php artisan migrate -seed</code>, který rovnou i naplní některé tabulky datami. V případě prvního příkazu je pak potřeba pustit <code>php artisan db:seed</code></p>
-<p>Taktéž je potřeba nastavit práva soborům. To se často líši od serveru ale nejďčastěji je potřeba nastavit <code>chmod 755</code> na sobory <code>public a storage</code> a takisto změnit jejich skupinu na www-data.</p>
+<p>PĹĂ­padnÄ jinĂŠ parametry.</p>
+<p>Po nastavenĂ­ <code>.env</code> souboru je potĹeba pustit pĹĂ­kaz <code>php artisan key:generate</code>, kterĂ˝ do souboru pĹidĂĄ poloĹžku <code>APP_KEY</code></p>
+<p>Tabulky databĂĄze se vytvoĹĂ­ pĹĂ­kazem <code>php artisan migrate</code> popĹĂ­padÄ <code>php artisan migrate -seed</code>, kterĂ˝ rovnou i naplnĂ­ nÄkterĂŠ tabulky datami. V pĹĂ­padÄ prvnĂ­ho pĹĂ­kazu je pak potĹeba pustit <code>php artisan db:seed</code></p>
+<p>TaktĂŠĹž je potĹeba nastavit prĂĄva soborĹŻm. To se Äasto lĂ­ĹĄi od serveru ale nejÄÄastÄji je potĹeba nastavit <code>chmod 755</code> na sobory <code>public a storage</code> a takisto zmÄnit jejich skupinu na www-data.</p>
 
 
 
-<h2>Známé problémy</h2>
-<p>Implementovány by měli být všechny části projektu. Z časových důvodu jsme ale neimplementovali výběr role při přihlášení do systému (podobně jako v informačním systému fitu) ale systém automaticky detekuje roli přihlášeného uživatele. Takisto jsme připravovali systém pro anglicky i česky jazyk ale implementovali jsme jenom česky. Některá chybová hlášení nemusí být správně přeložena.</p>
+<h2>ZnĂĄmĂŠ problĂŠmy</h2>
+<p>ImplementovĂĄny by mÄli bĂ˝t vĹĄechny ÄĂĄsti projektu. Z ÄasovĂ˝ch dĹŻvodu jsme ale neimplementovali vĂ˝bÄr role pĹi pĹihlĂĄĹĄenĂ­ do systĂŠmu (podobnÄ jako v informaÄnĂ­m systĂŠmu fitu) ale systĂŠm automaticky detekuje roli pĹihlĂĄĹĄenĂŠho uĹživatele. Takisto jsme pĹipravovali systĂŠm pro anglicky i Äesky jazyk ale implementovali jsme jenom Äesky. NÄkterĂĄ chybovĂĄ hlĂĄĹĄenĂ­ nemusĂ­ bĂ˝t sprĂĄvnÄ pĹeloĹžena.</p>
 
 </body>
 </html>
