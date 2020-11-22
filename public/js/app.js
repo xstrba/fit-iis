@@ -1950,14 +1950,14 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     sortAssistants: function sortAssistants() {
       this.dataAssistants.sort(function (a, b) {
-        return a.pivot.accepted && !b.pivot.accepted ? -1 : 0;
+        return parseInt(a.pivot.accepted) && !parseInt(b.pivot.accepted) ? -1 : 0;
       });
     },
     setAccepted: function setAccepted(user) {
       var _this = this;
 
       axios.post("/tests/".concat(this.$props.test.id, "/accept-assistant/").concat(user.id)).then(function () {
-        user.pivot.accepted = true;
+        user.pivot.accepted = 1;
 
         _this.sortAssistants();
       });
@@ -42344,7 +42344,9 @@ var render = function() {
                 {
                   class:
                     "list-group-item list-group-item-action d-flex justify-content-between align-items-center " +
-                    (user.pivot.accepted ? "list-group-item-success" : "")
+                    (parseInt(user.pivot.accepted)
+                      ? "list-group-item-success"
+                      : "")
                 },
                 [
                   _vm._v(

@@ -3,7 +3,7 @@
         <div class="col-12 col-md-8 col-lg-6">
             <ul class="list-group">
                 <template v-for="user in dataAssistants">
-                    <a :class="`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${user.pivot.accepted ? 'list-group-item-success' : ''}`">
+                    <a :class="`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${parseInt(user.pivot.accepted) ? 'list-group-item-success' : ''}`">
                         {{ user.name }}
                         <span>
                             <i v-if="!parseInt(user.pivot.accepted)"
@@ -45,14 +45,14 @@ export default {
     methods: {
         sortAssistants() {
             this.dataAssistants.sort((a, b) => {
-                return a.pivot.accepted && !b.pivot.accepted ? -1 : 0;
+                return parseInt(a.pivot.accepted) && !parseInt(b.pivot.accepted) ? -1 : 0;
             });
         },
 
         setAccepted(user) {
             axios.post(`/tests/${this.$props.test.id}/accept-assistant/${user.id}`)
                 .then(() => {
-                    user.pivot.accepted = true;
+                    user.pivot.accepted = 1;
                     this.sortAssistants();
                 });
         },
