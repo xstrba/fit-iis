@@ -27,7 +27,7 @@ use Illuminate\Support\Arr;
 final class TestSolutionController extends FrontEndController
 {
     /**
-     * Get random gorup for user or the one specified in request.
+     * Get random group for user or the one specified in request.
      * Then create item and redirect to test solution.
      *
      * @param \Illuminate\Http\Request $request

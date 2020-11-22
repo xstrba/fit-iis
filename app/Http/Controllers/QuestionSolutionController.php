@@ -51,7 +51,7 @@ final class QuestionSolutionController extends FrontEndController
         if ($options !== null) {
             $solution->options()->sync($options);
             $solution->compactFill([
-                QuestionStudent::ATTR_POINTS => $solution->options->sum(static function (Option $option): int {
+                QuestionStudent::ATTR_POINTS => $solution->options->sum(static function (Option $option): float {
                     return $option->points;
                 }),
             ]);
