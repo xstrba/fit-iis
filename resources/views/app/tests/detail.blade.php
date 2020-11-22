@@ -171,7 +171,8 @@
                                     filters-url="{{ route('tests.students.json.filters', $test->id) }}">
                             <template slot="test_student.accepted" slot-scope="{rowData}">
                                 <span>
-                                    <i v-if="rowData['test_student.accepted']" class="fas fa-check-circle fa-2x text-success"></i>
+                                    <i v-if="parseInt(rowData['test_student.accepted'])"
+                                       class="fas fa-check-circle fa-2x text-success"></i>
                                     <i v-else class="fas fa-times-circle fa-2x text-danger"></i>
                                 </span>
                             </template>

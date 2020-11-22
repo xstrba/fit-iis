@@ -30,21 +30,17 @@
                 @endslot
             @endcomponent
 
-            @if ($test->exists)
-                @component('app.components.panel-label', ['target' => 'panelAssistant', 'parent' => 'mainLabels'])
-                    @slot('label')
-                        Asistenti
-                    @endslot
-                @endcomponent
-            @endif
+            @component('app.components.panel-label', ['target' => 'panelAssistant', 'parent' => 'mainLabels'])
+                @slot('label')
+                    Asistenti
+                @endslot
+            @endcomponent
 
-            @if ($test->exists)
-                @component('app.components.panel-label', ['target' => 'panelGroups', 'parent' => 'mainLabels'])
-                    @slot('label')
-                        Skupiny otázek
-                    @endslot
-                @endcomponent
-            @endif
+            @component('app.components.panel-label', ['target' => 'panelGroups', 'parent' => 'mainLabels'])
+                @slot('label')
+                    Skupiny otázek
+                @endslot
+            @endcomponent
 
             <div id="testFormPanels">
                 @component('app.components.form-panel', ['id' => 'panelInfo', 'active' => true, 'parent' => 'testFormPanels'])
@@ -136,13 +132,21 @@
                 @endcomponent
 
                 @component('app.components.form-panel', ['id' => 'panelAssistant', 'parent' => 'testFormPanels'])
+                    @if ($test->assistants->count())
                     <assistants-list :assistants="{{ $test->assistants->toJson() }}"
                                      :test="{{ $test->toJson() }}"></assistants-list>
+                    @else
+                        <p>Nejsou přihlášeni žádni asistenti</p>
+                    @endif
                 @endcomponent
 
                 @component('app.components.form-panel', ['id' => 'panelGroups', 'parent' => 'testFormPanels'])
-                    <groups-form :groups="{{ $test->groups->toJson() }}"
-                                     :test="{{ $test->toJson() }}"></groups-form>
+                    @if ($test->exists)
+                        <groups-form :groups="{{ $test->groups->toJson() }}"
+                                         :test="{{ $test->toJson() }}"></groups-form>
+                    @else
+                        <p>Pro vytvoření skupin a otázek nejdříve test uložte</p>
+                    @endif
                 @endcomponent
             </div>
         </div>

@@ -56,6 +56,8 @@ return [
     'nonaccepted' => 'Jěště neschváleno',
     'yes' => 'Ano',
     'no' => 'Ne',
+    'remember_me' => 'Zapamatovat si mně',
+    'login' => 'Přihlásit se',
 
     // genders enum
     'male' => 'Muž',

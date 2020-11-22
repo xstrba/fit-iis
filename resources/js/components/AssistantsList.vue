@@ -6,7 +6,7 @@
                     <a :class="`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${user.pivot.accepted ? 'list-group-item-success' : ''}`">
                         {{ user.name }}
                         <span>
-                            <i v-if="!user.pivot.accepted"
+                            <i v-if="!parseInt(user.pivot.accepted)"
                                class="fas fa-check text-success cursor-pointer mx-2"
                                @click="setAccepted(user)"></i>
                             <i class="fas fa-times text-danger cursor-pointer mx-2" @click="remove(user.id)"></i>

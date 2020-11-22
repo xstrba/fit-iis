@@ -42353,7 +42353,7 @@ var render = function() {
                       "\n                    "
                   ),
                   _c("span", [
-                    !user.pivot.accepted
+                    !parseInt(user.pivot.accepted)
                       ? _c("i", {
                           staticClass:
                             "fas fa-check text-success cursor-pointer mx-2",

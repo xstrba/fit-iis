@@ -111,9 +111,9 @@ final class TestController extends FrontEndController
         TestsRepositoryInterface $testsRepository
     ): \Illuminate\Http\RedirectResponse {
         $this->authorize(PermissionsEnum::CREATE, Test::class);
-        $testsRepository->create($filter->validated($request));
+        $test = $testsRepository->create($filter->validated($request));
         $this->notify->success($this->translator->get('messages.tests.created'), '');
-        return $this->responseFactory->redirectToRoute('tests.index');
+        return $this->responseFactory->redirectToRoute('tests.edit', $test->id);
     }
 
     /**
