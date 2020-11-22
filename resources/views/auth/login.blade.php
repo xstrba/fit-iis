@@ -79,7 +79,7 @@
                                         <button type="submit" class="btn btn-primary">
                                             {{ __('labels.login') }}
                                         </button>
-                                        <p class="text-muted">Po přihlášení systém automaticky rospozná Vaši roli</p>
+                                        <p class="text-muted m-0">Po přihlášení systém automaticky rospozná Vaši roli</p>
                                     </div>
                                 </div>
                             </form>
