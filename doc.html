@@ -198,6 +198,7 @@ potřebných balíčků Laravelu.</p>
 <p>Po nastavení <code>.env</code> souboru je potřeba pustit příkaz <code>php artisan key:generate</code>, který do souboru přidá položku <code>APP_KEY</code></p>
 <p>Tabulky databáze se vytvoří příkazem <code>php artisan migrate</code> popřípadě <code>php artisan migrate -seed</code>, který rovnou i naplní některé tabulky datami. V případě prvního příkazu je pak potřeba pustit <code>php artisan db:seed</code></p>
 <p>Taktéž je potřeba nastavit práva soborům. To se často líši od serveru ale nejďčastěji je potřeba nastavit <code>chmod 755</code> na sobory <code>public a storage</code> a takisto změnit jejich skupinu na www-data.</p>
+<p>Aplikace se dá lokálně spustit pomoci příkazu <code>php artisan serve</code>. Na serveri je potřeba nasmerovat root webu do složky public</p>
 
 
 
