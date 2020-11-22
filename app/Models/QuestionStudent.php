@@ -15,7 +15,7 @@ use App\Queries\QuestionStudentQueryBuilder;
  * @property \App\Models\Question $question
  * @property \App\Models\User $student
  * @property \App\Models\User $user
- * @property int $points
+ * @property float $points
  * @property string|null $notes
  * @property string|null $text
  * @property \Illuminate\Support\Collection|\App\Models\Option $options
@@ -53,6 +53,9 @@ final class QuestionStudent extends Model implements HasFileTraitInterface
     protected $casts = [
         self::ATTR_QUESTION_ID => 'int',
         self::ATTR_STUDENT_ID => 'int',
+        self::ATTR_TEXT => 'string',
+        self::ATTR_NOTES => 'string',
+        self::ATTR_POINTS => 'float',
     ];
 
     /**

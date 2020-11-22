@@ -149,7 +149,8 @@
                                                v-model="solution.points" @input="$forceUpdate()"
                                                :id="`solutions[${index}][points]`"
                                                :name="`solutions[${index}][points]`"
-                                               onkeydown="return event.key !== 'Enter';">
+                                               onkeydown="return event.key !== 'Enter';"
+                                               step="any">
                                     </div>
                                     <div class="form-group mt-3">
                                         <label :for="`solutions[${index}][notes]`">

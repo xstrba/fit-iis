@@ -212,7 +212,7 @@ final class TestStudentsTable extends Table
                     $groupSolution->group->questions->pluck(Question::ATTR_ID)->toArray(),
                 )->get();
                 $gotPoints = $questionSolution->sum(QuestionStudent::ATTR_POINTS);
-                $maxPoints = $questionSolution->sum(static function (QuestionStudent $questionStudent): int {
+                $maxPoints = $questionSolution->sum(static function (QuestionStudent $questionStudent): float {
                     return $questionStudent->question->max_points;
                 });
 

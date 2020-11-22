@@ -10,7 +10,7 @@ use App\Parents\Model;
  * @property int $question_id
  * @property \App\Models\Question $question
  * @property string $text
- * @property int $points
+ * @property float $points
  * @package App\Models
  */
 final class Option extends Model
@@ -36,7 +36,7 @@ final class Option extends Model
     protected $casts = [
         self::ATTR_QUESTION_ID => 'int',
         self::ATTR_TEXT => 'string',
-        self::ATTR_POINTS => 'int',
+        self::ATTR_POINTS => 'float',
     ];
 
     /**
