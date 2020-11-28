@@ -182,6 +182,9 @@
 
 <p>Po rozbalení je potřeba v rozbaleném adresáři pustit příkaz <code>composer i</code> pro nainstalování všech
 potřebných balíčků Laravelu.</p>
+<p>Pro správne fungování notifikací je potřeba spustiti
+    <code>php artisan vendor:publish --provider="Mckenziearts\Notify\LaravelNotifyServiceProvider"</code>.
+</p>
 <p>Příkazem <code>npm i</code> se nainstalují všechny balíky pro kompilaci frontendu.</p>
 <p>Příkazem <code>npm run dev</code> (nebo na produkci <code>npm run prod</code>) se zkompilují styly a javascriptové soubory do adresáře public.</p>
 <p>Pak je potřeba zkopírovat soubor <code>.env.example</code> do souboru <code>.env</code> a nastavit potřebné parametry:
