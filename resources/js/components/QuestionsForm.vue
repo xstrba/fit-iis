@@ -65,12 +65,14 @@
                                 <div class="form-group col-12 col-md-6">
                                     <label :for="`question-min-points-${index}`">Minimální počet bodů</label>
                                     <input type="number" :id="`question-min-points-${index}`"
+                                           step="0.1"
                                            v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.min_points`]}"
                                            v-model="question.min_points">
                                 </div>
                                 <div class="form-group  col-12 col-md-6">
                                     <label :for="`question-max-points-${index}`">Maximální počet bodů</label>
                                     <input type="number" :id="`question-max-points-${index}`"
+                                           step="0.1"
                                            v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.max_points`]}"
                                            v-model="question.max_points">
                                 </div>
@@ -98,6 +100,7 @@
                                     <td><input v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.options.${optionIndex}.text`]}"
                                                type="text" v-model="option.text"></td>
                                     <td><input v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.options.${optionIndex}.points`]}"
+                                               step="0.1"
                                                type="number" v-model="option.points"></td>
                                     <td style="vertical-align: middle">
                                         <i class="fas fa-minus-circle text-danger cursor-pointer h4"

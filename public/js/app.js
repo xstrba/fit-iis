@@ -2921,6 +2921,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     questions: {
@@ -43268,7 +43271,8 @@ var render = function() {
                               },
                               attrs: {
                                 type: "number",
-                                id: "question-min-points-" + index
+                                id: "question-min-points-" + index,
+                                step: "0.1"
                               },
                               domProps: { value: question.min_points },
                               on: {
@@ -43316,7 +43320,8 @@ var render = function() {
                               },
                               attrs: {
                                 type: "number",
-                                id: "question-max-points-" + index
+                                id: "question-max-points-" + index,
+                                step: "0.1"
                               },
                               domProps: { value: question.max_points },
                               on: {
@@ -43452,7 +43457,7 @@ var render = function() {
                                         ".points"
                                     ]
                                   },
-                                  attrs: { type: "number" },
+                                  attrs: { step: "0.1", type: "number" },
                                   domProps: { value: option.points },
                                   on: {
                                     input: function($event) {
