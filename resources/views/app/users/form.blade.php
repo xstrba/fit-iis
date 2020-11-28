@@ -123,21 +123,19 @@
                 ])
         </div>
 
-        @if(!$user->exists)
-            <div class="row">
-                @include('partials.input-password', [
-                    'classes' => 'col-md-6',
-                    'name' => 'password',
-                    'label' => __('labels.password'),
-                    'required' => true,
-                ])
-                @include('partials.input-password', [
-                    'classes' => 'col-md-6',
-                    'name' => 'password_confirmation',
-                    'label' => __('labels.password_confirmation'),
-                ])
-            </div>
-        @endif
+        <div class="row">
+            @include('partials.input-password', [
+                'classes' => 'col-md-6',
+                'name' => 'password',
+                'label' => __('labels.password'),
+                'required' => true,
+            ])
+            @include('partials.input-password', [
+                'classes' => 'col-md-6',
+                'name' => 'password_confirmation',
+                'label' => __('labels.password_confirmation'),
+            ])
+        </div>
 
         <div class="row">
             @include('partials.input-select', [
