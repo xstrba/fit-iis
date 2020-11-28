@@ -30,7 +30,7 @@ $enableEvent = $enableEvent ?? false;
            @isset($required) required @endisset
            @isset($min) min="{{ $min }}" @endisset
            @isset($max) max="{{ $max }}" @endisset
-           @isset($float) step="0.01" @endisset
+           @isset($float) step="0.01" @else step="any" @endisset
            @if (!$enableEvent) onkeydown="return event.key != 'Enter';" @endif>
     @isset($description)
         <small id="{{ ($id ?? $name) . 'Help' }}" class="form-text text-muted">{{ $description }}</small>
