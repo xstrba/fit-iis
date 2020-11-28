@@ -2394,6 +2394,11 @@ __webpack_require__.r(__webpack_exports__);
     groupSolution: {
       type: Object,
       required: true
+    },
+    shouldMeasureTime: {
+      type: Boolean,
+      required: false,
+      "default": true
     }
   },
   data: function data() {
@@ -2402,7 +2407,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    setInterval(this.checkTime, 1000);
+    if (this.$props.shouldMeasureTime) {
+      setInterval(this.checkTime, 1000);
+    }
   },
   computed: {
     group: function group() {

@@ -33,7 +33,8 @@
 
     <div class="row">
         <div class="col-12">
-            <group-solution :group-solution="{{ $groupSolution->toJson() }}" inline-template>
+            <group-solution :should-measure-time="{{ $auth->role < \App\Enums\RolesEnum::ROLE_ASSISTANT }}"
+                            :group-solution="{{ $groupSolution->toJson() }}" inline-template>
                 <div>
                     <div class="mb-3">
                         <button class="btn btn-primary" @click="finish">{{ __('labels.finish') }}</button>
