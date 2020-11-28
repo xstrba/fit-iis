@@ -33,7 +33,7 @@
 
     <div class="row">
         <div class="col-12">
-            <group-solution :should-measure-time="{{ $auth->role < \App\Enums\RolesEnum::ROLE_ASSISTANT }}"
+            <group-solution :should-measure-time="{{ $auth->role < \App\Enums\RolesEnum::ROLE_ASSISTANT ? 'true' : 'false' }}"
                             :group-solution="{{ $groupSolution->toJson() }}" inline-template>
                 <div>
                     <div class="mb-3">
