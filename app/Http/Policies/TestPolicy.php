@@ -229,4 +229,14 @@ final class TestPolicy extends Policy
     {
         return $test->assistants->contains($user->id) || $test->professor_id === $user->id || $user->role >= RolesEnum::ROLE_PROFESSOR;
     }
+
+    /**
+     * @param \App\Models\User $user
+     * @param \App\Models\Test $test
+     * @return bool
+     */
+    public function viewMySolution(User $user, Test $test): bool
+    {
+        return $user->role >= RolesEnum::ROLE_ASSISTANT || $test->end_date->lte(Carbon::now());
+    }
 }

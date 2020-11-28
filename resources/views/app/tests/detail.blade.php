@@ -52,11 +52,13 @@
                 @endif
 
                 @if($solution)
-                    @component('app.components.panel-label', ['target' => 'panelSolution', 'parent' => 'mainLabels'])
-                        @slot('label')
-                            Moje řešení
-                        @endslot
-                    @endcomponent
+                    @can(\App\Enums\PermissionsEnum::VIEW_MY_SOLUTION, $test)
+                        @component('app.components.panel-label', ['target' => 'panelSolution', 'parent' => 'mainLabels'])
+                            @slot('label')
+                                Moje řešení
+                            @endslot
+                        @endcomponent
+                    @endcan
                 @endif
 
                 @component('app.components.panel-label', ['target' => 'panelStudents', 'parent' => 'mainLabels'])
@@ -157,11 +159,13 @@
                 @endif
 
                 @if($solution)
-                    @component('app.components.form-panel', ['id' => 'panelSolution', 'parent' => 'testFormPanels'])
-                        <div>
-                            @include('app.tests.show_solution')
-                        </div>
-                    @endcomponent
+                    @can(\App\Enums\PermissionsEnum::VIEW_MY_SOLUTION, $test)
+                        @component('app.components.form-panel', ['id' => 'panelSolution', 'parent' => 'testFormPanels'])
+                            <div>
+                                @include('app.tests.show_solution')
+                            </div>
+                        @endcomponent
+                    @endcan
                 @endif
 
                 @component('app.components.form-panel', ['id' => 'panelStudents', 'parent' => 'testFormPanels'])

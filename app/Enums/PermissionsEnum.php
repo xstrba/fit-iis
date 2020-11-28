@@ -26,6 +26,7 @@ final class PermissionsEnum extends Enum
     public const REQUEST_STUDENT = 'requestStudent';
     public const REMOVE_STUDENT = 'removeStudent';
     public const ACCEPT_STUDENT = 'acceptStudent';
+    public const VIEW_MY_SOLUTION = 'viewMySolution';
 
     /**
      * @var array|int[]
