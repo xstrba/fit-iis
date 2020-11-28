@@ -89,7 +89,7 @@ final class Test extends Model
      */
     public function professor(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class, self::ATTR_PROFESSOR_ID);
+        return $this->belongsTo(User::class, self::ATTR_PROFESSOR_ID)->withTrashed();
     }
 
     /**
