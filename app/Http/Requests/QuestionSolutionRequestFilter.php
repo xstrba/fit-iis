@@ -118,7 +118,7 @@ final class QuestionSolutionRequestFilter extends RequestFilter
     {
         $data = \explode(',', $value)[1] ?? '';
         if (\base64_encode(\base64_decode($data, true)) !== $data) {
-            $fail('invalid_base64');
+            $fail('Položka musí být validní soubor');
         }
     }
 }

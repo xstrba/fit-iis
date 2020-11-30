@@ -108,22 +108,6 @@ final class TestRequestFilter extends RequestFilter
     }
 
     /**
-     * Check if email is unique
-     *
-     * @param string $value
-     * @param callable $fail
-     * @param \App\Models\User|null $user
-     */
-    private function validateEmail(string $value, callable $fail, ?User $user): void
-    {
-        $actualUser = $this->usersRepository->findByEmail($value);
-
-        if ($actualUser && !$actualUser->is($user)) {
-            $fail('email_unique');
-        }
-    }
-
-    /**
      * @param int $value
      * @param callable $fail
      */
@@ -136,7 +120,7 @@ final class TestRequestFilter extends RequestFilter
             ->findById($value);
 
         if (!$professor) {
-            $fail('professor_not_valid');
+            $fail('Položka musí být existujíci profesor');
         }
     }
 
@@ -150,7 +134,7 @@ final class TestRequestFilter extends RequestFilter
         $existingTest = $this->testsRepository->query()->whereName($value)->first();
 
         if ($existingTest && $existingTest->isNot($test)) {
-            $fail('title_unique');
+            $fail('Test s tímto názvem již existuje');
         }
     }
 }

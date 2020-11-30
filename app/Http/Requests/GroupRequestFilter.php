@@ -127,7 +127,7 @@ final class GroupRequestFilter extends RequestFilter
             self::FIELD_QUESTIONS . '.*.' . Question::ATTR_TYPE => [$required, 'numeric', 'in:' . QuestionTypesEnum::instance()->getStringValues()],
             self::FIELD_QUESTIONS . '.*.' . Question::ATTR_MIN_POINTS => ['sometimes', 'numeric', 'max:1000'],
             self::FIELD_QUESTIONS . '.*.' . Question::ATTR_MAX_POINTS => ['sometimes', 'numeric', 'max:1000'],
-            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_FILES_NUMBER => ['sometimes', 'numeric', 'max:20'],
+            self::FIELD_QUESTIONS . '.*.' . Question::ATTR_FILES_NUMBER => ['sometimes', 'numeric', 'min:0', 'max:20'],
 
             self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES => ['sometimes', 'array'],
             self::FIELD_QUESTIONS . '.*.' . Question::RELATION_FILES . '.*' => ['array'],
@@ -175,7 +175,7 @@ final class GroupRequestFilter extends RequestFilter
     {
         $data = \explode(',', $value)[1] ?? '';
         if (\base64_encode(\base64_decode($data, true)) !== $data) {
-            $fail('invalid_base64');
+            $fail('Položka musí být validní soubor');
         }
     }
 }

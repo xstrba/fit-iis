@@ -167,7 +167,7 @@ final class UserRequestFilter extends RequestFilter
         $actualUser = $this->usersRepository->findByEmail($value);
 
         if ($actualUser && !$actualUser->is($user)) {
-            $fail('email_unique');
+            $fail('Uživatel s tímto emailem již existuje');
         }
     }
 
@@ -183,7 +183,7 @@ final class UserRequestFilter extends RequestFilter
         $actualUser = $this->usersRepository->findByNickname($value);
 
         if ($actualUser && !$actualUser->is($user)) {
-            $fail('nickname_unique');
+            $fail('Uživatel s tímto loginem již existuje');
         }
     }
 }

@@ -2,9 +2,11 @@
     <div>
         <div class="row">
             <div class="col-12 my-2" v-for="(question, index) in dataQuestions" :key="index">
-                <div class="card">
+                <div :class="{card: true, 'border-danger': hasQuestionError(index)}">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="h4 m-0">{{ index + 1 }}. {{ question.name }}</h4>
+                        <h4 :class="{h4: true, 'm-0': true, 'text-danger': hasQuestionError(index)}">
+                            {{ index + 1 }}. {{ question.name }}
+                        </h4>
                         <i class="fas fa-trash cursor-pointer text-danger" @click="removeQuestion(index)"></i>
                     </div>
                     <div class="card-body">
@@ -14,6 +16,7 @@
                                    v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.name`]}"
                                    v-model="question.name"
                                    onkeydown="return event.key !== 'Enter';">
+                            <small v-if="!!errors[`questions.${index}.name`]" class="form-text error">{{ errors[`questions.${index}.name`][0] }}</small>
                         </div>
                         <div class="form-group">
                             <label :for="`question-dsc-${index}`">Text otázky</label>
@@ -21,6 +24,7 @@
                                       v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.text`]}"
                                       v-model="question.text">
                             </textarea>
+                            <small v-if="!!errors[`questions.${index}.text`]" class="form-text error">{{ errors[`questions.${index}.text`][0] }}</small>
                         </div>
 
                         <div class="row">
@@ -37,6 +41,7 @@
                                                @click="removeFile(index, fileIndex)">
                                             </i>
                                         </span>
+                                        <small v-if="hasFileError(index, fileIndex)" class="form-text error">{{ getFileError(index, fileIndex) }}</small>
                                     </li>
                                 </ul>
                             </div>
@@ -58,6 +63,7 @@
                                     :id="`question-type-${index}`" v-model="question.type">
                                 <option v-for="type in types" :value="type">{{ typeLabels[type] }}</option>
                             </select>
+                            <small v-if="!!errors[`questions.${index}.type`]" class="form-text error">{{ errors[`questions.${index}.type`][0] }}</small>
                         </div>
 
                         <template v-if="question.type !== types.options && question.type !== types.options_checkbox">
@@ -68,6 +74,7 @@
                                            step="0.1"
                                            v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.min_points`]}"
                                            v-model="question.min_points">
+                                    <small v-if="!!errors[`questions.${index}.min_points`]" class="form-text error">{{ errors[`questions.${index}.min_points`][0] }}</small>
                                 </div>
                                 <div class="form-group  col-12 col-md-6">
                                     <label :for="`question-max-points-${index}`">Maximální počet bodů</label>
@@ -75,6 +82,7 @@
                                            step="0.1"
                                            v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.max_points`]}"
                                            v-model="question.max_points">
+                                    <small v-if="!!errors[`questions.${index}.max_points`]" class="form-text error">{{ errors[`questions.${index}.max_points`][0] }}</small>
                                 </div>
                             </div>
                         </template>
@@ -84,6 +92,7 @@
                             <input type="number" :id="`question-files-${index}`"
                                    v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.files_number`]}"
                                    v-model="question.files_number">
+                            <small v-if="!!errors[`questions.${index}.files_number`]" class="form-text error">{{ errors[`questions.${index}.files_number`][0] }}</small>
                         </div>
 
                         <div v-if="question.type === types.options || question.type === types.options_checkbox">
@@ -97,11 +106,19 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="(option, optionIndex) in question.options" :key="`option-${optionIndex}`">
-                                    <td><input v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.options.${optionIndex}.text`]}"
-                                               type="text" v-model="option.text"></td>
-                                    <td><input v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.options.${optionIndex}.points`]}"
+                                    <td>
+                                        <input v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.options.${optionIndex}.text`]}"
+                                               type="text" v-model="option.text">
+                                        <small v-if="!!errors[`questions.${index}.options.${optionIndex}.text`]"
+                                               class="form-text error">{{ errors[`questions.${index}.options.${optionIndex}.text`][0] }}</small>
+                                    </td>
+                                    <td>
+                                        <input v-bind:class="{'form-control': true, 'border-danger': !!errors[`questions.${index}.options.${optionIndex}.points`]}"
                                                step="0.1"
-                                               type="number" v-model="option.points"></td>
+                                               type="number" v-model="option.points">
+                                        <small v-if="!!errors[`questions.${index}.options.${optionIndex}.points`]"
+                                               class="form-text error">{{ errors[`questions.${index}.options.${optionIndex}.points`][0] }}</small>
+                                    </td>
                                     <td style="vertical-align: middle">
                                         <i class="fas fa-minus-circle text-danger cursor-pointer h4"
                                            @click="removeOption(index, optionIndex)"></i>
@@ -234,11 +251,27 @@ export default {
             this.$forceUpdate();
         },
 
+        hasQuestionError(questionIndex) {
+            const filter = new RegExp(`^questions\.${questionIndex}\..*$`);
+            for (const key in this.errors) {
+                if (filter.test(key)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
         hasFileError(questionIndex, fileIndex) {
             return this.errors[`questions.${questionIndex}.files.${fileIndex}.base64`] ||
                 this.errors[`questions.${questionIndex}.files.${fileIndex}.name`] ||
                 this.errors[`questions.${questionIndex}.files.${fileIndex}.size`]
-        }
+        },
+
+        getFileError(questionIndex, fileIndex) {
+            return [this.errors[`questions.${questionIndex}.files.${fileIndex}.base64`] ||
+                this.errors[`questions.${questionIndex}.files.${fileIndex}.name`] ||
+                this.errors[`questions.${questionIndex}.files.${fileIndex}.size`]][0]
+        },
     },
 }
 </script>

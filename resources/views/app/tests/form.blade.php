@@ -7,7 +7,6 @@
 @endphp
 
 @extends('layouts.app')
-
 @section('content')
     <form action="{{ $test->exists ? route('tests.update', $test->id) : route('tests.store') }}"
           method="POST" onsubmit="event.preventDefault()" id="testForm">
@@ -18,13 +17,22 @@
         @endif
 
         <div id="mainLabels">
-            @component('app.components.panel-label', ['active' => true, 'target' => 'panelInfo', 'parent' => 'mainLabels'])
+            @component('app.components.panel-label', [
+                'active' => true,
+                'target' => 'panelInfo',
+                'parent' => 'mainLabels',
+                'color' =>  \App\Helpers\ViewErrorsHelper::hasOne($errors, ['name', 'subject', 'description', 'professor_id']) ? 'danger' : 'info',
+            ])
                 @slot('label')
                     Základní informace
                 @endslot
             @endcomponent
 
-            @component('app.components.panel-label', ['target' => 'panelConfig', 'parent' => 'mainLabels'])
+            @component('app.components.panel-label', [
+                'target' => 'panelConfig',
+                'parent' => 'mainLabels',
+                'color' =>  \App\Helpers\ViewErrorsHelper::hasOne($errors, ['start_date', 'time_limit', 'questions_number']) ? 'danger' : 'info',
+            ])
                 @slot('label')
                     Konfigurace
                 @endslot
