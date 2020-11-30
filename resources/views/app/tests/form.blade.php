@@ -77,7 +77,6 @@
                                 'name' => 'description',
                                 'label' => __('labels.description'),
                                 'value' => old('description', $test->description),
-                                'required' => false,
                             ])
                     </div>
 
